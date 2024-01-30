@@ -1,0 +1,48 @@
+/** @format */
+
+import { EmbedModel, ChatModel, ChatRoleEnum, ModelProvider } from './Enum'
+
+export interface ChatMessage {
+    role: ChatRoleEnum
+    content: string
+}
+
+export interface EmbeddingResponse {
+    embedding: number[][]
+    dimension: number
+    model: EmbedModel
+    object: 'embedding'
+    promptTokens: number
+    totalTokens: number
+}
+
+export interface ChatResponse {
+    content: string
+    promptTokens: number
+    completionTokens: number
+    totalTokens: number
+    model: ChatModel | string
+    object: string
+}
+
+export interface ChatOption {
+    stream?: boolean
+    provider?: ModelProvider
+    model?: ChatModel
+    top?: number
+    temperature?: number
+    maxLength?: number
+}
+
+export interface EmbedOption {
+    provider?: ModelProvider
+    model?: EmbedModel
+}
+
+export type ModelList = Provider[]
+
+export interface Provider {
+    provider: keyof typeof ModelProvider
+    value: ModelProvider
+    models: ChatModel[] // 假设 models 为字符串数组
+}
