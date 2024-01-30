@@ -61,7 +61,7 @@ export default class UniAI {
                     [ModelProvider.GLM]: GLMChatModel,
                     [ModelProvider.Google]: GoogleChatModel,
                     [ModelProvider.Other]: OtherChatModel
-                }[v]
+                }[v] || {}
             ) as ChatModel[]
         }))
     }
