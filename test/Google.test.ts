@@ -11,7 +11,7 @@ const input = 'Hi, who are you? Answer in 10 words!'
 
 let uni: UniAI
 
-beforeAll(() => (uni = new UniAI({ Google: { key: GOOGLE_AI_KEY, proxy: GOOGLE_AI_API } })))
+beforeAll(() => (uni = new UniAI({ Google: { key: GOOGLE_AI_KEY.split(','), proxy: GOOGLE_AI_API } })))
 
 describe('Google Tests', () => {
     test('Test list Google models', () => {

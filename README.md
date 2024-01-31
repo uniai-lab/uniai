@@ -36,7 +36,9 @@ const embedding = await ai.embedding('hello world')
 -   [Stable Diffusion](https://github.com/AUTOMATIC1111/stable-diffusion-webui)
 -   [OpenAI/DALL-E](https://platform.openai.com)
 -   [Midjourney](https://github.com/novicezk/midjourney-proxy)
+
 ## Project structure
+
 ```javascript
 ├─example         //A simple example of calling
 ├─icon            //The placement of each model icon
@@ -45,6 +47,7 @@ const embedding = await ai.embedding('hello world')
 │  └─providers    //Each model provider
 └─test            //Automated test case
 ```
+
 ## Installation
 
 **Using yarn:**
@@ -60,8 +63,10 @@ npm install uniai
 ```
 
 ## Example
+
 > We have written a simple call demo for you, which is placed in the `/examples` folder. You can read the `/examples` file directly to learn how to use UniAI.
 > You can also read on to learn how to use UniAI based on the documentation.
+
 ### Listing Supported Models
 
 You can use `.models` to list all the available models in UniAI.
@@ -121,7 +126,7 @@ To interact with a model, use `.chat()` and remember to provide the required API
 Default model is OpenAI/gpt-3.5-turbo, put the OpenAI key and your proxy API.
 
 ```typescript
-const key = // Your OpenAI Key (required)
+const key:string | string[] = // Your OpenAI Key (required), support multi keys
 const proxy = // Your OpenAI API proxy (optional)
 const uni = new UniAI({ OpenAI: { key, proxy } })
 const res = await uni.chat()
@@ -148,8 +153,8 @@ For streaming chat, the response is a JSON buffer.
 The following is an example to chat with Google gemini-pro in stream mode.
 
 ```typescript
-const api = // Your google api proxy (optional)
-const key = // Your google api key (required)
+const key:string | string[] = // Your Google Key (required), support multi keys
+const proxy = // Your google api proxy (optional)
 const uni = new UniAI({ Google: { key, proxy } })
 const res = await uni.chat(input, { stream: true, provider: ModelProvider.Google, model: GoogleChatModel.GEM_PRO })
 const stream = res as Readable
@@ -183,10 +188,10 @@ yarn test OpenAI
 
 [Institute of Intelligent Computing Technology, Suzhou, CAS](http://iict.ac.cn/)
 
-
 ## Participate in development
 
 We welcome any type of PR as well as issue.
+
 ## Contributors
 
 [Youwei Huang](https://github.com/devilyouwei)
@@ -197,11 +202,11 @@ huangyw@iict.ac.cn
 
 ## Who is using it
 
-|                      Project                                 |             Brief introduction               |
-|:--------------------------------------------------------:|:------------------------------:|
-| [UniAI-Platform](https://github.com/uni-openai/UniAI/)  |UniAI is a unified API platform designed to simplify interaction with a variety of complex AI models. |
-| [LeChat](https://github.com/CAS-IICT/lechat-uniapp) | Document analysis based on large language model, dialogue with WeChat Mini Programs. |
-| [LeChat Pro](https://lechat.cas-ll.cn/#/)  |Full-platform client based on UniAI, multi-model streaming dialogue platform. |
+|                        Project                         |                                          Brief introduction                                           |
+| :----------------------------------------------------: | :---------------------------------------------------------------------------------------------------: |
+| [UniAI-Platform](https://github.com/uni-openai/UniAI/) | UniAI is a unified API platform designed to simplify interaction with a variety of complex AI models. |
+|  [LeChat](https://github.com/CAS-IICT/lechat-uniapp)   |         Document analysis based on large language model, dialogue with WeChat Mini Programs.          |
+|       [LeChat Pro](https://lechat.cas-ll.cn/#/)        |             Full-platform client based on UniAI, multi-model streaming dialogue platform.             |
 
 ## Star History
 

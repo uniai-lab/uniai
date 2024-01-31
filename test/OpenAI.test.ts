@@ -11,7 +11,7 @@ const input = 'Hi, who are you? Answer in 10 words!'
 
 let uni: UniAI
 
-beforeAll(() => (uni = new UniAI({ OpenAI: { key: OPENAI_KEY, proxy: OPENAI_API } })))
+beforeAll(() => (uni = new UniAI({ OpenAI: { key: OPENAI_KEY.split(','), proxy: OPENAI_API } })))
 
 describe('OpenAI Tests', () => {
     test('Test list OpenAI models', () => {

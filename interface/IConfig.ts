@@ -3,19 +3,19 @@
 export interface UniAIConfig {
     // OpenAI configs
     OpenAI?: {
-        key: string
+        key: string | string[]
         proxy?: string
     }
 
     // Google configs
     Google?: {
-        key: string
+        key: string | string[]
         proxy?: string
     }
 
     // GLM configs
     GLM?: {
-        key?: string
+        key?: string | string[]
         local?: string
         proxy?: string
     }
@@ -36,7 +36,7 @@ export interface UniAIConfig {
     }
 
     MoonShot?: {
-        key: string
+        key: string | string[]
         proxy?: string
     }
 

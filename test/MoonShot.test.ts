@@ -11,7 +11,7 @@ const input = 'Hi, who are you? Answer in 10 words!'
 
 let uni: UniAI
 
-beforeAll(() => (uni = new UniAI({ MoonShot: { key: MOONSHOT_KEY, proxy: MOONSHOT_API } })))
+beforeAll(() => (uni = new UniAI({ MoonShot: { key: MOONSHOT_KEY.split(','), proxy: MOONSHOT_API } })))
 
 describe('MoonShot Tests', () => {
     test('Test list MoonShot models', () => {

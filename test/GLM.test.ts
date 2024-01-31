@@ -11,7 +11,7 @@ const input = 'Hi, who are you? Answer in 10 words!'
 
 let uni: UniAI
 
-beforeAll(() => (uni = new UniAI({ GLM: { key: ZHIPU_AI_KEY, proxy: ZHIPU_AI_API, local: GLM_API } })))
+beforeAll(() => (uni = new UniAI({ GLM: { key: ZHIPU_AI_KEY.split(','), proxy: ZHIPU_AI_API, local: GLM_API } })))
 
 describe('GLM Tests', () => {
     test('Test list GLM models', () => {

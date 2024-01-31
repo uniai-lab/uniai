@@ -4,15 +4,13 @@
 
 <h1 align="center">UniAI</h1>
 
-
 <h4 align="center">统一 AI 模型！</h4>
 
 <p align="center">🤗 我们不生产大模型，我们只是模型的搬运工！</p>
 
 <!-- ![visitors](https://visitor-badge.glitch.me/badge?page_id=devilyouwei.UniAI&left_color=green&right_color=red) -->
 
->注意：这是一个使用ts语言编写，用于对接国内外多个大模型的输入，并从统一接口输出的后端代码，您只需要简单的引入，即可在项目中随意使用。
-
+> 注意：这是一个使用ts语言编写，用于对接国内外多个大模型的输入，并从统一接口输出的后端代码，您只需要简单的引入，即可在项目中随意使用。
 
 ```typescript
 const ai = new UniAI({ OpenAI: { key, proxy } })
@@ -44,8 +42,9 @@ const embedding = await ai.embedding('hello world')
 -   [Stable Diffusion](https://github.com/AUTOMATIC1111/stable-diffusion-webui)
 -   [OpenAI/DALL-E](https://platform.openai.com)
 -   [Midjourney](https://github.com/novicezk/midjourney-proxy)
-  
+
 ## 项目结构
+
 ```javascript
 ├─example         //简单的调用示例
 ├─icon            //各个模型图标的放置位子
@@ -54,6 +53,7 @@ const embedding = await ai.embedding('hello world')
 │  └─providers    //各个模型provider
 └─test            //自动化测试用例
 ```
+
 ## 安装
 
 **使用 yarn：**
@@ -69,6 +69,7 @@ npm install uniai
 ```
 
 ## 示例
+
 > 我们为编写了简单的调用demo，放置在`/examples`文件夹中，您可以直接阅读`/examples/chat.js`文件来了解如何使用UniAI。
 > 您也可以继续往下阅读，依据文档，来了解如何使用UniAI。
 
@@ -131,7 +132,7 @@ console.log(ai.models)
 默认模型是 OpenAI/gpt-3.5-turbo，请提供 OpenAI 密钥和代理 API。
 
 ```typescript
-const key = // 您的 OpenAI 密钥（必填）
+const key:string | string[] = // 您的 OpenAI 密钥（必填），已支持多key轮询
 const proxy = // 您的 OpenAI API 代理（可选）
 const uni = new UniAI({ OpenAI: { key, proxy } })
 const res = await uni.chat()
@@ -158,8 +159,8 @@ console.log(res)
 以下是与 Google gemini-pro 进行流式聊天的示例。
 
 ```typescript
+const key:string | string[] = // 您的 Google 密钥（必填），已支持多key轮询
 const proxy = // 您的 Google API 代理（可选）
-const key = // 您的 Google API 密钥（必填）
 const uni = new UniAI({ Google: { key, proxy } })
 const res = await uni.chat(input, { stream: true, provider: ModelProvider.Google, model: GoogleChatModel.GEM_PRO })
 const stream = res as Readable
@@ -188,9 +189,11 @@ yarn test
 # OpenAI、Google、Baidu、IFlyTek、MoonShot、GLM、Other
 yarn test OpenAI
 ```
+
 ## 参与开发
 
 我们欢迎任何类型的 PR 以及 issue。🎉
+
 ## 贡献者
 
 [Youwei Huang](https://github.com/devilyouwei)
@@ -201,17 +204,16 @@ huangyw@iict.ac.cn
 
 ## 有谁在使用
 
-|                      项目                                 |             简介               |
-|:--------------------------------------------------------:|:------------------------------:|
-| [UniAI-Platform](https://github.com/uni-openai/UniAI/)     | UniAI 是一个统一的 API 平台，旨在简化与多种复杂 AI 模型的交互。 |
-| [乐聊小程序](https://github.com/CAS-IICT/lechat-uniapp)      | 基于大语言模型的文档分析，对话微信小程序。             |
-| [LeChat Pro](https://lechat.cas-ll.cn/#/)     | 基于UniAI的全平台客户端，多模型流式对话平台。 |
-
+|                          项目                           |                              简介                               |
+| :-----------------------------------------------------: | :-------------------------------------------------------------: |
+| [UniAI-Platform](https://github.com/uni-openai/UniAI/)  | UniAI 是一个统一的 API 平台，旨在简化与多种复杂 AI 模型的交互。 |
+| [乐聊小程序](https://github.com/CAS-IICT/lechat-uniapp) |           基于大语言模型的文档分析，对话微信小程序。            |
+|        [LeChat Pro](https://lechat.cas-ll.cn/#/)        |          基于UniAI的全平台客户端，多模型流式对话平台。          |
 
 ## Star历史
 
-
 [![Star History Chart](https://api.star-history.com/svg?repos=devilyouwei/UniAI&type=Timeline)](https://star-history.com/#devilyouwei/UniAI&Timeline)
+
 ## License
 
 [MIT](./LICENSE)

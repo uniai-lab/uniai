@@ -16,11 +16,11 @@ const EXPIRE = 3 * 60 * 1000
 const API = 'https://open.bigmodel.cn'
 
 export default class GLM {
-    private key?: string
+    private key?: string | string[]
     private localAPI?: string
     private proxyAPI: string
 
-    constructor(key?: string, localAPI?: string, proxyAPI: string = API) {
+    constructor(key?: string | string[], localAPI?: string, proxyAPI: string = API) {
         this.key = key
         this.localAPI = localAPI
         this.proxyAPI = proxyAPI
@@ -94,9 +94,10 @@ export default class GLM {
                 return data
             }
         } else {
-            if (!this.key) throw new Error('ZhiPu API key is not set in config')
+            const key = Array.isArray(this.key) ? $.getRandom(this.key) : this.key
+            if (!key) throw new Error('ZhiPu API key is not set in config')
 
-            const token = this.generateToken(this.key)
+            const token = this.generateToken(key)
             const res = await $.post<GLMChatRequest, Readable | GLMChatResponse>(
                 `${this.proxyAPI}/api/paas/v4/chat/completions`,
                 {

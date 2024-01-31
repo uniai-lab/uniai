@@ -30,14 +30,14 @@ const VER = 'v1'
 
 export default class OpenAI {
     private api: string
-    private key?: string
+    private key?: string | string[]
 
     /**
      * Constructor for OpenAI class.
      * @param key - The API key for OpenAI.
      * @param api - The API endpoint for proxy (optional).
      */
-    constructor(key?: string, api: string = API) {
+    constructor(key?: string | string[], api: string = API) {
         this.key = key
         this.api = api
     }
@@ -50,12 +50,13 @@ export default class OpenAI {
      * @returns A promise resolving to the embedding response.
      */
     async embedding(input: string[], model: OpenAIEmbedModel = OpenAIEmbedModel.ADA2): Promise<EmbeddingResponse> {
-        if (!this.key) throw new Error('OpenAI API key is not set in config')
+        const key = Array.isArray(this.key) ? $.getRandom(this.key) : this.key
+        if (!key) throw new Error('OpenAI API key is not set in config')
 
         const res = await $.post<OpneAIEmbedRequest, OpenAIEmbedResponse>(
             `${this.api}/${VER}/embeddings`,
             { model, input },
-            { headers: { Authorization: `Bearer ${this.key}` }, responseType: 'json' }
+            { headers: { Authorization: `Bearer ${key}` }, responseType: 'json' }
         )
         const data: EmbeddingResponse = {
             embedding: res.data.map(v => v.embedding),
@@ -87,12 +88,13 @@ export default class OpenAI {
         temperature?: number,
         maxLength?: number
     ) {
-        if (!this.key) throw new Error('OpenAI API key is not set in config')
+        const key = Array.isArray(this.key) ? $.getRandom(this.key) : this.key
+        if (!key) throw new Error('OpenAI API key is not set in config')
 
         const res = await $.post<GPTChatRequest | GPTChatStreamRequest, Readable | GPTChatResponse>(
             `${this.api}/${VER}/chat/completions`,
             { model, messages: this.formatMessage(messages), stream, temperature, top_p: top, max_tokens: maxLength },
-            { headers: { Authorization: `Bearer ${this.key}` }, responseType: stream ? 'stream' : 'json' }
+            { headers: { Authorization: `Bearer ${key}` }, responseType: stream ? 'stream' : 'json' }
         )
         const data: ChatResponse = {
             content: '',
@@ -142,7 +144,8 @@ export default class OpenAI {
      * @returns A promise resolving to the image generation response.
      */
     async imagine(prompt: string, nPrompt: string = '', width: number = 1024, height: number = 1024, n: number = 1) {
-        if (!this.key) throw new Error('OpenAI API key is not set in config')
+        const key = Array.isArray(this.key) ? $.getRandom(this.key) : this.key
+        if (!key) throw new Error('OpenAI API key is not set in config')
 
         return await $.post<GPTImagineRequest, GPTImagineResponse>(
             `${this.api}/${VER}/images/generations`,
@@ -151,7 +154,7 @@ export default class OpenAI {
                 n,
                 size: `${width}x${height}` as GPTImagineSize
             },
-            { headers: { Authorization: `Bearer ${this.key}` }, responseType: 'json' }
+            { headers: { Authorization: `Bearer ${key}` }, responseType: 'json' }
         )
     }
 

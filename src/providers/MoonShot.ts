@@ -18,7 +18,7 @@ const API = 'https://api.moonshot.cn'
 const VER = 'v1'
 
 export default class MoonShot {
-    private key?: string
+    private key?: string | string[]
     private api?: string
 
     /**
@@ -26,7 +26,7 @@ export default class MoonShot {
      * @param key - The API key for MoonShot.
      * @param api - The API endpoint for proxy (optional).
      */
-    constructor(key?: string, api: string = API) {
+    constructor(key?: string | string[], api: string = API) {
         this.key = key
         this.api = api
     }
@@ -50,12 +50,13 @@ export default class MoonShot {
         temperature?: number,
         maxLength?: number
     ) {
-        if (!this.key) throw new Error('MoonShot API key is not set in config')
+        const key = Array.isArray(this.key) ? $.getRandom(this.key) : this.key
+        if (!key) throw new Error('MoonShot API key is not set in config')
 
         const res = await $.post<GPTChatRequest | GPTChatStreamRequest, Readable | GPTChatResponse>(
             `${this.api}/${VER}/chat/completions`,
             { model, messages: this.formatMessage(messages), stream, temperature, top_p: top, max_tokens: maxLength },
-            { headers: { Authorization: `Bearer ${this.key}` }, responseType: stream ? 'stream' : 'json' }
+            { headers: { Authorization: `Bearer ${key}` }, responseType: stream ? 'stream' : 'json' }
         )
         const data: ChatResponse = {
             content: '',

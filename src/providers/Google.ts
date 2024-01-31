@@ -29,10 +29,10 @@ const SAFE_SET = [
 ]
 
 export default class Google {
-    private key?: string
+    private key?: string | string[]
     private api: string
 
-    constructor(key?: string, api: string = API) {
+    constructor(key?: string | string[], api: string = API) {
         this.key = key
         this.api = api
     }
@@ -56,10 +56,11 @@ export default class Google {
         temperature?: number,
         maxLength?: number
     ) {
-        if (!this.key) throw new Error('Google AI API key is not set in config')
+        const key = Array.isArray(this.key) ? $.getRandom(this.key) : this.key
+        if (!key) throw new Error('Google AI API key is not set in config')
 
         const res = await $.post<GEMChatRequest, GEMChatResponse | Readable>(
-            `${this.api}/v1beta/models/${model}:${stream ? 'streamGenerateContent' : 'generateContent'}?key=${this.key}`,
+            `${this.api}/v1beta/models/${model}:${stream ? 'streamGenerateContent' : 'generateContent'}?key=${key}`,
             {
                 contents: this.formatMessage(messages),
                 generationConfig: { topP: top, temperature, maxOutputTokens: maxLength },
