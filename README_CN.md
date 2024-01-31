@@ -4,9 +4,15 @@
 
 <h1 align="center">UniAI</h1>
 
+
 <h4 align="center">统一 AI 模型！</h4>
 
 <p align="center">🤗 我们不生产大模型，我们只是模型的搬运工！</p>
+
+<!-- ![visitors](https://visitor-badge.glitch.me/badge?page_id=devilyouwei.UniAI&left_color=green&right_color=red) -->
+
+>注意：这是一个使用ts语言编写，用于对接国内外多个大模型的输入，并从统一接口输出的后端代码，您只需要简单的引入，即可在项目中随意使用。
+
 
 ```typescript
 const ai = new UniAI({ OpenAI: { key, proxy } })
@@ -14,7 +20,7 @@ const chat = await ai.chat('hello world')
 const embedding = await ai.embedding('hello world')
 ```
 
-[🇺🇸 🇬🇧 English Readme](./README.md)
+[🇺🇸 🇬🇧 English Readme](./README.md) · 中文
 
 ## 已支持模型
 
@@ -171,7 +177,9 @@ yarn test
 # OpenAI、Google、Baidu、IFlyTek、MoonShot、GLM、Other
 yarn test OpenAI
 ```
+## Star历史
 
+[![Star History Chart](https://api.star-history.com/svg?repos=devilyouwei/UniAI&type=Date)](https://star-history.com/#devilyouwei/UniAI&Date)
 ## License
 
 [MIT](./LICENSE)

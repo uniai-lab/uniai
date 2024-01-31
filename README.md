@@ -178,8 +178,12 @@ yarn test OpenAI
 
 [Youwei Huang](https://github.com/devilyouwei)
 
-huangyw@iict.ac.cn
+[Weilong Yu](https://github.com/mrkk1)
 
+huangyw@iict.ac.cn
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=devilyouwei/UniAI&type=Date)](https://star-history.com/#devilyouwei/UniAI&Date)
 ## License
 
 [MIT](./LICENSE)
