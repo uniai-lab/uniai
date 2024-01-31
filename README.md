@@ -36,7 +36,15 @@ const embedding = await ai.embedding('hello world')
 -   [Stable Diffusion](https://github.com/AUTOMATIC1111/stable-diffusion-webui)
 -   [OpenAI/DALL-E](https://platform.openai.com)
 -   [Midjourney](https://github.com/novicezk/midjourney-proxy)
-
+## Project structure
+```javascript
+├─example         //A simple example of calling
+├─icon            //The placement of each model icon
+├─interface       //Interface Placement Directory
+├─src
+│  └─providers    //Each model provider
+└─test            //Automated test case
+```
 ## Installation
 
 **Using yarn:**
@@ -52,7 +60,8 @@ npm install uniai
 ```
 
 ## Example
-
+> We have written a simple call demo for you, which is placed in the `/examples` folder. You can read the `/examples` file directly to learn how to use UniAI.
+> You can also read on to learn how to use UniAI based on the documentation.
 ### Listing Supported Models
 
 You can use `.models` to list all the available models in UniAI.
@@ -174,6 +183,10 @@ yarn test OpenAI
 
 [Institute of Intelligent Computing Technology, Suzhou, CAS](http://iict.ac.cn/)
 
+
+## Participate in development
+
+We welcome any type of PR as well as issue.
 ## Contributors
 
 [Youwei Huang](https://github.com/devilyouwei)
@@ -181,9 +194,19 @@ yarn test OpenAI
 [Weilong Yu](https://github.com/mrkk1)
 
 huangyw@iict.ac.cn
+
+## Who is using it
+
+|                      项目                                 |             简介               |
+|:--------------------------------------------------------:|:------------------------------:|
+| [UniAI](https://github.com/uni-openai/UniAI/)  |UniAI is a unified API platform designed to simplify interaction with a variety of complex AI models. |
+| [LeChat](https://github.com/CAS-IICT/lechat-uniapp) | Document analysis based on large language model, dialogue with WeChat Mini Programs. |
+| [LeChat Pro](https://lechat.cas-ll.cn/#/)  |Full-platform client based on UniAI, multi-model streaming dialogue platform. |
+
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=devilyouwei/UniAI&type=Date)](https://star-history.com/#devilyouwei/UniAI&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=devilyouwei/UniAI&type=Timeline)](https://star-history.com/#devilyouwei/UniAI&Timeline)
+
 ## License
 
 [MIT](./LICENSE)

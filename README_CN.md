@@ -44,7 +44,16 @@ const embedding = await ai.embedding('hello world')
 -   [Stable Diffusion](https://github.com/AUTOMATIC1111/stable-diffusion-webui)
 -   [OpenAI/DALL-E](https://platform.openai.com)
 -   [Midjourney](https://github.com/novicezk/midjourney-proxy)
-
+  
+## 项目结构
+```javascript
+├─example         //简单的调用示例
+├─icon            //各个模型图标的放置位子
+├─interface       //interface放置目录
+├─src
+│  └─providers    //各个模型provider
+└─test            //自动化测试用例
+```
 ## 安装
 
 **使用 yarn：**
@@ -60,6 +69,8 @@ npm install uniai
 ```
 
 ## 示例
+> 我们为编写了简单的调用demo，放置在`/examples`文件夹中，您可以直接阅读`/examples/chat.js`文件来了解如何使用UniAI。
+> 您也可以继续往下阅读，依据文档，来了解如何使用UniAI。
 
 ### 列出支持的模型
 
@@ -165,7 +176,7 @@ Google 训练的语言模型，为您提供服务。
 
 ## 运行测试
 
-UniAI 使用 `Jest` 来运行所有模型的单元测试。
+UniAI 使用 `test` 来运行所有模型的单元测试。
 
 ```bash
 yarn test
@@ -177,9 +188,30 @@ yarn test
 # OpenAI、Google、Baidu、IFlyTek、MoonShot、GLM、Other
 yarn test OpenAI
 ```
+## 参与开发
+
+我们欢迎任何类型的 PR 以及 issue。🎉
+## 贡献者
+
+[Youwei Huang](https://github.com/devilyouwei)
+
+[Weilong Yu](https://github.com/mrkk1)
+
+huangyw@iict.ac.cn
+
+## 有谁在使用
+
+|                      项目                                 |             简介               |
+|:--------------------------------------------------------:|:------------------------------:|
+| [UniAI](https://github.com/uni-openai/UniAI/)     | UniAI 是一个统一的 API 平台，旨在简化与多种复杂 AI 模型的交互。 |
+| [乐聊小程序](https://github.com/CAS-IICT/lechat-uniapp)      | 基于大语言模型的文档分析，对话微信小程序。             |
+| [LeChat Pro](https://lechat.cas-ll.cn/#/)     | 基于UniAI的全平台客户端，多模型流式对话平台。 |
+
+
 ## Star历史
 
-[![Star History Chart](https://api.star-history.com/svg?repos=devilyouwei/UniAI&type=Date)](https://star-history.com/#devilyouwei/UniAI&Date)
+
+[![Star History Chart](https://api.star-history.com/svg?repos=devilyouwei/UniAI&type=Timeline)](https://star-history.com/#devilyouwei/UniAI&Timeline)
 ## License
 
 [MIT](./LICENSE)
