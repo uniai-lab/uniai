@@ -197,7 +197,7 @@ huangyw@iict.ac.cn
 
 ## Who is using it
 
-|                      项目                                 |             简介               |
+|                      Project                                 |             Brief introduction               |
 |:--------------------------------------------------------:|:------------------------------:|
 | [UniAI](https://github.com/uni-openai/UniAI/)  |UniAI is a unified API platform designed to simplify interaction with a variety of complex AI models. |
 | [LeChat](https://github.com/CAS-IICT/lechat-uniapp) | Document analysis based on large language model, dialogue with WeChat Mini Programs. |
