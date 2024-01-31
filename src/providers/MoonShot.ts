@@ -24,6 +24,7 @@ export default class MoonShot {
     /**
      * Constructor for MoonShot class.
      * @param key - The API key for MoonShot.
+     * @param api - The API endpoint for proxy (optional).
      */
     constructor(key?: string, api: string = API) {
         this.key = key

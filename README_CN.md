@@ -1,10 +1,10 @@
 <!-- @format -->
 
-<p align="center"><img src="./logo.png"></p>
+<p align="center"><img src="./icon/logo.png" width="100px"></p>
 
 <h1 align="center">UniAI</h1>
 
-<h2 align="center">统一 AI 模型！</h2>
+<h4 align="center">统一 AI 模型！</h4>
 
 <p align="center">🤗 我们不生产大模型，我们只是模型的搬运工！</p>
 
@@ -17,6 +17,14 @@ const embedding = await ai.embedding('hello world')
 [🇺🇸 🇬🇧 English Readme](./README.md)
 
 ## 已支持模型
+
+<p align="center">
+<img src="./icon/xunfei.png" width="45px">
+<img src="./icon/openai.png" width="45px">
+<img src="./icon/google.png" width="45px">
+<img src="./icon/baidu.png" width="45px">
+<img src="./icon/moon.png" width="45px">
+</p>
 
 -   [科大讯飞/星火大模型](https://xinghuo.xfyun.cn)
 -   [清华大学/ChatGLM-6B](https://github.com/THUDM/ChatGLM4)
@@ -162,3 +170,9 @@ yarn test
 # OpenAI、Google、Baidu、IFlyTek、MoonShot、GLM、Other
 yarn test OpenAI
 ```
+
+## License
+
+[MIT](./LICENSE)
+
+Copyright (c) 2022-present, Youwei Huang

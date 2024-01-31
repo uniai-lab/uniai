@@ -26,8 +26,8 @@ describe('OpenAI Tests', () => {
         uni.chat().then(console.log).catch(console.error).finally(done)
     })
 
-    test('Test chat openai gpt-3.5-turbo', done => {
-        uni.chat(input, { provider: ModelProvider.OpenAI, model: OpenAIChatModel.GPT3 })
+    test('Test chat openai gpt-3.5-turbo-16k', done => {
+        uni.chat(input, { provider: ModelProvider.OpenAI, model: OpenAIChatModel.GPT3_16K })
             .then(console.log)
             .catch(console.error)
             .finally(done)

@@ -1,10 +1,8 @@
 <!-- @format -->
 
-<p align="center"><img src="./logo.png"></p>
-
+<p align="center"><img src="./icon/logo.png" width="100px"></p>
 <h1 align="center">UniAI</h1>
-
-<h2 align="center">To Unify AI Models!</h2>
+<h4 align="center">To Unify AI Models!</h4>
 
 UniAI is a comprehensive library designed to streamline the integration of various AI models through a simple and unified interface. Our primary aim is to provide a cohesive platform for easy access to a wide spectrum of AI capabilities.
 
@@ -17,6 +15,14 @@ const embedding = await ai.embedding('hello world')
 [🇨🇳 中文说明](./README_CN.md)
 
 ## Supported Models
+
+<p align="center">
+<img src="./icon/xunfei.png" width="45px">
+<img src="./icon/openai.png" width="45px">
+<img src="./icon/google.png" width="45px">
+<img src="./icon/baidu.png" width="45px">
+<img src="./icon/moon.png" width="45px">
+</p>
 
 -   [IFLYTEK/Spark](https://xinghuo.xfyun.cn)
 -   [THUDM/ChatGLM-6B](https://github.com/THUDM/ChatGLM4)
@@ -162,3 +168,19 @@ If you want to run unit tests for a specific model provider:
 # OpenAI, Google, Baidu, IFlyTek, MoonShot, GLM, Other
 yarn test OpenAI
 ```
+
+## Thanks
+
+[Institute of Intelligent Computing Technology, Suzhou, CAS](http://iict.ac.cn/)
+
+## Contributors
+
+[Youwei Huang](https://github.com/devilyouwei)
+
+huangyw@iict.ac.cn
+
+## License
+
+[MIT](./LICENSE)
+
+Copyright (c) 2022-present, Youwei Huang

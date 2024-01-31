@@ -35,7 +35,7 @@ export default class OpenAI {
     /**
      * Constructor for OpenAI class.
      * @param key - The API key for OpenAI.
-     * @param api - The API endpoint for making requests (optional).
+     * @param api - The API endpoint for proxy (optional).
      */
     constructor(key?: string, api: string = API) {
         this.key = key

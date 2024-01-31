@@ -1,8 +1,8 @@
 {
     "name": "uniai",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "author": "devilyouwei",
-    "description": "One API, multiple AI models!",
+    "description": "To unify all AI models!",
     "repository": "https://github.com/devilyouwei/UniAI",
     "license": "MIT",
     "private": false,
@@ -14,8 +14,11 @@
         "ChatGPT",
         "Large Language Model",
         "Gemini",
+        "Moonshot",
+        "ChatGLM",
         "Spark",
-        "ChatGLM"
+        "星火大模型",
+        "文心一言"
     ],
     "scripts": {
         "build": "tsup",
@@ -28,9 +31,12 @@
         "dist"
     ],
     "devDependencies": {
+        "@swc/core": "^1.3.107",
         "@types/jest": "^29.5.11",
+        "@types/jsonwebtoken": "^9.0.5",
         "@types/node": "^20.11.10",
         "@types/node-localstorage": "^1.3.3",
+        "@types/ws": "^8.5.10",
         "@typescript-eslint/eslint-plugin": "^6.19.1",
         "@typescript-eslint/parser": "^6.19.1",
         "dotenv": "^16.4.1",
@@ -45,7 +51,6 @@
         "tslog": "^4.9.2",
         "tsup": "^8.0.1",
         "tsup-fix-cjs-exports": "^1.0.3",
-        "@types/jsonwebtoken": "^9.0.5",
         "typescript": "^5.3.3"
     },
     "dependencies": {
@@ -55,6 +60,7 @@
         "iconv-lite": "^0.6.3",
         "jsonwebtoken": "^9.0.2",
         "node-localstorage": "^3.0.5",
-        "openai": "^4.26.0"
+        "openai": "^4.26.0",
+        "ws": "^8.16.0"
     }
 }
