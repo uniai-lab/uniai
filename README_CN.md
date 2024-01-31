@@ -4,9 +4,9 @@
 
 <h1 align="center">UniAI</h1>
 
-<h2 align="center">To Unify AI Models!</h2>
+<h2 align="center">统一 AI 模型！</h2>
 
-UniAI is a comprehensive library designed to streamline the integration of various AI models through a simple and unified interface. Our primary aim is to provide a cohesive platform for easy access to a wide spectrum of AI capabilities.
+<p align="center">🤗 我们不生产大模型，我们只是模型的搬运工！</p>
 
 ```typescript
 const ai = new UniAI({ OpenAI: { key, proxy } })
@@ -14,43 +14,43 @@ const chat = await ai.chat('hello world')
 const embedding = await ai.embedding('hello world')
 ```
 
-[🇨🇳 中文说明](./README_CN.md)
+[🇺🇸 🇬🇧 English Readme](./README.md)
 
-## Supported Models
+## 已支持模型
 
--   [IFLYTEK/Spark](https://xinghuo.xfyun.cn)
--   [THUDM/ChatGLM-6B](https://github.com/THUDM/ChatGLM4)
--   [ZHIPU/GLM3-4](https://open.bigmodel.cn)
+-   [科大讯飞/星火大模型](https://xinghuo.xfyun.cn)
+-   [清华大学/ChatGLM-6B](https://github.com/THUDM/ChatGLM4)
+-   [智谱/GLM](https://open.bigmodel.cn)
 -   [OpenAI/GPT](https://platform.openai.com)
--   [Baidu/WenXin Workshop](https://cloud.baidu.com/product/wenxinworkshop)
+-   [百度/文心千帆大模型](https://cloud.baidu.com/product/wenxinworkshop)
 -   [Google/Gemini](https://makersuite.google.com/app/)
--   [MoonShot/moonshot](https://platform.moonshot.cn/docs)
+-   [月之暗面/moonshot](https://platform.moonshot.cn/docs)
 -   [GanymedeNil/text2vec-large-chinese](https://huggingface.co/GanymedeNil/text2vec-large-chinese)
 -   [Stable Diffusion](https://github.com/AUTOMATIC1111/stable-diffusion-webui)
 -   [OpenAI/DALL-E](https://platform.openai.com)
 -   [Midjourney](https://github.com/novicezk/midjourney-proxy)
 
-## Installation
+## 安装
 
-**Using yarn:**
+**使用 yarn：**
 
 ```bash
 yarn add uniai
 ```
 
-**Using npm:**
+**使用 npm：**
 
 ```bash
 npm install uniai
 ```
 
-## Example
+## 示例
 
-### Listing Supported Models
+### 列出支持的模型
 
-You can use `.models` to list all the available models in UniAI.
+您可以使用 `.models` 来列出 UniAI 中所有可用的模型。
 
-TypeScript & JavaScript ES6+
+TypeScript 和 JavaScript ES6+
 
 ```typescript
 import UniAI from 'uniai'
@@ -67,7 +67,7 @@ const ai = new UniAI()
 console.log(ai.models)
 ```
 
-Output:
+输出：
 
 ```json
 [
@@ -89,7 +89,7 @@ Output:
         "value": "google",
         "models": ["gemini-pro", "gemini-pro-vision", "gemini-ultra"]
     },
-    ...
+    // 其他提供商的模型也在此列出
     {
         "provider": "Other",
         "value": "other",
@@ -98,25 +98,25 @@ Output:
 ]
 ```
 
-### Chat with Models
+### 与模型聊天
 
-To interact with a model, use `.chat()` and remember to provide the required API key or secret parameters when initializing `new UniAI()`.
+要与模型交互，请使用 `.chat()`，并在初始化 `new UniAI()` 时记得提供所需的 API 密钥或代理参数。
 
-Default model is OpenAI/gpt-3.5-turbo, put the OpenAI key and your proxy API.
+默认模型是 OpenAI/gpt-3.5-turbo，请提供 OpenAI 密钥和代理 API。
 
 ```typescript
-const key = // Your OpenAI Key (required)
-const proxy = // Your OpenAI API proxy (optional)
+const key = // 您的 OpenAI 密钥（必填）
+const proxy = // 您的 OpenAI API 代理（可选）
 const uni = new UniAI({ OpenAI: { key, proxy } })
 const res = await uni.chat()
 console.log(res)
 ```
 
-Output:
+输出：
 
 ```json
 {
-    "content": "I am OpenAI's language model trained to assist with information.",
+    "content": "我是 OpenAI 的语言模型，训练有素，可以帮助提供信息。",
     "model": "gpt-3.5-turbo-0613",
     "object": "chat.completion",
     "promptTokens": 20,
@@ -125,15 +125,15 @@ Output:
 }
 ```
 
-### Streaming Chat
+### 流式聊天
 
-For streaming chat, the response is a JSON buffer.
+对于流式聊天，响应是一个 JSON 缓冲区。
 
-The following is an example to chat with Google gemini-pro in stream mode.
+以下是与 Google gemini-pro 进行流式聊天的示例。
 
 ```typescript
-const api = // Your google api proxy (optional)
-const key = // Your google api key (required)
+const proxy = // 您的 Google API 代理（可选）
+const key = // 您的 Google API 密钥（必填）
 const uni = new UniAI({ Google: { key, proxy } })
 const res = await uni.chat(input, { stream: true, provider: ModelProvider.Google, model: GoogleChatModel.GEM_PRO })
 const stream = res as Readable
@@ -142,23 +142,23 @@ stream.on('data', chunk => (data += JSON.parse(chunk.toString()).content))
 stream.on('end', () => console.log(data))
 ```
 
-Output:
+输出：
 
 ```
-Language model trained by Google, at your service.
+Google 训练的语言模型，为您提供服务。
 ```
 
-## Running Tests
+## 运行测试
 
-UniAI uses `jest` to run unit tests on all supported models.
+UniAI 使用 `Jest` 来运行所有模型的单元测试。
 
 ```bash
 yarn test
 ```
 
-If you want to run unit tests for a specific model provider:
+如果要运行特定模型提供商的单元测试：
 
 ```bash
-# OpenAI, Google, Baidu, IFlyTek, MoonShot, GLM, Other
+# OpenAI、Google、Baidu、IFlyTek、MoonShot、GLM、Other
 yarn test OpenAI
 ```

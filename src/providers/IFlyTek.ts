@@ -126,7 +126,7 @@ export default class IFlyTek {
      * @param version - The Spark model version.
      * @returns The WebSocket URL.
      */
-    getSparkURL(version: IFlyTekChatModel) {
+    private getSparkURL(version: IFlyTekChatModel) {
         if (!this.secret) throw new Error('IFlyTek API secret is not set in config')
         if (!this.key) throw new Error('IFlyTek API key is not set in config')
 
@@ -142,7 +142,7 @@ export default class IFlyTek {
         return `${SPARK_API}/${version}/chat?authorization=${authorization}&date=${date}&host=${host}`
     }
 
-    formatMessage(messages: ChatMessage[]) {
+    private formatMessage(messages: ChatMessage[]) {
         const prompt: SPKChatMessage[] = []
         let input = ''
         for (const { role, content } of messages) {

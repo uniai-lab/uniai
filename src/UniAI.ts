@@ -7,6 +7,7 @@ import {
     GoogleChatModel,
     IFlyTekChatModel,
     ModelProvider,
+    MoonShotChatModel,
     OpenAIChatModel,
     OpenAIEmbedModel,
     OtherChatModel,
@@ -20,6 +21,7 @@ import Other from './providers/Other'
 import Google from './providers/Google'
 import IFlyTek from './providers/IFlyTek'
 import Baidu from './providers/Baidu'
+import MoonShot from './providers/MoonShot'
 
 const DEFAULT_MESSAGE = 'Hello, who are you? Answer me in 10 words!'
 
@@ -33,36 +35,40 @@ export default class UniAI {
     private fly: IFlyTek
     private baidu: Baidu
     private other: Other
+    private moon: MoonShot
 
     constructor(config: UniAIConfig = {}) {
         this.config = config
         // OpenAI key, your OpenAI proxy API (optional)
-        this.openai = new OpenAI(config.OpenAI?.OPENAI_KEY, config.OpenAI?.OPENAI_API)
+        this.openai = new OpenAI(config.OpenAI?.key, config.OpenAI?.proxy)
         // ZhiPu AI with ChatGLM6B(local)
-        this.glm = new GLM(config.GLM?.ZHIPU_AI_KEY, config.Other?.OTHER_API, config.GLM?.ZHIPU_AI_API)
-        // Other model text2vec
-        this.other = new Other(config.Other?.OTHER_API)
+        this.glm = new GLM(config.GLM?.key, config.GLM?.local, config.GLM?.proxy)
         // Google AI key, your Google AI API proxy (optional)
-        this.google = new Google(config.Google?.GOOGLE_AI_KEY, config.Google?.GOOGLE_AI_API)
+        this.google = new Google(config.Google?.key, config.Google?.proxy)
         // IFlyTek appid, API key, API secret
-        this.fly = new IFlyTek(config.IFlyTek?.FLY_APP_ID, config.IFlyTek?.FLY_API_KEY, config.IFlyTek?.FLY_API_SECRET)
-        // Baidu Wenxin Workshop, baidu api key, baidu secret key
-        this.baidu = new Baidu(config.Baidu?.BAIDU_API_KEY, config.Baidu?.BAIDU_SECRET_KEY)
+        this.fly = new IFlyTek(config.IFlyTek?.appId, config.IFlyTek?.apiKey, config.IFlyTek?.apiSecret)
+        // Baidu WenXin Workshop, baidu api key, baidu secret key
+        this.baidu = new Baidu(config.Baidu?.apiKey, config.Baidu?.secretKey, config.Baidu?.proxy)
+        // MoonShot, moonshot API key
+        this.moon = new MoonShot(config.MoonShot?.key, config.MoonShot?.proxy)
+        // Other model text2vec
+        this.other = new Other(config.Other?.api)
 
         // expand models to list
         this.models = Object.entries(ModelProvider).map<Provider>(([k, v]) => ({
             provider: k as keyof typeof ModelProvider,
             value: v,
-            models: Object.values(
-                {
+            models: Object.values<ChatModel>(
+                ({
                     [ModelProvider.OpenAI]: OpenAIChatModel,
                     [ModelProvider.Baidu]: BaiduChatModel,
                     [ModelProvider.IFlyTek]: IFlyTekChatModel,
                     [ModelProvider.GLM]: GLMChatModel,
                     [ModelProvider.Google]: GoogleChatModel,
-                    [ModelProvider.Other]: OtherChatModel
-                }[v] || {}
-            ) as ChatModel[]
+                    [ModelProvider.Other]: OtherChatModel,
+                    [ModelProvider.MoonShot]: MoonShotChatModel
+                }[v] as typeof ChatModel) || {}
+            )
         }))
     }
 
@@ -81,6 +87,8 @@ export default class UniAI {
             return await this.fly.chat(messages, model as IFlyTekChatModel, stream, top, temperature, maxLength)
         else if (provider === ModelProvider.Baidu)
             return await this.baidu.chat(messages, model as BaiduChatModel, stream, top, temperature, maxLength)
+        else if (provider === ModelProvider.MoonShot)
+            return await this.moon.chat(messages, model as MoonShotChatModel, stream, top, temperature, maxLength)
         else throw new Error('Chat model Provider not found')
     }
 

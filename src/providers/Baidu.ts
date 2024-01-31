@@ -15,17 +15,19 @@ import { BaiduChatModel, ChatRoleEnum } from '../../interface/Enum'
 import { ChatMessage, ChatResponse } from '../../interface/IModel'
 import $ from '../util'
 
-const BAIDU_API = 'https://aip.baidubce.com'
+const API = 'https://aip.baidubce.com'
 
 const localStorage = new LocalStorage('./cache')
 
 export default class Baidu {
     private key?: string
     private secret?: string
+    private api?: string
 
-    constructor(key?: string, secret?: string) {
+    constructor(key?: string, secret?: string, api: string = API) {
         this.key = key
         this.secret = secret
+        this.api = api
     }
     /**
      * Sends messages to the GLM chat model.
@@ -54,7 +56,7 @@ export default class Baidu {
         const token = await this.getAccessToken()
 
         const res = await $.post<BaiduChatRequest, BaiduChatResponse | Readable>(
-            `${BAIDU_API}/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/${model}?access_token=${token}`,
+            `${this.api}/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/${model}?access_token=${token}`,
             { messages: this.formatMessage(messages), stream, temperature, top_p: top, max_output_tokens: maxLength },
             { responseType: stream ? 'stream' : 'json' }
         )
@@ -99,7 +101,7 @@ export default class Baidu {
     }
 
     // get baidu access token
-    async getAccessToken() {
+    private async getAccessToken() {
         if (!this.key) throw new Error('Baidu API key is not set in config')
         if (!this.secret) throw new Error('Baidu API secret is not set in config')
 
@@ -110,7 +112,7 @@ export default class Baidu {
         if (cache && cache.expires_in > now) return cache.access_token
 
         // get new access token
-        const res = await $.get<BaiduAccessTokenRequest, BaiduAccessTokenResponse>(`${BAIDU_API}/oauth/2.0/token`, {
+        const res = await $.get<BaiduAccessTokenRequest, BaiduAccessTokenResponse>(`${this.api}/oauth/2.0/token`, {
             grant_type: 'client_credentials',
             client_id: this.key,
             client_secret: this.secret
@@ -125,7 +127,7 @@ export default class Baidu {
     }
 
     // format to baidu message
-    formatMessage(messages: ChatMessage[]) {
+    private formatMessage(messages: ChatMessage[]) {
         const prompt: BaiduChatMessage[] = []
         let input = ''
         const { USER, ASSISTANT } = ChatRoleEnum

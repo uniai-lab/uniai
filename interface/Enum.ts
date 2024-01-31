@@ -7,6 +7,7 @@ export enum ModelProvider {
     Baidu = 'baidu',
     Google = 'google',
     GLM = 'glm',
+    MoonShot = 'moonshot',
     Other = 'other'
 }
 
@@ -74,6 +75,12 @@ export const SparkDomain = {
     [IFlyTekChatModel.SPARK_V3]: 'generalv3'
 }
 
+export enum MoonShotChatModel {
+    MOON_V1_8K = 'moonshot-v1-8k',
+    MOON_V1_32K = 'moonshot-v1-32k',
+    MOON_V1_128K = 'moonshot-v1-128k'
+}
+
 export enum OtherChatModel {}
 
 // All chat models
@@ -83,7 +90,9 @@ export type ChatModel =
     | GLMChatModel
     | IFlyTekChatModel
     | GoogleChatModel
+    | MoonShotChatModel
     | OtherChatModel
+
 export const ChatModel = {
     ...OpenAIChatModel,
     ...BaiduChatModel,
@@ -91,6 +100,7 @@ export const ChatModel = {
     ...IFlyTekChatModel,
     ...GoogleChatModel,
     ...OpenAIChatModel,
+    ...MoonShotChatModel,
     ...OtherChatModel
 }
 

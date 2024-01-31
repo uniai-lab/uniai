@@ -13,17 +13,17 @@ import $ from '../util'
 const localStorage = new LocalStorage('./cache')
 
 const EXPIRE = 3 * 60 * 1000
-const TURBO_API = 'https://open.bigmodel.cn'
+const API = 'https://open.bigmodel.cn'
 
 export default class GLM {
     private key?: string
     private localAPI?: string
-    private turboAPI: string
+    private proxyAPI: string
 
-    constructor(key?: string, localAPI?: string, turboAPI: string = TURBO_API) {
+    constructor(key?: string, localAPI?: string, proxyAPI: string = API) {
         this.key = key
         this.localAPI = localAPI
-        this.turboAPI = turboAPI
+        this.proxyAPI = proxyAPI
     }
 
     /**
@@ -67,6 +67,7 @@ export default class GLM {
             if (res instanceof Readable) {
                 const output = new PassThrough()
                 const parser = new EventSourceStream()
+
                 parser.on('data', (e: MessageEvent) => {
                     const obj = $.json<GLMChatResponse>(e.data)
                     if (obj?.choices[0].delta?.content) {
@@ -93,11 +94,11 @@ export default class GLM {
                 return data
             }
         } else {
-            if (!this.key) throw new Error('ChatGLM-turbo zhipu API key is not in config')
+            if (!this.key) throw new Error('ZhiPu API key is not set in config')
 
             const token = this.generateToken(this.key)
             const res = await $.post<GLMChatRequest, Readable | GLMChatResponse>(
-                `${this.turboAPI}/api/paas/v4/chat/completions`,
+                `${this.proxyAPI}/api/paas/v4/chat/completions`,
                 {
                     model,
                     messages: this.formatMessage(messages),

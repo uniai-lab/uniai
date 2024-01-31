@@ -3,48 +3,57 @@
 export interface UniAIConfig {
     // OpenAI configs
     OpenAI?: {
-        OPENAI_KEY?: string
-        OPENAI_API?: string
+        key: string
+        proxy?: string
     }
 
     // Google configs
     Google?: {
-        GOOGLE_AI_KEY?: string
-        GOOGLE_AI_API?: string
+        key: string
+        proxy?: string
     }
 
     // GLM configs
     GLM?: {
-        ZHIPU_AI_KEY?: string
-        ZHIPU_AI_API?: string
+        key?: string
+        local?: string
+        proxy?: string
     }
 
     // IFlyTek
     IFlyTek?: {
-        FLY_APP_ID?: string
-        FLY_API_KEY?: string
-        FLY_API_SECRET?: string
+        appId: string
+        apiKey: string
+        apiSecret: string
+        proxy?: string
     }
 
     Baidu?: {
-        BAIDU_API_KEY?: string
-        BAIDU_SECRET_KEY?: string
+        appId?: string
+        apiKey: string
+        secretKey: string
+        proxy?: string
+    }
+
+    MoonShot?: {
+        key: string
+        proxy?: string
     }
 
     // stable diffusion (local)
     StableDiffusion?: {
-        SD_API?: string
+        api: string
     }
 
     // midjourney proxy
     MidJourney?: {
-        MJ_PROXY?: string
-        MJ_TOKEN?: string
+        proxy: string
+        token?: string
     }
 
     // other models
     Other?: {
-        OTHER_API?: string
+        api?: string
         // ...
     }
 }

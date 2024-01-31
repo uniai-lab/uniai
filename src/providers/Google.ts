@@ -98,7 +98,7 @@ export default class Google {
             parser.on('end', () => output.end())
 
             res.pipe(decodeStream('utf-8')).pipe(parser)
-            return output
+            return output as Readable
         } else {
             const block = res.promptFeedback?.blockReason
             if (block) throw new Error(block)
@@ -115,7 +115,7 @@ export default class Google {
      * @param messages - An array of chat messages.
      * @returns A formatted array of GEMChatMessage.
      */
-    formatMessage(messages: ChatMessage[]) {
+    private formatMessage(messages: ChatMessage[]) {
         const prompt: GEMChatMessage[] = []
         let input = ''
         for (const { role, content } of messages) {
