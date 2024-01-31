@@ -16,10 +16,11 @@ const embedding = await ai.embedding('hello world')
 
 ## Supported Models
 
-<p align="center">
+<p align="left">
 <img src="./icon/xunfei.png" width="45px">
 <img src="./icon/openai.png" width="45px">
 <img src="./icon/google.png" width="45px">
+<img src="./icon/zhipu.png" width="45px">
 <img src="./icon/baidu.png" width="45px">
 <img src="./icon/moon.png" width="45px">
 </p>
