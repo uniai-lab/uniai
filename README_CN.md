@@ -203,7 +203,7 @@ huangyw@iict.ac.cn
 
 |                      项目                                 |             简介               |
 |:--------------------------------------------------------:|:------------------------------:|
-| [UniAI](https://github.com/uni-openai/UniAI/)     | UniAI 是一个统一的 API 平台，旨在简化与多种复杂 AI 模型的交互。 |
+| [UniAI-Platform](https://github.com/uni-openai/UniAI/)     | UniAI 是一个统一的 API 平台，旨在简化与多种复杂 AI 模型的交互。 |
 | [乐聊小程序](https://github.com/CAS-IICT/lechat-uniapp)      | 基于大语言模型的文档分析，对话微信小程序。             |
 | [LeChat Pro](https://lechat.cas-ll.cn/#/)     | 基于UniAI的全平台客户端，多模型流式对话平台。 |
 
