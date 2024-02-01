@@ -12,7 +12,7 @@
 
 > 注意：这是一个使用ts语言编写，用于对接国内外多个大模型的输入，并从统一接口输出的后端代码，您只需要简单的引入，即可在项目中随意使用。
 
-![UniAI](./example/uniaiexample.gif)
+![UniAI](./example/example.gif)
 
 ```typescript
 const ai = new UniAI({ OpenAI: { key, proxy } })

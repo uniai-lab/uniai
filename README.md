@@ -6,7 +6,7 @@
 
 UniAI is a comprehensive library designed to streamline the integration of various AI models through a simple and unified interface. Our primary aim is to provide a cohesive platform for easy access to a wide spectrum of AI capabilities.
 
-![UniAI](./example/uniaiexample.gif)
+![UniAI](./example/example.gif)
 
 ```typescript
 const ai = new UniAI({ OpenAI: { key, proxy } })
