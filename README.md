@@ -6,7 +6,7 @@
 
 UniAI is a comprehensive library designed to streamline the integration of various AI models through a simple and unified interface. Our primary aim is to provide a cohesive platform for easy access to a wide spectrum of AI capabilities.
 
-![UniAI](./src/uniaiexample.gif)
+![UniAI](./example/uniaiexample.gif)
 
 ```typescript
 const ai = new UniAI({ OpenAI: { key, proxy } })
@@ -128,7 +128,7 @@ To interact with a model, use `.chat()` and remember to provide the required API
 Default model is OpenAI/gpt-3.5-turbo, put the OpenAI key and your proxy API.
 
 ```typescript
-const key:string | string[] = 'Your OpenAI Key (required), support multi keys'
+const key: string | string[] = 'Your OpenAI Key (required), support multi keys'
 const proxy = 'Your OpenAI API proxy (optional)'
 const uni = new UniAI({ OpenAI: { key, proxy } })
 const res = await uni.chat()
@@ -155,7 +155,7 @@ For streaming chat, the response is a JSON buffer.
 The following is an example to chat with Google gemini-pro in stream mode.
 
 ```typescript
-const key:string | string[] = 'Your Google Key (required), support multi keys'
+const key: string | string[] = 'Your Google Key (required), support multi keys'
 const proxy = 'Your google api proxy (optional)'
 const uni = new UniAI({ Google: { key, proxy } })
 const res = await uni.chat(input, { stream: true, provider: ModelProvider.Google, model: GoogleChatModel.GEM_PRO })
@@ -204,11 +204,11 @@ huangyw@iict.ac.cn
 
 ## Who is using it
 
-|                        Project                         |                                          Brief introduction                                           |
-| :----------------------------------------------------: | :---------------------------------------------------------------------------------------------------: |
-| [UniAI MaaS](https://github.com/uni-openai/UniAI/) | UniAI is a unified API platform designed to simplify interaction with a variety of complex AI models. |
-|  [LeChat](https://github.com/CAS-IICT/lechat-uniapp)   |         Document analysis based on large language model, dialogue with WeChat Mini Programs.          |
-|       [LeChat Pro](https://lechat.cas-ll.cn/#/)        |             Full-platform client based on UniAI, multi-model streaming dialogue platform.             |
+|                       Project                       |                                          Brief introduction                                           |
+| :-------------------------------------------------: | :---------------------------------------------------------------------------------------------------: |
+| [UniAI MaaS](https://github.com/uni-openai/UniAI/)  | UniAI is a unified API platform designed to simplify interaction with a variety of complex AI models. |
+| [LeChat](https://github.com/CAS-IICT/lechat-uniapp) |         Document analysis based on large language model, dialogue with WeChat Mini Programs.          |
+|      [LeChat Pro](https://lechat.cas-ll.cn/#/)      |             Full-platform client based on UniAI, multi-model streaming dialogue platform.             |
 
 ## Star History
 

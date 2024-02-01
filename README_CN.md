@@ -12,16 +12,13 @@
 
 > 注意：这是一个使用ts语言编写，用于对接国内外多个大模型的输入，并从统一接口输出的后端代码，您只需要简单的引入，即可在项目中随意使用。
 
-![UniAI](./src/uniaiexample.gif)
-
-
+![UniAI](./example/uniaiexample.gif)
 
 ```typescript
 const ai = new UniAI({ OpenAI: { key, proxy } })
 const chat = await ai.chat('hello world')
 const embedding = await ai.embedding('hello world')
 ```
-
 
 [🇺🇸 🇬🇧 English Readme](./README.md) · 中文
 
@@ -137,7 +134,7 @@ console.log(ai.models)
 默认模型是 OpenAI/gpt-3.5-turbo，请提供 OpenAI 密钥和代理 API。
 
 ```typescript
-const key:string | string[] = '您的 OpenAI 密钥（必填），已支持多key轮询'
+const key: string | string[] = '您的 OpenAI 密钥（必填），已支持多key轮询'
 const proxy = '您的 OpenAI API 代理（可选）'
 const uni = new UniAI({ OpenAI: { key, proxy } })
 const res = await uni.chat()
@@ -164,7 +161,7 @@ console.log(res)
 以下是与 Google gemini-pro 进行流式聊天的示例。
 
 ```typescript
-const key:string | string[] = '您的 Google 密钥（必填），已支持多key轮询'
+const key: string | string[] = '您的 Google 密钥（必填），已支持多key轮询'
 const proxy = '您的 Google API 代理（可选）'
 const uni = new UniAI({ Google: { key, proxy } })
 const res = await uni.chat(input, { stream: true, provider: ModelProvider.Google, model: GoogleChatModel.GEM_PRO })
@@ -211,7 +208,7 @@ huangyw@iict.ac.cn
 
 |                          项目                           |                              简介                               |
 | :-----------------------------------------------------: | :-------------------------------------------------------------: |
-| [UniAI MaaS](https://github.com/uni-openai/UniAI/)  | UniAI 是一个统一的 API 平台，旨在简化与多种复杂 AI 模型的交互。 |
+|   [UniAI MaaS](https://github.com/uni-openai/UniAI/)    | UniAI 是一个统一的 API 平台，旨在简化与多种复杂 AI 模型的交互。 |
 | [乐聊小程序](https://github.com/CAS-IICT/lechat-uniapp) |           基于大语言模型的文档分析，对话微信小程序。            |
 |        [LeChat Pro](https://lechat.cas-ll.cn/#/)        |          基于UniAI的全平台客户端，多模型流式对话平台。          |
 
