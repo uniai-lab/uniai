@@ -1,6 +1,14 @@
 /** @format */
 
-import { EmbedModel, ChatModel, ChatRoleEnum, ModelProvider } from './Enum'
+import {
+    EmbedModel,
+    ChatModel,
+    ChatRoleEnum,
+    ModelProvider,
+    ImagineModel,
+    ChatModelProvider,
+    ImagineModelProvider
+} from './Enum'
 
 export interface ChatMessage {
     role: ChatRoleEnum
@@ -27,7 +35,7 @@ export interface ChatResponse {
 
 export interface ChatOption {
     stream?: boolean
-    provider?: ModelProvider
+    provider?: ChatModelProvider
     model?: ChatModel
     top?: number
     temperature?: number
@@ -45,4 +53,28 @@ export interface Provider {
     provider: keyof typeof ModelProvider
     value: ModelProvider
     models: ChatModel[] // 假设 models 为字符串数组
+}
+
+export interface ImagineOption {
+    provider?: ImagineModelProvider
+    model?: ImagineModel
+    negativePrompt?: string
+    height?: number
+    width?: number
+    num?: number
+}
+
+export interface ImagineResponse {
+    taskId: string
+    time: Date
+}
+
+export interface TaskResponse {
+    id: string
+    imgs: string[]
+    info: string
+    fail: string
+    progress: number
+    created: Date
+    model: ImagineModel
 }

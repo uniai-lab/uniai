@@ -41,5 +41,43 @@ export default {
     },
     getRandom<T>(arr: T[]): T {
         return arr[Math.floor(Math.random() * arr.length)]
+    },
+    getRandomId(length = 16): string {
+        let result = ''
+        while (result.length < length) {
+            let rand = Math.floor(Math.random() * 10)
+            // Ensure the number doesn't start with zero
+            if (result.length === 0 && rand === 0) continue
+            // Append the number to the result string
+            result += rand.toString()
+        }
+        return result
+    },
+    /**
+     * Computes the greatest common divisor (GCD) of two numbers using Euclidean algorithm.
+     *
+     * @param a - The first number.
+     * @param b - The second number.
+     * @returns The GCD of the two numbers.
+     */
+    getGCD(a: number, b: number): number {
+        if (b === 0) return a
+        return this.getGCD(b, a % b)
+    },
+    /**
+     * Calculates and returns the aspect ratio of a width and height.
+     *
+     * @param width - The width dimension.
+     * @param height - The height dimension.
+     * @returns The aspect ratio in the format "width:height".
+     */
+    getAspect(width: number, height: number) {
+        if (!width || !height) return '1:1'
+
+        const gcd = this.getGCD(width, height)
+        const aspectRatioWidth = width / gcd
+        const aspectRatioHeight = height / gcd
+
+        return `${aspectRatioWidth}:${aspectRatioHeight}`
     }
 }

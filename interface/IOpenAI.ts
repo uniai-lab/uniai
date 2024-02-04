@@ -19,14 +19,14 @@ import {
 export interface GPTChatResponse extends ChatCompletion {}
 export interface GPTChatStreamResponse extends ChatCompletionChunk {}
 
-export interface OpneAIEmbedRequest extends EmbeddingCreateParams {}
+export interface OpenAIEmbedRequest extends EmbeddingCreateParams {}
 export interface OpenAIEmbedResponse extends CreateEmbeddingResponse {}
 
 export interface GPTChatRequest extends ChatCompletionCreateParamsNonStreaming {}
 export interface GPTChatStreamRequest extends ChatCompletionCreateParamsStreaming {}
 
-export interface GPTImagineRequest extends ImageGenerateParams {}
-export interface GPTImagineResponse extends ImagesResponse {}
+export interface OpenAIImagineRequest extends ImageGenerateParams {}
+export interface OpenAIImagineResponse extends ImagesResponse {}
 
 // equal to original ChatCompletionMessage
 export type GPTChatMessage =

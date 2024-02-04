@@ -1,15 +1,29 @@
 /** @format */
 
 // model providers
-export enum ModelProvider {
+
+export enum ChatModelProvider {
     OpenAI = 'openai',
     IFlyTek = 'iflytek',
     Baidu = 'baidu',
     Google = 'google',
     GLM = 'glm',
-    MoonShot = 'moonshot',
+    MoonShot = 'moonshot'
+}
+
+export enum EmbedModelProvider {
+    OpenAI = 'openai',
     Other = 'other'
 }
+
+export enum ImagineModelProvider {
+    OpenAI = 'openai',
+    MidJourney = 'midjourney',
+    StableDiffusion = 'stable_diffusion'
+}
+
+export type ModelProvider = ChatModelProvider | EmbedModelProvider | ImagineModelProvider
+export const ModelProvider = { ...ChatModelProvider, ...EmbedModelProvider, ...ImagineModelProvider }
 
 // openai embed models
 export enum OpenAIEmbedModel {
@@ -105,11 +119,19 @@ export const ChatModel = {
 }
 
 // image models
-export enum ImgModel {
-    SD = 'SD',
-    DALLE = 'DALLE',
-    MJ = 'MJ'
+export enum MidJourneyImagineModel {
+    MJ = 'midjourney'
 }
+export enum OpenAIImagineModel {
+    DALL_E_2 = 'dall-e-2',
+    DALL_E_3 = 'dall-e-3'
+}
+export enum StableDiffusionImagineModel {
+    SD = 'stable-diffusion-v1-5'
+}
+
+export const ImagineModel = { ...OpenAIImagineModel, ...MidJourneyImagineModel, ...StableDiffusionImagineModel }
+export type ImagineModel = OpenAIImagineModel | MidJourneyImagineModel | StableDiffusionImagineModel
 
 export enum MJTaskEnum {
     IMAGINE = 'IMAGINE',

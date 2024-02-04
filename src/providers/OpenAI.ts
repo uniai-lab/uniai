@@ -12,16 +12,22 @@ import {
     GPTChatRequest,
     GPTChatResponse,
     GPTChatStreamRequest,
-    GPTImagineRequest,
-    GPTImagineResponse,
     GPTImagineSize,
     GPTChatStreamResponse,
     GPTChatMessage,
-    OpneAIEmbedRequest,
-    OpenAIEmbedResponse
+    OpenAIEmbedRequest,
+    OpenAIEmbedResponse,
+    OpenAIImagineRequest,
+    OpenAIImagineResponse
 } from '../../interface/IOpenAI'
-import { ChatRoleEnum, GPTChatRoleEnum, OpenAIChatModel, OpenAIEmbedModel } from '../../interface/Enum'
-import { ChatResponse, ChatMessage } from '../../interface/IModel'
+import {
+    ChatRoleEnum,
+    GPTChatRoleEnum,
+    OpenAIChatModel,
+    OpenAIEmbedModel,
+    OpenAIImagineModel
+} from '../../interface/Enum'
+import { ChatResponse, ChatMessage, TaskResponse, ImagineResponse } from '../../interface/IModel'
 import { EmbeddingResponse } from '../../interface/IModel'
 import $ from '../util'
 
@@ -31,6 +37,7 @@ const VER = 'v1'
 export default class OpenAI {
     private api: string
     private key?: string | string[]
+    private tasks: TaskResponse[] = []
 
     /**
      * Constructor for OpenAI class.
@@ -53,7 +60,7 @@ export default class OpenAI {
         const key = Array.isArray(this.key) ? $.getRandom(this.key) : this.key
         if (!key) throw new Error('OpenAI API key is not set in config')
 
-        const res = await $.post<OpneAIEmbedRequest, OpenAIEmbedResponse>(
+        const res = await $.post<OpenAIEmbedRequest, OpenAIEmbedResponse>(
             `${this.api}/${VER}/embeddings`,
             { model, input },
             { headers: { Authorization: `Bearer ${key}` }, responseType: 'json' }
@@ -141,21 +148,44 @@ export default class OpenAI {
      * @param width - Image width (default: 1024).
      * @param height - Image height (default: 1024).
      * @param n - Number of images to generate (default: 1).
+     * @param model - Model choice (default: dall-e-3).
      * @returns A promise resolving to the image generation response.
      */
-    async imagine(prompt: string, nPrompt: string = '', width: number = 1024, height: number = 1024, n: number = 1) {
+    async imagine(
+        prompt: string,
+        negativePrompt: string = '',
+        width: number = 1024,
+        height: number = 1024,
+        n: number = 1,
+        model: OpenAIImagineModel = OpenAIImagineModel.DALL_E_3
+    ): Promise<ImagineResponse> {
         const key = Array.isArray(this.key) ? $.getRandom(this.key) : this.key
         if (!key) throw new Error('OpenAI API key is not set in config')
+        prompt = `Positive prompt: ${prompt}\nNegative prompt: ${negativePrompt}`
 
-        return await $.post<GPTImagineRequest, GPTImagineResponse>(
+        const res = await $.post<OpenAIImagineRequest, OpenAIImagineResponse>(
             `${this.api}/${VER}/images/generations`,
-            {
-                prompt: `Positive prompt: ${prompt}\nNegative prompt: ${nPrompt}`,
-                n,
-                size: `${width}x${height}` as GPTImagineSize
-            },
+            { model, prompt, n, size: `${width}x${height}` as GPTImagineSize },
             { headers: { Authorization: `Bearer ${key}` }, responseType: 'json' }
         )
+        const time = new Date()
+        const task: TaskResponse = {
+            id: $.getRandomId(),
+            info: 'success',
+            progress: 100,
+            imgs: res.data.map(v => v.url!),
+            fail: '',
+            created: time,
+            model
+        }
+        this.tasks.push(task)
+        return { taskId: task.id, time }
+    }
+
+    // simulate task
+    task(id?: string) {
+        if (id) return this.tasks.filter(v => v.id === id)
+        else return this.tasks
     }
 
     /**

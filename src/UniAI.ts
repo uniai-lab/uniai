@@ -2,19 +2,22 @@
 import {
     BaiduChatModel,
     ChatModel,
+    ChatModelProvider,
     ChatRoleEnum,
+    EmbedModelProvider,
     GLMChatModel,
     GoogleChatModel,
     IFlyTekChatModel,
+    ImagineModelProvider,
     ModelProvider,
     MoonShotChatModel,
     OpenAIChatModel,
     OpenAIEmbedModel,
-    OtherChatModel,
+    OpenAIImagineModel,
     OtherEmbedModel
 } from '../interface/Enum'
 import { UniAIConfig } from '../interface/IConfig'
-import { ChatMessage, ChatOption, EmbedOption, ModelList, Provider } from '../interface/IModel'
+import { ChatMessage, ChatOption, EmbedOption, ImagineOption, ModelList, Provider } from '../interface/IModel'
 import OpenAI from './providers/OpenAI'
 import GLM from './providers/GLM'
 import Other from './providers/Other'
@@ -22,6 +25,7 @@ import Google from './providers/Google'
 import IFlyTek from './providers/IFlyTek'
 import Baidu from './providers/Baidu'
 import MoonShot from './providers/MoonShot'
+import MidJourney from './providers/MidJourney'
 
 const DEFAULT_MESSAGE = 'Hello, who are you? Answer me in 10 words!'
 
@@ -36,6 +40,7 @@ export default class UniAI {
     private baidu: Baidu
     private other: Other
     private moon: MoonShot
+    private mj: MidJourney
 
     constructor(config: UniAIConfig = {}) {
         this.config = config
@@ -53,20 +58,21 @@ export default class UniAI {
         this.moon = new MoonShot(config.MoonShot?.key, config.MoonShot?.proxy)
         // Other model text2vec
         this.other = new Other(config.Other?.api)
+        // Midjourney, proxy
+        this.mj = new MidJourney(config.MidJourney?.proxy, config.MidJourney?.token)
 
         // expand models to list
-        this.models = Object.entries(ModelProvider).map<Provider>(([k, v]) => ({
-            provider: k as keyof typeof ModelProvider,
+        this.models = Object.entries(ChatModelProvider).map<Provider>(([k, v]) => ({
+            provider: k as keyof typeof ChatModelProvider,
             value: v,
             models: Object.values<ChatModel>(
                 ({
-                    [ModelProvider.OpenAI]: OpenAIChatModel,
-                    [ModelProvider.Baidu]: BaiduChatModel,
-                    [ModelProvider.IFlyTek]: IFlyTekChatModel,
-                    [ModelProvider.GLM]: GLMChatModel,
-                    [ModelProvider.Google]: GoogleChatModel,
-                    [ModelProvider.Other]: OtherChatModel,
-                    [ModelProvider.MoonShot]: MoonShotChatModel
+                    [ChatModelProvider.OpenAI]: OpenAIChatModel,
+                    [ChatModelProvider.Baidu]: BaiduChatModel,
+                    [ChatModelProvider.IFlyTek]: IFlyTekChatModel,
+                    [ChatModelProvider.GLM]: GLMChatModel,
+                    [ChatModelProvider.Google]: GoogleChatModel,
+                    [ChatModelProvider.MoonShot]: MoonShotChatModel
                 }[v] as typeof ChatModel) || {}
             )
         }))
@@ -74,32 +80,50 @@ export default class UniAI {
 
     async chat(messages: ChatMessage[] | string = DEFAULT_MESSAGE, option: ChatOption = {}) {
         if (typeof messages === 'string') messages = [{ role: ChatRoleEnum.USER, content: messages }]
-        const provider = option.provider || ModelProvider.OpenAI // default is OpenAI gpt-3.5-turbo
+        const provider = option.provider || ChatModelProvider.OpenAI // default is OpenAI gpt-3.5-turbo
         const { model, stream, top, temperature, maxLength } = option
 
-        if (provider === ModelProvider.OpenAI)
+        if (provider === ChatModelProvider.OpenAI)
             return await this.openai.chat(messages, model as OpenAIChatModel, stream, top, temperature, maxLength)
-        else if (provider === ModelProvider.Google)
+        else if (provider === ChatModelProvider.Google)
             return await this.google.chat(messages, model as GoogleChatModel, stream, top, temperature, maxLength)
-        else if (provider === ModelProvider.GLM)
+        else if (provider === ChatModelProvider.GLM)
             return await this.glm.chat(messages, model as GLMChatModel, stream, top, temperature, maxLength)
-        else if (provider === ModelProvider.IFlyTek)
+        else if (provider === ChatModelProvider.IFlyTek)
             return await this.fly.chat(messages, model as IFlyTekChatModel, stream, top, temperature, maxLength)
-        else if (provider === ModelProvider.Baidu)
+        else if (provider === ChatModelProvider.Baidu)
             return await this.baidu.chat(messages, model as BaiduChatModel, stream, top, temperature, maxLength)
-        else if (provider === ModelProvider.MoonShot)
+        else if (provider === ChatModelProvider.MoonShot)
             return await this.moon.chat(messages, model as MoonShotChatModel, stream, top, temperature, maxLength)
         else throw new Error('Chat model Provider not found')
     }
 
-    async embedding(content: string | string[], option?: EmbedOption) {
-        const provider = option?.provider || ModelProvider.OpenAI
+    async embedding(content: string | string[], option: EmbedOption = {}) {
+        const provider = option.provider || ModelProvider.OpenAI
+        const { model } = option
         if (typeof content === 'string') content = [content]
 
-        if (provider === ModelProvider.OpenAI)
-            return await this.openai.embedding(content, option?.model as OpenAIEmbedModel)
-        else if (provider === ModelProvider.Other)
-            return await this.other.embedding(content, option?.model as OtherEmbedModel)
+        if (provider === EmbedModelProvider.OpenAI)
+            return await this.openai.embedding(content, model as OpenAIEmbedModel)
+        else if (provider === EmbedModelProvider.Other)
+            return await this.other.embedding(content, model as OtherEmbedModel)
         else throw new Error('Embedding model provider not found')
+    }
+
+    async imagine(prompt: string, option: ImagineOption = {}) {
+        const provider = option.provider || ImagineModelProvider.OpenAI
+        const { negativePrompt, width, height, num, model } = option
+        if (provider === ImagineModelProvider.OpenAI)
+            return await this.openai.imagine(prompt, negativePrompt, width, height, num, model as OpenAIImagineModel)
+        else if (provider === ImagineModelProvider.MidJourney) {
+            return await this.mj.imagine(prompt, negativePrompt, width, height)
+        } //else if (provider === ImagineModelProvider.StableDiffusion)
+        else throw new Error('Imagine model provider not found')
+    }
+
+    async task(provider: ImagineModelProvider, id?: string) {
+        if (provider === ImagineModelProvider.OpenAI) return this.openai.task(id)
+        else if (provider === ImagineModelProvider.MidJourney) return this.mj.task(id)
+        else throw new Error('Imagine model provider not found')
     }
 }
