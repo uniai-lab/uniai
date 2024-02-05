@@ -51,6 +51,11 @@ export interface UniAIConfig {
         token?: string
     }
 
+    StabilityAI?: {
+        key: string | string[]
+        proxy?: string
+    }
+
     // other models
     Other?: {
         api?: string

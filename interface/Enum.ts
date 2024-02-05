@@ -19,7 +19,8 @@ export enum EmbedModelProvider {
 export enum ImagineModelProvider {
     OpenAI = 'openai',
     MidJourney = 'midjourney',
-    StableDiffusion = 'stable_diffusion'
+    StableDiffusion = 'stable_diffusion',
+    StabilityAI = 'stability.ai'
 }
 
 export type ModelProvider = ChatModelProvider | EmbedModelProvider | ImagineModelProvider
@@ -129,11 +130,24 @@ export enum OpenAIImagineModel {
 export enum StableDiffusionImagineModel {
     SD = 'stable-diffusion-v1-5'
 }
+export enum StabilityAIImagineModel {
+    SD_1_6 = 'stable-diffusion-v1-6',
+    SD_XL_1024 = 'stable-diffusion-xl-1024-v1-0'
+}
 
-export const ImagineModel = { ...OpenAIImagineModel, ...MidJourneyImagineModel, ...StableDiffusionImagineModel }
-export type ImagineModel = OpenAIImagineModel | MidJourneyImagineModel | StableDiffusionImagineModel
+export const ImagineModel = {
+    ...OpenAIImagineModel,
+    ...MidJourneyImagineModel,
+    ...StableDiffusionImagineModel,
+    ...StabilityAIImagineModel
+}
+export type ImagineModel =
+    | OpenAIImagineModel
+    | MidJourneyImagineModel
+    | StableDiffusionImagineModel
+    | StabilityAIImagineModel
 
-export enum MJTaskEnum {
+export enum MJTaskType {
     IMAGINE = 'IMAGINE',
     UPSCALE = 'UPSCALE',
     VARIATION = 'VARIATION',
@@ -141,6 +155,19 @@ export enum MJTaskEnum {
     DESCRIBE = 'DESCRIBE',
     BLEND = 'BLEND'
 }
+
+export enum DETaskType {
+    GENERATION = 'generations',
+    EDIT = 'edits',
+    VARIATION = 'variation'
+}
+
+export enum SDTaskType {
+    GENERATION = 'generation'
+}
+
+export const ImgTaskType = { ...MJTaskType, ...DETaskType, ...SDTaskType }
+export type ImgTaskType = MJTaskType | DETaskType | SDTaskType
 
 // UniAI specified model roles
 export enum ChatRoleEnum {

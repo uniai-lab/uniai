@@ -22,6 +22,8 @@ declare global {
             MID_JOURNEY_TOKEN: string
             OTHER_API: string
             GLM_API: string
+            STABILITY_API: string
+            STABILITY_KEY: string
         }
     }
 }

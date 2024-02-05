@@ -4,14 +4,23 @@
 <h1 align="center">UniAI</h1>
 <h4 align="center">To Unify AI Models!</h4>
 
-UniAI is a comprehensive library designed to streamline the integration of various AI models through a simple and unified interface. Our primary aim is to provide a cohesive platform for easy access to a wide spectrum of AI capabilities.
+<p>
+UniAI, built on Node.js, serves as an integrated AI model library. It provides a unified interface for various leading models, streamlining the development process by ensuring a consistent model input and output experience.
+</p>
 
-![UniAI](./example/example.gif)
+<img width='100%' src='./example/example.gif'/>
 
 ```typescript
-const ai = new UniAI({ OpenAI: { key, proxy } })
+import UniAI from 'uniai'
+// fill the config for the provider/model you want to use!
+const ai = new UniAI({ OpenAI: { key: 'Your key', proxy: 'Your proxy API' } })
+// chat model
 const chat = await ai.chat('hello world')
+// embedding model
 const embedding = await ai.embedding('hello world')
+// imagine model
+const task = await ai.imagine('a panda is eating bamboo')
+const image = await ai.task(task.taskId)
 ```
 
 English · [🇨🇳 中文说明](./README_CN.md)
@@ -34,10 +43,11 @@ English · [🇨🇳 中文说明](./README_CN.md)
 -   [Baidu/WenXin Workshop](https://cloud.baidu.com/product/wenxinworkshop)
 -   [Google/Gemini](https://makersuite.google.com/app/)
 -   [MoonShot/moonshot](https://platform.moonshot.cn/docs)
--   [GanymedeNil/text2vec-large-chinese](https://huggingface.co/GanymedeNil/text2vec-large-chinese)
--   [Stable Diffusion](https://github.com/AUTOMATIC1111/stable-diffusion-webui)
 -   [OpenAI/DALL-E](https://platform.openai.com)
--   [Midjourney](https://github.com/novicezk/midjourney-proxy)
+-   [MidJourney](https://github.com/novicezk/midjourney-proxy)
+-   [Stability AI](https://platform.stability.ai/docs/getting-started)
+-   [Stable Diffusion](https://github.com/AUTOMATIC1111/stable-diffusion-webui)
+-   [GanymedeNil/text2vec-large-chinese](https://huggingface.co/GanymedeNil/text2vec-large-chinese)
 
 ## Project structure
 

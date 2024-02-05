@@ -1,6 +1,5 @@
 /** @format */
 
-import { LocalStorage } from 'node-localstorage'
 import { PassThrough, Readable } from 'stream'
 import EventSourceStream from '@server-sent-stream/node'
 import { decodeStream } from 'iconv-lite'
@@ -16,8 +15,6 @@ import { ChatMessage, ChatResponse } from '../../interface/IModel'
 import $ from '../util'
 
 const API = 'https://aip.baidubce.com'
-
-const localStorage = new LocalStorage('./cache')
 
 export default class Baidu {
     private key?: string
@@ -108,7 +105,7 @@ export default class Baidu {
         const now = Date.now()
 
         // load access token
-        const cache = $.json<BaiduAccessTokenResponse>(localStorage.getItem('baidu'))
+        const cache = $.json<BaiduAccessTokenResponse>($.getItem('baidu'))
         if (cache && cache.expires_in > now) return cache.access_token
 
         // get new access token
@@ -121,7 +118,7 @@ export default class Baidu {
 
         res.expires_in = now + res.expires_in * 1000
 
-        localStorage.setItem('baidu', JSON.stringify(res))
+        $.setItem('baidu', res)
 
         return res.access_token
     }

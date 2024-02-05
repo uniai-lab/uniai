@@ -1,6 +1,6 @@
 /** @format */
 
-import { MJTaskEnum } from './Enum'
+import { MJTaskType } from './Enum'
 
 export interface MJImagineRequest {
     prompt: string
@@ -10,7 +10,7 @@ export interface MJImagineRequest {
 }
 export interface MJChangeRequest {
     taskId: string
-    action: MJTaskEnum
+    action: MJTaskType
     index?: number
     notifyHook?: string
     state?: string
@@ -37,7 +37,7 @@ export interface MJTaskResponse {
         finalPrompt: string
         progressMessageId: string
     }
-    action: MJTaskEnum
+    action: MJTaskType
     status: string
     prompt: string
     promptEn: string
@@ -46,7 +46,7 @@ export interface MJTaskResponse {
     submitTime: number
     startTime: number
     finishTime: number
-    imageUrl: string
+    imageUrl: string | null
     progress: string
-    failReason: string
+    failReason: string | null
 }

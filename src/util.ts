@@ -1,5 +1,14 @@
-/** @format */
+/**
+ * @author devilyouwei
+ * @format prettier
+ * Utils for UniAI
+ **/
+
 import axios, { AxiosRequestConfig } from 'axios'
+import { LocalStorage } from 'node-localstorage'
+
+// Initialize local storage
+const localStorage = new LocalStorage('./cache')
 
 export default {
     /**
@@ -79,5 +88,23 @@ export default {
         const aspectRatioHeight = height / gcd
 
         return `${aspectRatioWidth}:${aspectRatioHeight}`
+    },
+    /**
+     * Stores an item in local storage with the specified key.
+     *
+     * @param key - The key under which to store the item.
+     * @param value - The value to be stored.
+     */
+    setItem<T>(key: string, value: T) {
+        localStorage.setItem(key, JSON.stringify(value))
+    },
+    /**
+     * Retrieves an item from local storage by its key and parses it as a generic type T.
+     *
+     * @param key - The key of the item to retrieve.
+     * @returns The parsed item as a generic type T.
+     */
+    getItem<T>(key: string) {
+        return this.json<T>(localStorage.getItem(key))
     }
 }

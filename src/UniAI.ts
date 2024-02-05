@@ -14,7 +14,8 @@ import {
     OpenAIChatModel,
     OpenAIEmbedModel,
     OpenAIImagineModel,
-    OtherEmbedModel
+    OtherEmbedModel,
+    StabilityAIImagineModel
 } from '../interface/Enum'
 import { UniAIConfig } from '../interface/IConfig'
 import { ChatMessage, ChatOption, EmbedOption, ImagineOption, ModelList, Provider } from '../interface/IModel'
@@ -26,6 +27,7 @@ import IFlyTek from './providers/IFlyTek'
 import Baidu from './providers/Baidu'
 import MoonShot from './providers/MoonShot'
 import MidJourney from './providers/MidJourney'
+import Stability from './providers/Stability'
 
 const DEFAULT_MESSAGE = 'Hello, who are you? Answer me in 10 words!'
 
@@ -41,6 +43,7 @@ export default class UniAI {
     private other: Other
     private moon: MoonShot
     private mj: MidJourney
+    private stability: Stability
 
     constructor(config: UniAIConfig = {}) {
         this.config = config
@@ -60,6 +63,8 @@ export default class UniAI {
         this.other = new Other(config.Other?.api)
         // Midjourney, proxy
         this.mj = new MidJourney(config.MidJourney?.proxy, config.MidJourney?.token)
+        // Stability AI, key, proxy
+        this.stability = new Stability(config.StabilityAI?.key, config.StabilityAI?.proxy)
 
         // expand models to list
         this.models = Object.entries(ChatModelProvider).map<Provider>(([k, v]) => ({
@@ -115,15 +120,24 @@ export default class UniAI {
         const { negativePrompt, width, height, num, model } = option
         if (provider === ImagineModelProvider.OpenAI)
             return await this.openai.imagine(prompt, negativePrompt, width, height, num, model as OpenAIImagineModel)
-        else if (provider === ImagineModelProvider.MidJourney) {
+        else if (provider === ImagineModelProvider.MidJourney)
             return await this.mj.imagine(prompt, negativePrompt, width, height)
-        } //else if (provider === ImagineModelProvider.StableDiffusion)
+        else if (provider === ImagineModelProvider.StabilityAI)
+            return await this.stability.imagine(
+                prompt,
+                negativePrompt,
+                width,
+                height,
+                num,
+                model as StabilityAIImagineModel
+            )
         else throw new Error('Imagine model provider not found')
     }
 
     async task(provider: ImagineModelProvider, id?: string) {
         if (provider === ImagineModelProvider.OpenAI) return this.openai.task(id)
-        else if (provider === ImagineModelProvider.MidJourney) return this.mj.task(id)
+        else if (provider === ImagineModelProvider.MidJourney) return await this.mj.task(id)
+        else if (provider === ImagineModelProvider.StabilityAI) return this.stability.task(id)
         else throw new Error('Imagine model provider not found')
     }
 }

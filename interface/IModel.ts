@@ -7,7 +7,8 @@ import {
     ModelProvider,
     ImagineModel,
     ChatModelProvider,
-    ImagineModelProvider
+    ImagineModelProvider,
+    ImgTaskType
 } from './Enum'
 
 export interface ChatMessage {
@@ -71,6 +72,7 @@ export interface ImagineResponse {
 
 export interface TaskResponse {
     id: string
+    type: ImgTaskType
     imgs: string[]
     info: string
     fail: string

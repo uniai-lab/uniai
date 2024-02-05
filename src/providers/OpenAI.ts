@@ -1,13 +1,13 @@
 /**
- * Utility for connecting to the GPT model API.
+ * Utility for connecting to the OpenAI model API.
  *
  * @format prettier
  * @author devilyouwei
  */
-
 import { PassThrough, Readable } from 'stream'
 import EventSourceStream from '@server-sent-stream/node'
 import { decodeStream } from 'iconv-lite'
+
 import {
     GPTChatRequest,
     GPTChatResponse,
@@ -20,27 +20,31 @@ import {
     OpenAIImagineRequest,
     OpenAIImagineResponse
 } from '../../interface/IOpenAI'
+
 import {
     ChatRoleEnum,
+    DETaskType,
     GPTChatRoleEnum,
     OpenAIChatModel,
     OpenAIEmbedModel,
     OpenAIImagineModel
 } from '../../interface/Enum'
+
 import { ChatResponse, ChatMessage, TaskResponse, ImagineResponse } from '../../interface/IModel'
 import { EmbeddingResponse } from '../../interface/IModel'
 import $ from '../util'
 
+const STORAGE_KEY = 'task_open_ai'
 const API = 'https://api.openai.com'
 const VER = 'v1'
 
 export default class OpenAI {
     private api: string
     private key?: string | string[]
-    private tasks: TaskResponse[] = []
 
     /**
-     * Constructor for OpenAI class.
+     * Constructor for the OpenAI class.
+     *
      * @param key - The API key for OpenAI.
      * @param api - The API endpoint for proxy (optional).
      */
@@ -65,6 +69,7 @@ export default class OpenAI {
             { model, input },
             { headers: { Authorization: `Bearer ${key}` }, responseType: 'json' }
         )
+
         const data: EmbeddingResponse = {
             embedding: res.data.map(v => v.embedding),
             object: 'embedding',
@@ -103,6 +108,7 @@ export default class OpenAI {
             { model, messages: this.formatMessage(messages), stream, temperature, top_p: top, max_tokens: maxLength },
             { headers: { Authorization: `Bearer ${key}` }, responseType: stream ? 'stream' : 'json' }
         )
+
         const data: ChatResponse = {
             content: '',
             model,
@@ -111,6 +117,7 @@ export default class OpenAI {
             completionTokens: 0,
             totalTokens: 0
         }
+
         if (res instanceof Readable) {
             const output = new PassThrough()
             const parser = new EventSourceStream()
@@ -164,13 +171,15 @@ export default class OpenAI {
         prompt = `Positive prompt: ${prompt}\nNegative prompt: ${negativePrompt}`
 
         const res = await $.post<OpenAIImagineRequest, OpenAIImagineResponse>(
-            `${this.api}/${VER}/images/generations`,
+            `${this.api}/${VER}/images/${DETaskType.GENERATION}`,
             { model, prompt, n, size: `${width}x${height}` as GPTImagineSize },
             { headers: { Authorization: `Bearer ${key}` }, responseType: 'json' }
         )
+
         const time = new Date()
         const task: TaskResponse = {
             id: $.getRandomId(),
+            type: DETaskType.GENERATION,
             info: 'success',
             progress: 100,
             imgs: res.data.map(v => v.url!),
@@ -178,14 +187,24 @@ export default class OpenAI {
             created: time,
             model
         }
-        this.tasks.push(task)
+
+        const tasks: TaskResponse[] = $.getItem(STORAGE_KEY) || []
+        tasks.push(task)
+        $.setItem(STORAGE_KEY, tasks)
         return { taskId: task.id, time }
     }
 
-    // simulate task
+    /**
+     * Simulate tasks.
+     *
+     * @param id - The task ID to retrieve (optional).
+     * @returns An array of task responses or a specific task by ID.
+     */
     task(id?: string) {
-        if (id) return this.tasks.filter(v => v.id === id)
-        else return this.tasks
+        const tasks: TaskResponse[] = $.getItem(STORAGE_KEY) || []
+
+        if (id) return tasks.filter(v => v.id === id)
+        else return tasks
     }
 
     /**

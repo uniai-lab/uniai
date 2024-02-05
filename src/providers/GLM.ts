@@ -4,13 +4,10 @@ import jwt from 'jsonwebtoken'
 import { PassThrough, Readable } from 'stream'
 import EventSourceStream from '@server-sent-stream/node'
 import { decodeStream } from 'iconv-lite'
-import { LocalStorage } from 'node-localstorage'
 import { GLMChatMessage, GLMChatRequest, GLMChatResponse, GLMTokenCache } from '../../interface/IGLM'
 import { ChatRoleEnum, GLMChatModel, GLMChatRoleEnum } from '../../interface/Enum'
 import { ChatMessage, ChatResponse } from '../../interface/IModel'
 import $ from '../util'
-
-const localStorage = new LocalStorage('./cache')
 
 const EXPIRE = 3 * 60 * 1000
 const API = 'https://open.bigmodel.cn'
@@ -155,7 +152,7 @@ export default class GLM {
         const timestamp = Date.now()
 
         // check existed token cache
-        const cache = $.json<GLMTokenCache>(localStorage.getItem('glm'))
+        const cache = $.json<GLMTokenCache>($.getItem('glm'))
         if (cache && timestamp - cache.timestamp < expire) return cache.token
 
         /// @ts-ignore
@@ -163,7 +160,7 @@ export default class GLM {
             header: { alg: 'HS256', sign_type: 'SIGN' }
         })
 
-        localStorage.setItem('glm', JSON.stringify({ token, timestamp }))
+        $.setItem('glm', { token, timestamp })
         return token
     }
 

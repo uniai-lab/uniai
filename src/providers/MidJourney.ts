@@ -10,7 +10,7 @@
  * @author devilyouwei
  */
 
-import { MJTaskEnum, MidJourneyImagineModel } from '../../interface/Enum'
+import { MJTaskType, MidJourneyImagineModel } from '../../interface/Enum'
 import { MJChangeRequest, MJImagineRequest, MJImagineResponse, MJTaskResponse } from '../../interface/IMidJourney'
 import { ImagineResponse, TaskResponse } from '../../interface/IModel'
 import $ from '../util'
@@ -35,9 +35,11 @@ export default class MidJourney {
     async imagine(
         prompt: string,
         nPrompt: string = '',
-        width: number = 1,
-        height: number = 1
+        width: number = 1024,
+        height: number = 1024
     ): Promise<ImagineResponse> {
+        if (!this.proxy) throw new Error('MidJourney image model proxy is not set in config')
+
         const aspect = $.getAspect(width, height)
         const res = await $.post<MJImagineRequest, MJImagineResponse>(
             `${this.proxy}/mj/submit/imagine`,
@@ -54,6 +56,8 @@ export default class MidJourney {
      * @returns The task list or the task information with the specified id.
      */
     async task(id?: string): Promise<TaskResponse[]> {
+        if (!this.proxy) throw new Error('MidJourney image model proxy is not set in config')
+
         if (id) {
             const res = await $.get<null, MJTaskResponse>(`${this.proxy}/mj/task/${id}/fetch`, null, {
                 headers: { 'mj-api-secret': this.token }
@@ -61,9 +65,10 @@ export default class MidJourney {
             return [
                 {
                     id: res.id,
-                    imgs: [res.imageUrl],
+                    type: res.action,
+                    imgs: res.imageUrl ? [res.imageUrl] : [],
                     info: res.description,
-                    fail: res.failReason,
+                    fail: res.failReason || '',
                     progress: parseInt(res.progress),
                     created: new Date(res.startTime),
                     model: MidJourneyImagineModel.MJ
@@ -75,9 +80,10 @@ export default class MidJourney {
             })
             return res.map(v => ({
                 id: v.id,
-                imgs: [v.imageUrl],
+                type: v.action,
+                imgs: v.imageUrl ? [v.imageUrl] : [],
                 info: v.description,
-                fail: v.failReason,
+                fail: v.failReason || '',
                 progress: parseInt(v.progress),
                 created: new Date(v.startTime),
                 model: MidJourneyImagineModel.MJ
@@ -92,21 +98,13 @@ export default class MidJourney {
      * @param index - The index for modification (optional).
      * @returns The modified task response.
      */
-    change(taskId: string, action: MJTaskEnum, index?: number) {
+    change(taskId: string, action: MJTaskType, index?: number) {
+        if (!this.proxy) throw new Error('MidJourney image model proxy is not set in config')
+
         return $.post<MJChangeRequest, MJImagineResponse>(
             `${this.proxy}/mj/submit/change`,
             { taskId, action, index },
             { headers: { 'mj-api-secret': this.token } }
         )
-    }
-
-    /**
-     * Get the information of imagine task queue.
-     * @returns The detailed information of the task queue.
-     */
-    queue() {
-        return $.get<null, MJTaskResponse[]>(`${this.proxy}/mj/task/queue`, null, {
-            headers: { 'mj-api-secret': this.token }
-        })
     }
 }
