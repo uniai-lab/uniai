@@ -12,22 +12,7 @@ UniAI, built on Node.js, serves as an integrated AI model library. It provides a
 <img width='100%' src='./example/img/example.gif'/>
 
 <h3 align=center>Imagine</h3>
-<style>
-    table {
-        width: 100%;
-        table-layout: fixed;
-    }
-    td {
-        width: 33.33%;
-        text-align: center;
-        vertical-align: middle;
-    }
-    table img {
-        width: 100%;
-        height: auto;
-        object-fit: cover;
-    }
-</style>
+
 <table>
     <tr>
         <td colspan="3"><strong>Prompt:</strong> Pink dress, Candy, Sandy, Mandy, short hair, blonde hair, bangs, forehead, red lipstick, elbow gloves, hair accessories, high heels, sitting, cross legged, high chair, cocktail, holding cocktail glass, looking through the glass.</td>
@@ -36,14 +21,14 @@ UniAI, built on Node.js, serves as an integrated AI model library. It provides a
         <td colspan="3"><strong>Negative Prompt:</strong> EasyNegative, badhandv4, badv5, aid210, aid291.</td>
     </tr>
     <tr>
-        <td><strong>MidJourney</strong></td>
-        <td><strong>Stability v1.6</strong></td>
-        <td><strong>OpenAI DALL-E-3</strong></td>
+        <td width="33.3%"><strong>MidJourney</strong></td>
+        <td width="33.3%"><strong>Stability v1.6</strong></td>
+        <td width="33.3%"><strong>OpenAI DALL-E-3</strong></td>
     </tr>
     <tr>
-        <td><img src="./example/img/midjourney.png" alt="MidJourney"></td>
-        <td><img src="./example/img/stability-v1.6.png" alt="Stability AI v1.6"></td>
-        <td><img src="./example/img/dall-e-3.png" alt="DALL-E-3"></td>
+        <td width="33.3%"><img width="100%" src="./example/img/midjourney.png" alt="MidJourney"></td>
+        <td width="33.3%"><img width="100%" src="./example/img/stability-v1.6.png" alt="Stability AI v1.6"></td>
+        <td width="33.3%"><img width="100%" src="./example/img/dall-e-3.png" alt="DALL-E-3"></td>
     </tr>
 </table>
 
@@ -254,7 +239,7 @@ huangyw@iict.ac.cn
 
 |                       Project                       |                                          Brief introduction                                           |
 | :-------------------------------------------------: | :---------------------------------------------------------------------------------------------------: |
-| [UniAI MaaS](https://github.com/uni-openai/UniAI/)  | UniAI is a unified API platform designed to simplify interaction with a variety of complex AI models. |
+| [UniAI MaaS](https://github.com/uni-openai/uniai-maas)  | UniAI is a unified API platform designed to simplify interaction with a variety of complex AI models. |
 | [LeChat](https://github.com/CAS-IICT/lechat-uniapp) |         Document analysis based on large language model, dialogue with WeChat Mini Programs.          |
 |      [LeChat Pro](https://lechat.cas-ll.cn/#/)      |             Full-platform client based on UniAI, multi-model streaming dialogue platform.             |
 
