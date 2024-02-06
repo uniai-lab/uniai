@@ -4,11 +4,14 @@
  * Utils for UniAI
  **/
 
+import { createWriteStream, writeFileSync } from 'fs'
 import axios, { AxiosRequestConfig } from 'axios'
 import { LocalStorage } from 'node-localstorage'
+import path from 'path'
+import { Readable } from 'stream'
 
 // Initialize local storage
-const localStorage = new LocalStorage('./cache')
+const localStorage = new LocalStorage('./cache', Infinity)
 
 export default {
     /**
@@ -48,7 +51,7 @@ export default {
             return null
         }
     },
-    getRandom<T>(arr: T[]): T {
+    getRandomKey<T>(arr: T[]): T {
         return arr[Math.floor(Math.random() * arr.length)]
     },
     getRandomId(length = 16): string {
@@ -106,5 +109,32 @@ export default {
      */
     getItem<T>(key: string) {
         return this.json<T>(localStorage.getItem(key))
+    },
+    /**
+     * This method is used to write given data to a file. The data can either be a base64 string or an HTTP/HTTPS URL.
+     * If the data is a URL, the method fetches the data as a readable stream and writes it to the file.
+     * If it's a base64 string, it writes it directly to the file.
+     * @param data - The data to be written to the file. Can be a base64 string or a HTTP/HTTPS img URL.
+     * @param filename - The name of the file where the data will be written. If not provided, a unique filename will be generated.
+     * @returns - The file path where the data was written.
+     */
+    async writeFile(data: string, filename = '') {
+        // Generate a unique filename for the output
+        const filepath = path.join('./cache', filename)
+
+        if (data.startsWith('http://') || data.startsWith('https://')) {
+            // Use the get method to fetch the data as a stream
+            const res = await this.get<{}, Readable>(data, {}, { responseType: 'stream' })
+            if (!(res instanceof Readable)) throw new Error('Img is not a readable stream')
+            // Create a write stream to save the image to a file
+            const writer = createWriteStream(filepath, { flags: 'w' })
+            res.pipe(writer)
+            await new Promise((resolve, reject) => {
+                writer.on('finish', resolve)
+                writer.on('error', reject)
+            })
+        } else writeFileSync(filepath, Buffer.from(data, 'base64'))
+
+        return filepath
     }
 }

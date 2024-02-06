@@ -5,7 +5,7 @@ import UniAI, { ImagineModelProvider, ModelProvider, OpenAIImagineModel } from '
 
 const { MID_JOURNEY_API, MID_JOURNEY_TOKEN, OPENAI_API, OPENAI_KEY, STABILITY_API, STABILITY_KEY } = process.env
 
-const prompt = 'a panda is eating'
+const prompt = 'a cute panda is eating bamboo'
 
 let uni: UniAI
 
@@ -43,22 +43,19 @@ describe('Imagine Tests', () => {
     }, 60000)
 
     test('Test MJ tasks', done => {
-        uni.task(ModelProvider.MidJourney)
-            .then(res => console.log(res.length))
-            .catch(console.error)
-            .finally(done)
-    })
+        uni.task(ModelProvider.MidJourney, '1707125639729316').then(console.log).catch(console.error).finally(done)
+    }, 60000)
 
     test('Test DALLE tasks', done => {
         uni.task(ModelProvider.OpenAI)
-            .then(res => console.log(res.length))
+            .then(res => console.log(res.pop()))
             .catch(console.error)
             .finally(done)
     })
 
     test('Test StabilityAI tasks', done => {
         uni.task(ModelProvider.StabilityAI)
-            .then(res => console.log(res.length))
+            .then(res => console.log(res.pop()))
             .catch(console.error)
             .finally(done)
     })

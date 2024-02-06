@@ -1,6 +1,6 @@
 {
     "name": "uniai",
-    "version": "1.2.1",
+    "version": "1.3.0",
     "author": "devilyouwei",
     "description": "To unify all AI models!",
     "repository": "https://github.com/devilyouwei/UniAI",
@@ -12,11 +12,12 @@
         "OpenAI",
         "GPT",
         "ChatGPT",
-        "Large Language Model",
         "Gemini",
         "Moonshot",
         "ChatGLM",
-        "Spark",
+        "StabilityAI",
+        "Midjourney",
+        "Stable Diffusion",
         "星火大模型",
         "文心一言"
     ],

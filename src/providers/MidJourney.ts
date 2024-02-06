@@ -47,7 +47,7 @@ export default class MidJourney {
             { headers: { 'mj-api-secret': this.token } }
         )
         if (res.code !== 1) throw new Error(res.description)
-        return { taskId: res.result, time: new Date() }
+        return { taskId: res.result, time: Date.now() }
     }
 
     /**
@@ -66,11 +66,11 @@ export default class MidJourney {
                 {
                     id: res.id,
                     type: res.action,
-                    imgs: res.imageUrl ? [res.imageUrl] : [],
+                    imgs: res.imageUrl ? [await $.writeFile(res.imageUrl, `${res.id}.png`)] : [],
                     info: res.description,
                     fail: res.failReason || '',
                     progress: parseInt(res.progress),
-                    created: new Date(res.startTime),
+                    created: res.startTime,
                     model: MidJourneyImagineModel.MJ
                 }
             ]
@@ -85,7 +85,7 @@ export default class MidJourney {
                 info: v.description,
                 fail: v.failReason || '',
                 progress: parseInt(v.progress),
-                created: new Date(v.startTime),
+                created: v.startTime,
                 model: MidJourneyImagineModel.MJ
             }))
         }

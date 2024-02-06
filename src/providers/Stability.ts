@@ -9,6 +9,7 @@
  */
 import { SDTaskType, StabilityAIImagineModel } from '../../interface/Enum'
 import { ImagineResponse, TaskResponse } from '../../interface/IModel'
+import { StabilityImagineRequest, StabilityImagineResponse } from '../../interface/IStability'
 import $ from '../util'
 
 const API = 'https://api.stability.ai'
@@ -42,7 +43,7 @@ export default class Stability {
         samples: number = 1,
         model: StabilityAIImagineModel = StabilityAIImagineModel.SD_1_6
     ): Promise<ImagineResponse> {
-        const key = Array.isArray(this.key) ? $.getRandom(this.key) : this.key
+        const key = Array.isArray(this.key) ? $.getRandomKey(this.key) : this.key
         if (!key) throw new Error('Stability key is not set in config')
         const prompts = [{ text: prompt, weight: 1 }]
         if (negativePrompt) prompts.push({ text: negativePrompt, weight: -1 })
@@ -53,13 +54,17 @@ export default class Stability {
             { headers: { Accept: 'application/json', Authorization: `Bearer ${key}` } }
         )
 
-        const time = new Date()
+        const id = $.getRandomId()
+        const imgs: string[] = []
+        for (const i in res.artifacts) imgs.push(await $.writeFile(res.artifacts[i].base64, `${id}-${i}.png`))
+
+        const time = Date.now()
         const task: TaskResponse = {
-            id: $.getRandomId(),
+            id,
             type: SDTaskType.GENERATION,
             info: res.artifacts[0].finishReason,
             progress: 100,
-            imgs: res.artifacts.map(v => v.base64),
+            imgs,
             fail: '',
             created: time,
             model

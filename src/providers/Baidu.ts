@@ -15,6 +15,7 @@ import { ChatMessage, ChatResponse } from '../../interface/IModel'
 import $ from '../util'
 
 const API = 'https://aip.baidubce.com'
+const STORAGE_KEY = 'baidu'
 
 export default class Baidu {
     private key?: string
@@ -105,7 +106,7 @@ export default class Baidu {
         const now = Date.now()
 
         // load access token
-        const cache = $.json<BaiduAccessTokenResponse>($.getItem('baidu'))
+        const cache = $.getItem<BaiduAccessTokenResponse>(STORAGE_KEY)
         if (cache && cache.expires_in > now) return cache.access_token
 
         // get new access token
@@ -118,7 +119,7 @@ export default class Baidu {
 
         res.expires_in = now + res.expires_in * 1000
 
-        $.setItem('baidu', res)
+        $.setItem(STORAGE_KEY, res)
 
         return res.access_token
     }

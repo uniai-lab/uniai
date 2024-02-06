@@ -50,7 +50,7 @@ export default class MoonShot {
         temperature?: number,
         maxLength?: number
     ) {
-        const key = Array.isArray(this.key) ? $.getRandom(this.key) : this.key
+        const key = Array.isArray(this.key) ? $.getRandomKey(this.key) : this.key
         if (!key) throw new Error('MoonShot API key is not set in config')
 
         const res = await $.post<GPTChatRequest | GPTChatStreamRequest, Readable | GPTChatResponse>(

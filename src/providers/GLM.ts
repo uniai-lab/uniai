@@ -11,6 +11,7 @@ import $ from '../util'
 
 const EXPIRE = 3 * 60 * 1000
 const API = 'https://open.bigmodel.cn'
+const STORAGE_KEY = 'glm'
 
 export default class GLM {
     private key?: string | string[]
@@ -91,7 +92,7 @@ export default class GLM {
                 return data
             }
         } else {
-            const key = Array.isArray(this.key) ? $.getRandom(this.key) : this.key
+            const key = Array.isArray(this.key) ? $.getRandomKey(this.key) : this.key
             if (!key) throw new Error('ZhiPu API key is not set in config')
 
             const token = this.generateToken(key)
@@ -152,7 +153,7 @@ export default class GLM {
         const timestamp = Date.now()
 
         // check existed token cache
-        const cache = $.json<GLMTokenCache>($.getItem('glm'))
+        const cache = $.getItem<GLMTokenCache>(STORAGE_KEY)
         if (cache && timestamp - cache.timestamp < expire) return cache.token
 
         /// @ts-ignore
@@ -160,7 +161,7 @@ export default class GLM {
             header: { alg: 'HS256', sign_type: 'SIGN' }
         })
 
-        $.setItem('glm', { token, timestamp })
+        $.setItem(STORAGE_KEY, { token, timestamp })
         return token
     }
 

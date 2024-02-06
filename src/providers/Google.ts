@@ -56,7 +56,7 @@ export default class Google {
         temperature?: number,
         maxLength?: number
     ) {
-        const key = Array.isArray(this.key) ? $.getRandom(this.key) : this.key
+        const key = Array.isArray(this.key) ? $.getRandomKey(this.key) : this.key
         if (!key) throw new Error('Google AI API key is not set in config')
 
         const res = await $.post<GEMChatRequest, GEMChatResponse | Readable>(

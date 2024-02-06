@@ -2,7 +2,7 @@
 import 'dotenv/config'
 import '../env.d.ts'
 import UniAI from '../src'
-import { ModelProvider, OpenAIChatModel, OpenAIEmbedModel } from '../interface/Enum'
+import { ChatModelProvider, ModelProvider, OpenAIChatModel, OpenAIEmbedModel } from '../interface/Enum'
 import { Readable } from 'stream'
 
 const { OPENAI_KEY, OPENAI_API } = process.env
@@ -27,14 +27,14 @@ describe('OpenAI Tests', () => {
     })
 
     test('Test chat openai gpt-3.5-turbo-16k', done => {
-        uni.chat(input, { provider: ModelProvider.OpenAI, model: OpenAIChatModel.GPT3_16K })
+        uni.chat(input, { provider: ChatModelProvider.OpenAI, model: OpenAIChatModel.GPT3_16K })
             .then(console.log)
             .catch(console.error)
             .finally(done)
     })
 
     test('Test chat openai gpt-4 stream', done => {
-        uni.chat(input, { stream: true, provider: ModelProvider.OpenAI, model: OpenAIChatModel.GPT4 }).then(res => {
+        uni.chat(input, { stream: true, provider: ChatModelProvider.OpenAI, model: OpenAIChatModel.GPT4 }).then(res => {
             expect(res).toBeInstanceOf(Readable)
             const stream = res as Readable
             let data = ''

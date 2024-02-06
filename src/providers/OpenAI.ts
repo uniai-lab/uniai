@@ -61,7 +61,7 @@ export default class OpenAI {
      * @returns A promise resolving to the embedding response.
      */
     async embedding(input: string[], model: OpenAIEmbedModel = OpenAIEmbedModel.ADA2): Promise<EmbeddingResponse> {
-        const key = Array.isArray(this.key) ? $.getRandom(this.key) : this.key
+        const key = Array.isArray(this.key) ? $.getRandomKey(this.key) : this.key
         if (!key) throw new Error('OpenAI API key is not set in config')
 
         const res = await $.post<OpenAIEmbedRequest, OpenAIEmbedResponse>(
@@ -100,7 +100,7 @@ export default class OpenAI {
         temperature?: number,
         maxLength?: number
     ) {
-        const key = Array.isArray(this.key) ? $.getRandom(this.key) : this.key
+        const key = Array.isArray(this.key) ? $.getRandomKey(this.key) : this.key
         if (!key) throw new Error('OpenAI API key is not set in config')
 
         const res = await $.post<GPTChatRequest | GPTChatStreamRequest, Readable | GPTChatResponse>(
@@ -166,23 +166,27 @@ export default class OpenAI {
         n: number = 1,
         model: OpenAIImagineModel = OpenAIImagineModel.DALL_E_3
     ): Promise<ImagineResponse> {
-        const key = Array.isArray(this.key) ? $.getRandom(this.key) : this.key
+        const key = Array.isArray(this.key) ? $.getRandomKey(this.key) : this.key
         if (!key) throw new Error('OpenAI API key is not set in config')
         prompt = `Positive prompt: ${prompt}\nNegative prompt: ${negativePrompt}`
 
         const res = await $.post<OpenAIImagineRequest, OpenAIImagineResponse>(
             `${this.api}/${VER}/images/${DETaskType.GENERATION}`,
-            { model, prompt, n, size: `${width}x${height}` as GPTImagineSize },
+            { model, prompt, n, size: `${width}x${height}` as GPTImagineSize, response_format: 'b64_json' },
             { headers: { Authorization: `Bearer ${key}` }, responseType: 'json' }
         )
 
-        const time = new Date()
+        const id = $.getRandomId()
+        const imgs: string[] = []
+        for (const i in res.data) imgs.push(await $.writeFile(res.data[i].b64_json!, `${id}-${i}.png`))
+
+        const time = Date.now()
         const task: TaskResponse = {
-            id: $.getRandomId(),
+            id,
             type: DETaskType.GENERATION,
             info: 'success',
             progress: 100,
-            imgs: res.data.map(v => v.url!),
+            imgs,
             fail: '',
             created: time,
             model

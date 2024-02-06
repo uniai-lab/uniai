@@ -8,6 +8,8 @@ export * from '../interface/IGoogle'
 export * from '../interface/IModel'
 export * from '../interface/IOpenAI'
 export * from '../interface/IOther'
+export * from '../interface/IMidJourney'
+export * from '../interface/IStability'
 
 import UniAI from './UniAI'
 export default UniAI

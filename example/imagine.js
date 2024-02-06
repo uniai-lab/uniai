@@ -5,24 +5,41 @@
 require('dotenv').config()
 const UniAI = require('../').default
 
-const { MID_JOURNEY_API, MID_JOURNEY_TOKEN, OPENAI_API, OPENAI_KEY } = process.env
-const prompt = 'I have a dream'
+const { MID_JOURNEY_API, MID_JOURNEY_TOKEN, OPENAI_API, OPENAI_KEY, STABILITY_KEY } = process.env
+const prompt =
+    'Pink dress, Candy, Sandy, Mandy, short hair, blonde hair, bangs, forehead, red lipstick, elbow gloves, hair accessories, high heels, sitting, cross legged, high chair, cocktail, holding cocktail glass, looking through the glass.'
+const negativePrompt = 'EasyNegative, badhandv4, badv5, aid210, aid291,'
 
 async function main() {
     const ai = new UniAI({
         MidJourney: { token: MID_JOURNEY_TOKEN, proxy: MID_JOURNEY_API },
-        OpenAI: { proxy: OPENAI_API, key: OPENAI_KEY }
+        OpenAI: { proxy: OPENAI_API, key: OPENAI_KEY },
+        StabilityAI: { key: STABILITY_KEY }
     })
 
-    let res = await ai.imagine(prompt)
-    console.log(res)
+    console.log('Imagine by OpenAI DALL-E...')
+    let res = await ai.imagine(prompt, { provider: 'openai', negativePrompt, model: 'dall-e-3' })
+    console.log('DALL-E Imagine:', res)
     res = await ai.task('openai', res.taskId)
-    console.log(res)
+    console.log('DALL-E Task:', res)
 
-    res = await ai.imagine(prompt, { provider: 'midjourney' })
-    console.log(res)
+    console.log('Imagine by Stability AI...')
+    res = await ai.imagine(prompt, { provider: 'stability.ai', negativePrompt })
+    console.log('Stability Imagine:', res)
+    res = await ai.task('stability.ai', res.taskId)
+    console.log('Stability Task:', res)
+
+    console.log('Imagine by Midjourney...')
+    res = await ai.imagine(prompt, { provider: 'midjourney', negativePrompt })
+    console.log('MJ Imagine:', res)
+    const { taskId } = res
     res = await ai.task('midjourney', res.taskId)
-    console.log(res)
+    console.log('MJ Task:', res)
+    // waiting for 10 mins, image may be completed
+    setTimeout(async () => {
+        const res = await ai.task('midjourney', taskId)
+        console.log('MJ Task 10 mins later:', res)
+    }, 60000)
 }
 
 main()

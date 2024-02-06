@@ -67,7 +67,7 @@ export interface ImagineOption {
 
 export interface ImagineResponse {
     taskId: string
-    time: Date
+    time: number
 }
 
 export interface TaskResponse {
@@ -77,6 +77,6 @@ export interface TaskResponse {
     info: string
     fail: string
     progress: number
-    created: Date
+    created: number
     model: ImagineModel
 }

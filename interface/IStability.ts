@@ -1,6 +1,6 @@
 /** @format */
 
-interface StabilityImagineRequest {
+export interface StabilityImagineRequest {
     height: number // Height of the image to generate, in pixels
     width: number // Width of the image to generate, in pixels
     text_prompts: Array<{ text: string; weight: number }> // Array of text prompts to use for generation
@@ -41,7 +41,7 @@ interface StabilityImagineRequest {
     extras?: object // Extra parameters for experimental features
 }
 
-interface StabilityImagineResponse {
+export interface StabilityImagineResponse {
     artifacts: [
         {
             base64: string // Image encoded in base64

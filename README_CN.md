@@ -1,23 +1,66 @@
 <!-- @format -->
 
-<p align="center"><img src="./icon/logo.png" width="100px"></p>
+<p align="center"><img src="./icon/logo.png" width="80px"></p>
 
 <h1 align="center">UniAI</h1>
 
-<h4 align="center">统一 AI 模型！</h4>
+<h3 align="center">统一 AI 模型！</h3>
 
 <p align="center">🤗 我们不生产大模型，我们只是模型的搬运工！</p>
 
 <!-- ![visitors](https://visitor-badge.glitch.me/badge?page_id=devilyouwei.UniAI&left_color=green&right_color=red) -->
 
-> 注意：这是一个使用ts语言编写，用于对接国内外多个大模型的输入，并从统一接口输出的后端代码，您只需要简单的引入，即可在项目中随意使用。
+<h3 align=center>Chat</h3>
+<img width='100%' src='./example/img/example.gif'/>
 
-![UniAI](./example/example.gif)
+<h3 align=center>Imagine</h3>
+<style>
+    table {
+        width: 100%;
+        table-layout: fixed;
+    }
+    td {
+        width: 33.33%;
+        text-align: center;
+        vertical-align: middle;
+    }
+    table img {
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+    }
+</style>
+<table>
+    <tr>
+        <td colspan="3"><strong>Prompt:</strong> Pink dress, Candy, Sandy, Mandy, short hair, blonde hair, bangs, forehead, red lipstick, elbow gloves, hair accessories, high heels, sitting, cross legged, high chair, cocktail, holding cocktail glass, looking through the glass.</td>
+    </tr>
+    <tr>
+        <td colspan="3"><strong>Negative Prompt:</strong> EasyNegative, badhandv4, badv5, aid210, aid291.</td>
+    </tr>
+    <tr>
+        <td><strong>MidJourney</strong></td>
+        <td><strong>Stability v1.6</strong></td>
+        <td><strong>OpenAI DALL-E-3</strong></td>
+    </tr>
+    <tr>
+        <td><img src="./example/img/midjourney.png" alt="MidJourney"></td>
+        <td><img src="./example/img/stability-v1.6.png" alt="Stability AI v1.6"></td>
+        <td><img src="./example/img/dall-e-3.png" alt="DALL-E-3"></td>
+    </tr>
+</table>
 
 ```typescript
-const ai = new UniAI({ OpenAI: { key, proxy } })
+import UniAI from 'uniai'
+// 第一步：初始化一个UniAI对象
+const ai = new UniAI({ OpenAI: { key: 'Your key', proxy: 'Your proxy API' } })
+// 使用聊天功能
 const chat = await ai.chat('hello world')
+// 使用表征向量功能
 const embedding = await ai.embedding('hello world')
+// 使用生图功能（异步，需等待，见下方task）
+const task = await ai.imagine('a panda is eating bamboo')
+// 列出生图的任务列表
+const image = await ai.task(task.taskId)
 ```
 
 [🇺🇸 🇬🇧 English Readme](./README.md) · 中文
@@ -40,10 +83,11 @@ const embedding = await ai.embedding('hello world')
 -   [百度/文心千帆大模型](https://cloud.baidu.com/product/wenxinworkshop)
 -   [Google/Gemini](https://makersuite.google.com/app/)
 -   [月之暗面/moonshot](https://platform.moonshot.cn/docs)
--   [GanymedeNil/text2vec-large-chinese](https://huggingface.co/GanymedeNil/text2vec-large-chinese)
--   [Stable Diffusion](https://github.com/AUTOMATIC1111/stable-diffusion-webui)
 -   [OpenAI/DALL-E](https://platform.openai.com)
--   [Midjourney](https://github.com/novicezk/midjourney-proxy)
+-   [MidJourney](https://github.com/novicezk/midjourney-proxy)
+-   [Stability AI](https://platform.stability.ai/docs/getting-started)
+-   [Stable Diffusion](https://github.com/AUTOMATIC1111/stable-diffusion-webui)
+-   [GanymedeNil/text2vec-large-chinese](https://huggingface.co/GanymedeNil/text2vec-large-chinese)
 
 ## 项目结构
 

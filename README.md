@@ -1,14 +1,51 @@
 <!-- @format -->
 
-<p align="center"><img src="./icon/logo.png" width="100px"></p>
+<p align="center"><img src="./icon/logo.png" width="80px"></p>
 <h1 align="center">UniAI</h1>
-<h4 align="center">To Unify AI Models!</h4>
+<h3 align="center">To Unify AI Models!</h3>
 
 <p>
 UniAI, built on Node.js, serves as an integrated AI model library. It provides a unified interface for various leading models, streamlining the development process by ensuring a consistent model input and output experience.
 </p>
 
-<img width='100%' src='./example/example.gif'/>
+<h3 align=center>Chat</h3>
+<img width='100%' src='./example/img/example.gif'/>
+
+<h3 align=center>Imagine</h3>
+<style>
+    table {
+        width: 100%;
+        table-layout: fixed;
+    }
+    td {
+        width: 33.33%;
+        text-align: center;
+        vertical-align: middle;
+    }
+    table img {
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+    }
+</style>
+<table>
+    <tr>
+        <td colspan="3"><strong>Prompt:</strong> Pink dress, Candy, Sandy, Mandy, short hair, blonde hair, bangs, forehead, red lipstick, elbow gloves, hair accessories, high heels, sitting, cross legged, high chair, cocktail, holding cocktail glass, looking through the glass.</td>
+    </tr>
+    <tr>
+        <td colspan="3"><strong>Negative Prompt:</strong> EasyNegative, badhandv4, badv5, aid210, aid291.</td>
+    </tr>
+    <tr>
+        <td><strong>MidJourney</strong></td>
+        <td><strong>Stability v1.6</strong></td>
+        <td><strong>OpenAI DALL-E-3</strong></td>
+    </tr>
+    <tr>
+        <td><img src="./example/img/midjourney.png" alt="MidJourney"></td>
+        <td><img src="./example/img/stability-v1.6.png" alt="Stability AI v1.6"></td>
+        <td><img src="./example/img/dall-e-3.png" alt="DALL-E-3"></td>
+    </tr>
+</table>
 
 ```typescript
 import UniAI from 'uniai'
@@ -20,6 +57,7 @@ const chat = await ai.chat('hello world')
 const embedding = await ai.embedding('hello world')
 // imagine model
 const task = await ai.imagine('a panda is eating bamboo')
+// show imagining tasks, get generated images
 const image = await ai.task(task.taskId)
 ```
 
