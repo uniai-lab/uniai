@@ -46,10 +46,16 @@ export default class Baidu {
         temperature?: number,
         maxLength?: number
     ) {
-        // check params
-        if (typeof temperature === 'number' && !(temperature > 0 && temperature <= 1))
-            throw new Error('temperature range is (0, 1]')
-        if (typeof top === 'number' && !(top >= 0 && top <= 1)) throw new Error('top range is [0, 1]')
+        // temperature is float in (0,1]
+        if (typeof temperature === 'number') {
+            if (temperature <= 0) temperature = 0.1
+            if (temperature > 1) temperature = 1
+        }
+        // top is float in [0,1]
+        if (typeof top === 'number') {
+            if (top < 0) top = 0
+            if (top > 1) top = 1
+        }
 
         const token = await this.getAccessToken()
 

@@ -95,6 +95,17 @@ export default class GLM {
             const key = Array.isArray(this.key) ? $.getRandomKey(this.key) : this.key
             if (!key) throw new Error('ZhiPu API key is not set in config')
 
+            // temperature is float in (0,1]
+            if (typeof temperature === 'number') {
+                if (temperature <= 0) temperature = 0.1
+                if (temperature > 1) temperature = 1
+            }
+            // top is float in (0,1)
+            if (typeof top === 'number') {
+                if (top <= 0) top = 0.1
+                if (top >= 1) top = 0.9
+            }
+
             const token = this.generateToken(key)
             const res = await $.post<GLMChatRequest, Readable | GLMChatResponse>(
                 `${this.proxyAPI}/api/paas/v4/chat/completions`,

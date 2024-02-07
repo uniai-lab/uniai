@@ -53,6 +53,12 @@ export default class IFlyTek {
             top = top < 1 ? 1 : top
             top = top > 6 ? 6 : top
         }
+        // temperature is float in (0,1]
+        if (typeof temperature === 'number') {
+            if (temperature <= 0) temperature = 0.1
+            if (temperature > 1) temperature = 1
+        }
+
         const input: SPKChatRequest = {
             header: { app_id: this.appid },
             parameter: { chat: { domain: SparkDomain[model], temperature, max_tokens: maxLength, top_k: top } },

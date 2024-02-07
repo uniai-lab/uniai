@@ -103,6 +103,17 @@ export default class OpenAI {
         const key = Array.isArray(this.key) ? $.getRandomKey(this.key) : this.key
         if (!key) throw new Error('OpenAI API key is not set in config')
 
+        // temperature is float in [0,1]
+        if (typeof temperature === 'number') {
+            if (temperature < 0) temperature = 0
+            if (temperature > 1) temperature = 1
+        }
+        // top is float in [0,1]
+        if (typeof top === 'number') {
+            if (top < 0) top = 0
+            if (top > 1) top = 1
+        }
+
         const res = await $.post<GPTChatRequest | GPTChatStreamRequest, Readable | GPTChatResponse>(
             `${this.api}/${VER}/chat/completions`,
             { model, messages: this.formatMessage(messages), stream, temperature, top_p: top, max_tokens: maxLength },

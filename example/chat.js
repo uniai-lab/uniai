@@ -29,12 +29,18 @@ const ai = new UniAI({
 
 async function main() {
     console.log(`One-time chat: [OpenAI/GPT] default`)
-    await ai.chat('你是谁？是谁开发的？').then(res => console.log('🤖', res))
+    await ai.chat('你是谁？是谁开发的？', { temperature: 0, top: 1 }).then(res => console.log('🤖', res))
     console.log('\n')
-    await stream('Introduce yourself in 50 words', { provider: 'google', model: 'gemini-pro' })
-    await stream('你是谁？是谁开发的？', { provider: 'iflytek', model: 'v3.1' })
+    await stream('你是谁？是谁开发的？', { provider: 'baidu', temperature: 0, top: 0, maxLength: 10 })
+    await stream('Introduce yourself in 10 words', { provider: 'google', maxLength: 1024, top: 1, temperature: 1 })
+    await stream('你是谁？是谁开发的？', { provider: 'iflytek', model: 'v3.1', temperature: 11 })
     await stream('あなたは誰ですか。誰が開発したの?', { provider: 'glm', model: 'glm-4' })
-    await stream('누구세요?누가 당신을 개발했습니까?', { provider: 'moonshot', model: 'moonshot-v1-8k' })
+    await stream('누구세요?누가 당신을 개발했습니까?', {
+        provider: 'moonshot',
+        model: 'moonshot-v1-8k',
+        top: 1,
+        temperature: 1
+    })
 }
 
 async function stream(query, option) {
