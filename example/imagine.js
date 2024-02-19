@@ -20,26 +20,34 @@ async function main() {
     console.log('Imagine by OpenAI DALL-E...')
     let res = await ai.imagine(prompt, { provider: 'openai', negativePrompt, model: 'dall-e-3' })
     console.log('DALL-E Imagine:', res)
-    res = await ai.task('openai', res.taskId)
-    console.log('DALL-E Task:', res)
+    let task = await ai.task('openai', res.taskId)
+    console.log('DALL-E Task:', task)
 
     console.log('Imagine by Stability AI...')
     res = await ai.imagine(prompt, { provider: 'stability.ai', negativePrompt })
     console.log('Stability Imagine:', res)
-    res = await ai.task('stability.ai', res.taskId)
-    console.log('Stability Task:', res)
+    task = await ai.task('stability.ai', res.taskId)
+    console.log('Stability Task:', task)
 
     console.log('Imagine by Midjourney...')
     res = await ai.imagine(prompt, { provider: 'midjourney', negativePrompt })
     console.log('MJ Imagine:', res)
-    const { taskId } = res
-    res = await ai.task('midjourney', res.taskId)
-    console.log('MJ Task:', res)
-    // waiting for 10 mins, image may be completed
-    setTimeout(async () => {
-        const res = await ai.task('midjourney', taskId)
-        console.log('MJ Task 10 mins later:', res)
-    }, 60000)
+    task = await ai.task('midjourney', res.taskId)
+    console.log('MJ Task:', task)
+    // waiting for 1 min, image may be completed, then test change
+    await sleep(60000)
+    task = await ai.task('midjourney', res.taskId)
+    console.log('MJ Task 1 mins later:', task)
+
+    console.log('Modify UPSCALE by Midjourney...')
+    const res2 = await ai.change('midjourney', res.taskId, 'UPSCALE', 4)
+    await sleep(60000)
+    const task2 = await ai.task('midjourney', res2.taskId)
+    console.log('MJ UPSCALE Task 1 mins later:', task2)
+}
+
+function sleep(time) {
+    return new Promise(resolve => setTimeout(resolve, time))
 }
 
 main()

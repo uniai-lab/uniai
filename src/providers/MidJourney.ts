@@ -98,13 +98,14 @@ export default class MidJourney {
      * @param index - The index for modification (optional).
      * @returns The modified task response.
      */
-    change(taskId: string, action: MJTaskType, index?: number) {
+    async change(taskId: string, action: MJTaskType, index?: number): Promise<ImagineResponse> {
         if (!this.proxy) throw new Error('MidJourney image model proxy is not set in config')
 
-        return $.post<MJChangeRequest, MJImagineResponse>(
+        const res = await $.post<MJChangeRequest, MJImagineResponse>(
             `${this.proxy}/mj/submit/change`,
             { taskId, action, index },
             { headers: { 'mj-api-secret': this.token } }
         )
+        return { taskId: res.result, time: Date.now() }
     }
 }

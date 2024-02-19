@@ -9,6 +9,7 @@ import {
     GoogleChatModel,
     IFlyTekChatModel,
     ImagineModelProvider,
+    MJTaskType,
     ModelProvider,
     MoonShotChatModel,
     OpenAIChatModel,
@@ -66,7 +67,7 @@ export default class UniAI {
         // Stability AI, key, proxy
         this.stability = new Stability(config.StabilityAI?.key, config.StabilityAI?.proxy)
 
-        // expand models to list
+        // expand chat models to list
         this.models = Object.entries(ChatModelProvider).map<Provider>(([k, v]) => ({
             provider: k as keyof typeof ChatModelProvider,
             value: v,
@@ -138,6 +139,11 @@ export default class UniAI {
         if (provider === ImagineModelProvider.OpenAI) return this.openai.task(id)
         else if (provider === ImagineModelProvider.MidJourney) return await this.mj.task(id)
         else if (provider === ImagineModelProvider.StabilityAI) return this.stability.task(id)
+        else throw new Error('Imagine model provider not found')
+    }
+
+    async change(provider: ImagineModelProvider, taskId: string, action: string, index?: number) {
+        if (provider === ImagineModelProvider.MidJourney) return this.mj.change(taskId, action as MJTaskType, index)
         else throw new Error('Imagine model provider not found')
     }
 }

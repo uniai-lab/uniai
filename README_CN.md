@@ -46,6 +46,8 @@ const embedding = await ai.embedding('hello world')
 const task = await ai.imagine('a panda is eating bamboo')
 // 列出生图的任务列表
 const image = await ai.task(task.taskId)
+// 修改某个图片，仅支持Midjourney模型，返回新任务id
+const task2 = await ai.change('midjourney', task.taskId, 'UPSCALE', 4)
 ```
 
 [🇺🇸 🇬🇧 English Readme](./README.md) · 中文

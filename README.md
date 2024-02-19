@@ -44,6 +44,8 @@ const embedding = await ai.embedding('hello world')
 const task = await ai.imagine('a panda is eating bamboo')
 // show imagining tasks, get generated images
 const image = await ai.task(task.taskId)
+// change image, Midjourney only, return a new task
+const task2 = await ai.change('midjourney', task.taskId, 'UPSCALE', 4)
 ```
 
 English · [🇨🇳 中文说明](./README_CN.md)
@@ -237,11 +239,11 @@ huangyw@iict.ac.cn
 
 ## Who is using it
 
-|                       Project                       |                                          Brief introduction                                           |
-| :-------------------------------------------------: | :---------------------------------------------------------------------------------------------------: |
-| [UniAI MaaS](https://github.com/uni-openai/uniai-maas)  | UniAI is a unified API platform designed to simplify interaction with a variety of complex AI models. |
-| [LeChat](https://github.com/CAS-IICT/lechat-uniapp) |         Document analysis based on large language model, dialogue with WeChat Mini Programs.          |
-|      [LeChat Pro](https://lechat.cas-ll.cn/#/)      |             Full-platform client based on UniAI, multi-model streaming dialogue platform.             |
+|                        Project                         |                                          Brief introduction                                           |
+| :----------------------------------------------------: | :---------------------------------------------------------------------------------------------------: |
+| [UniAI MaaS](https://github.com/uni-openai/uniai-maas) | UniAI is a unified API platform designed to simplify interaction with a variety of complex AI models. |
+|  [LeChat](https://github.com/CAS-IICT/lechat-uniapp)   |         Document analysis based on large language model, dialogue with WeChat Mini Programs.          |
+|       [LeChat Pro](https://lechat.cas-ll.cn/#/)        |             Full-platform client based on UniAI, multi-model streaming dialogue platform.             |
 
 ## Star History
 
