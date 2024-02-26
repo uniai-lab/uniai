@@ -48,6 +48,7 @@ export interface UniAIConfig {
     // midjourney proxy
     MidJourney?: {
         proxy: string
+        imgProxy?: string
         token?: string
     }
 

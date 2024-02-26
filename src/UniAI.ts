@@ -63,7 +63,7 @@ export default class UniAI {
         // Other model text2vec
         this.other = new Other(config.Other?.api)
         // Midjourney, proxy
-        this.mj = new MidJourney(config.MidJourney?.proxy, config.MidJourney?.token)
+        this.mj = new MidJourney(config.MidJourney?.proxy, config.MidJourney?.token, config.MidJourney?.imgProxy)
         // Stability AI, key, proxy
         this.stability = new Stability(config.StabilityAI?.key, config.StabilityAI?.proxy)
 

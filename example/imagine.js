@@ -5,14 +5,14 @@
 require('dotenv').config()
 const UniAI = require('../').default
 
-const { MID_JOURNEY_API, MID_JOURNEY_TOKEN, OPENAI_API, OPENAI_KEY, STABILITY_KEY } = process.env
+const { MID_JOURNEY_API, MID_JOURNEY_TOKEN, OPENAI_API, OPENAI_KEY, STABILITY_KEY, MID_JOURNEY_IMG_PROXY } = process.env
 const prompt =
     'Pink dress, Candy, Sandy, Mandy, short hair, blonde hair, bangs, forehead, red lipstick, elbow gloves, hair accessories, high heels, sitting, cross legged, high chair, cocktail, holding cocktail glass, looking through the glass.'
 const negativePrompt = 'EasyNegative, badhandv4, badv5, aid210, aid291,'
 
 async function main() {
     const ai = new UniAI({
-        MidJourney: { token: MID_JOURNEY_TOKEN, proxy: MID_JOURNEY_API },
+        MidJourney: { token: MID_JOURNEY_TOKEN, proxy: MID_JOURNEY_API, imgProxy: MID_JOURNEY_IMG_PROXY },
         OpenAI: { proxy: OPENAI_API, key: OPENAI_KEY },
         StabilityAI: { key: STABILITY_KEY }
     })
@@ -31,19 +31,21 @@ async function main() {
 
     console.log('Imagine by Midjourney...')
     res = await ai.imagine(prompt, { provider: 'midjourney', negativePrompt })
-    console.log('MJ Imagine:', res)
-    task = await ai.task('midjourney', res.taskId)
-    console.log('MJ Task:', task)
-    // waiting for 1 min, image may be completed, then test change
-    await sleep(60000)
-    task = await ai.task('midjourney', res.taskId)
-    console.log('MJ Task 1 mins later:', task)
+    while (1) {
+        const task = await ai.task('midjourney', res.taskId)
+        await sleep(1000)
+        console.log(task)
+        if (task[0].progress === 100) break
+    }
 
     console.log('Modify UPSCALE by Midjourney...')
     const res2 = await ai.change('midjourney', res.taskId, 'UPSCALE', 4)
-    await sleep(60000)
-    const task2 = await ai.task('midjourney', res2.taskId)
-    console.log('MJ UPSCALE Task 1 mins later:', task2)
+    while (1) {
+        const task2 = await ai.task('midjourney', res2.taskId)
+        await sleep(1000)
+        console.log(task2)
+        if (task2[0].progress === 100) break
+    }
 }
 
 function sleep(time) {

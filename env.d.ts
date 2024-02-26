@@ -20,6 +20,7 @@ declare global {
             STABLE_DIFFUSION_API: string
             MID_JOURNEY_API: string
             MID_JOURNEY_TOKEN: string
+            MID_JOURNEY_IMG_PROXY: string
             OTHER_API: string
             GLM_API: string
             STABILITY_API: string

@@ -18,10 +18,12 @@ import $ from '../util'
 export default class MidJourney {
     private proxy?: string // Proxy address of MidJourney
     private token?: string // User token of MidJourney
+    private imgProxy?: string // User token of MidJourney
 
-    constructor(proxy?: string, token?: string) {
+    constructor(proxy?: string, token?: string, imgProxy?: string) {
         this.proxy = proxy
         this.token = token
+        this.imgProxy = imgProxy
     }
 
     /**
@@ -62,6 +64,15 @@ export default class MidJourney {
             const res = await $.get<null, MJTaskResponse>(`${this.proxy}/mj/task/${id}/fetch`, null, {
                 headers: { 'mj-api-secret': this.token }
             })
+            // image proxy, replace hostname
+            if (res.imageUrl && this.imgProxy) {
+                const url = new URL(res.imageUrl)
+                const pro = new URL(this.imgProxy)
+                url.hostname = pro.hostname
+                url.protocol = pro.protocol
+                url.port = pro.port
+                res.imageUrl = url.toString()
+            }
             return [
                 {
                     id: res.id,
