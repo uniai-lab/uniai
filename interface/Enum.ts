@@ -19,7 +19,6 @@ export enum EmbedModelProvider {
 export enum ImagineModelProvider {
     OpenAI = 'openai',
     MidJourney = 'midjourney',
-    StableDiffusion = 'stable_diffusion',
     StabilityAI = 'stability.ai'
 }
 
@@ -96,8 +95,6 @@ export enum MoonShotChatModel {
     MOON_V1_128K = 'moonshot-v1-128k'
 }
 
-export enum OtherChatModel {}
-
 // All chat models
 export type ChatModel =
     | OpenAIChatModel
@@ -106,7 +103,6 @@ export type ChatModel =
     | IFlyTekChatModel
     | GoogleChatModel
     | MoonShotChatModel
-    | OtherChatModel
 
 export const ChatModel = {
     ...OpenAIChatModel,
@@ -115,8 +111,7 @@ export const ChatModel = {
     ...IFlyTekChatModel,
     ...GoogleChatModel,
     ...OpenAIChatModel,
-    ...MoonShotChatModel,
-    ...OtherChatModel
+    ...MoonShotChatModel
 }
 
 // image models
@@ -127,9 +122,6 @@ export enum OpenAIImagineModel {
     DALL_E_2 = 'dall-e-2',
     DALL_E_3 = 'dall-e-3'
 }
-export enum StableDiffusionImagineModel {
-    SD = 'stable-diffusion-v1-5'
-}
 export enum StabilityAIImagineModel {
     SD_1_6 = 'stable-diffusion-v1-6',
     SD_XL_1024 = 'stable-diffusion-xl-1024-v1-0'
@@ -138,14 +130,12 @@ export enum StabilityAIImagineModel {
 export const ImagineModel = {
     ...OpenAIImagineModel,
     ...MidJourneyImagineModel,
-    ...StableDiffusionImagineModel,
     ...StabilityAIImagineModel
 }
-export type ImagineModel =
-    | OpenAIImagineModel
-    | MidJourneyImagineModel
-    | StableDiffusionImagineModel
-    | StabilityAIImagineModel
+export type ImagineModel = OpenAIImagineModel | MidJourneyImagineModel | StabilityAIImagineModel
+
+export type ModelModel = ChatModel | ImagineModel | EmbedModel
+export const ModelModel = { ...ChatModel, ...ImagineModel, ...EmbedModel }
 
 export enum MJTaskType {
     IMAGINE = 'IMAGINE',

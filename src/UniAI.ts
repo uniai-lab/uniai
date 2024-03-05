@@ -4,12 +4,15 @@ import {
     ChatModel,
     ChatModelProvider,
     ChatRoleEnum,
+    EmbedModel,
     EmbedModelProvider,
     GLMChatModel,
     GoogleChatModel,
     IFlyTekChatModel,
+    ImagineModel,
     ImagineModelProvider,
     MJTaskType,
+    MidJourneyImagineModel,
     ModelProvider,
     MoonShotChatModel,
     OpenAIChatModel,
@@ -35,6 +38,9 @@ const DEFAULT_MESSAGE = 'Hello, who are you? Answer me in 10 words!'
 export default class UniAI {
     public config: UniAIConfig | null = null
     public models: ModelList
+    public embedModels: ModelList
+    public chatModels: ModelList
+    public imgModels: ModelList
 
     private openai: OpenAI
     private google: Google
@@ -68,20 +74,47 @@ export default class UniAI {
         this.stability = new Stability(config.StabilityAI?.key, config.StabilityAI?.proxy)
 
         // expand chat models to list
-        this.models = Object.entries(ChatModelProvider).map<Provider>(([k, v]) => ({
+        this.chatModels = Object.entries(ChatModelProvider).map<Provider>(([k, v]) => ({
             provider: k as keyof typeof ChatModelProvider,
             value: v,
             models: Object.values<ChatModel>(
-                ({
+                {
                     [ChatModelProvider.OpenAI]: OpenAIChatModel,
                     [ChatModelProvider.Baidu]: BaiduChatModel,
                     [ChatModelProvider.IFlyTek]: IFlyTekChatModel,
                     [ChatModelProvider.GLM]: GLMChatModel,
                     [ChatModelProvider.Google]: GoogleChatModel,
                     [ChatModelProvider.MoonShot]: MoonShotChatModel
-                }[v] as typeof ChatModel) || {}
+                }[v]
             )
         }))
+
+        // expand chat models to list
+        this.imgModels = Object.entries(ImagineModelProvider).map<Provider>(([k, v]) => ({
+            provider: k as keyof typeof ImagineModelProvider,
+            value: v,
+            models: Object.values<ImagineModel>(
+                {
+                    [ImagineModelProvider.OpenAI]: OpenAIImagineModel,
+                    [ImagineModelProvider.MidJourney]: MidJourneyImagineModel,
+                    [ImagineModelProvider.StabilityAI]: StabilityAIImagineModel
+                }[v]
+            )
+        }))
+
+        // expand chat models to list
+        this.embedModels = Object.entries(EmbedModelProvider).map<Provider>(([k, v]) => ({
+            provider: k as keyof typeof EmbedModelProvider,
+            value: v,
+            models: Object.values<EmbedModel>(
+                {
+                    [EmbedModelProvider.OpenAI]: OpenAIEmbedModel,
+                    [EmbedModelProvider.Other]: OtherEmbedModel
+                }[v]
+            )
+        }))
+
+        this.models = [...this.chatModels, ...this.embedModels, ...this.imgModels]
     }
 
     async chat(messages: ChatMessage[] | string = DEFAULT_MESSAGE, option: ChatOption = {}) {

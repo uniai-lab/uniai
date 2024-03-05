@@ -8,7 +8,8 @@ import {
     ImagineModel,
     ChatModelProvider,
     ImagineModelProvider,
-    ImgTaskType
+    ImgTaskType,
+    ModelModel
 } from './Enum'
 
 export interface ChatMessage {
@@ -53,7 +54,7 @@ export type ModelList = Provider[]
 export interface Provider {
     provider: keyof typeof ModelProvider
     value: ModelProvider
-    models: ChatModel[] // 假设 models 为字符串数组
+    models: ModelModel[]
 }
 
 export interface ImagineOption {
