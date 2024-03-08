@@ -30,6 +30,20 @@ const ai = new UniAI({
 async function main() {
     console.log(`One-time chat: [OpenAI/GPT] default`)
     await ai.chat('你是谁？是谁开发的？', { temperature: 0, top: 1 }).then(res => console.log('🤖', res))
+    await ai
+        .chat(
+            [
+                {
+                    role: 'user',
+                    content: 'Describe this picture, is it a man or a woman, and what is she doing?',
+                    img: {
+                        url: 'https://pics7.baidu.com/feed/1f178a82b9014a903fcc22f1e98d931fb11bee90.jpeg@f_auto?token=d5a33ea74668787d60d6f61c7b8f9ca2'
+                    }
+                }
+            ],
+            { model: 'gpt-4-vision-preview' }
+        )
+        .then(res => console.log('🤖', res))
     console.log('\n')
     await stream('你是谁？是谁开发的？', { provider: 'baidu', temperature: 0, top: 0, maxLength: 10 })
     await stream('Introduce yourself in 10 words', { provider: 'google', maxLength: 1024, top: 1, temperature: 1 })

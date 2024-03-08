@@ -1,5 +1,6 @@
 /** @format */
 
+import { ChatCompletionContentPartImage } from 'openai/resources'
 import {
     EmbedModel,
     ChatModel,
@@ -15,6 +16,7 @@ import {
 export interface ChatMessage {
     role: ChatRoleEnum
     content: string
+    img?: ChatCompletionContentPartImage.ImageURL
 }
 
 export interface EmbeddingResponse {

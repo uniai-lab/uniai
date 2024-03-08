@@ -5,7 +5,7 @@ import { PassThrough, Readable } from 'stream'
 import EventSourceStream from '@server-sent-stream/node'
 import { decodeStream } from 'iconv-lite'
 import { GLMChatMessage, GLMChatRequest, GLMChatResponse, GLMTokenCache } from '../../interface/IGLM'
-import { ChatRoleEnum, GLMChatModel, GLMChatRoleEnum } from '../../interface/Enum'
+import { ChatRoleEnum, GLMChatModel } from '../../interface/Enum'
 import { ChatMessage, ChatResponse } from '../../interface/IModel'
 import $ from '../util'
 
@@ -185,11 +185,23 @@ export default class GLM {
     private formatMessage(messages: ChatMessage[]) {
         const prompt: GLMChatMessage[] = []
 
-        for (const { role, content } of messages)
+        for (const { role, content, img } of messages) {
+            // GLM not support function role
             if (role === ChatRoleEnum.FUNCTION) continue
-            else prompt.push({ role, content })
 
-        if (prompt[prompt.length - 1].role !== GLMChatRoleEnum.USER) throw new Error('User input nothing')
+            // has image
+            if (img)
+                prompt.push({
+                    role: 'user',
+                    content: [
+                        { type: 'text', text: content },
+                        { type: 'image_url', image_url: img }
+                    ]
+                })
+            // text only
+            else prompt.push({ role, content })
+        }
+
         return prompt
     }
 }

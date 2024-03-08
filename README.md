@@ -1,5 +1,3 @@
-<!-- @format -->
-
 <p align="center"><img src="./icon/logo.png" width="80px"></p>
 <h1 align="center">UniAI</h1>
 <h3 align="center">To Unify AI Models!</h3>
@@ -128,26 +126,26 @@ console.log(ai.models)
 Output:
 
 ```js
-[
-  {
-    provider: 'OpenAI',
-    value: 'openai',
-    models: [
-      'gpt-3.5-turbo-1106',
-      'gpt-3.5-turbo',
-      'gpt-3.5-turbo-16k',
-      'gpt-4',
-      'gpt-4-32k',
-      'gpt-4-1106-preview',
-      'gpt-4-vision-preview'
-    ]
-  },
-  // ...providers and models
-  {
-    provider: 'StabilityAI',
-    value: 'stability.ai',
-    models: [ 'stable-diffusion-v1-6', 'stable-diffusion-xl-1024-v1-0' ]
-  }
+;[
+    {
+        provider: 'OpenAI',
+        value: 'openai',
+        models: [
+            'gpt-3.5-turbo-1106',
+            'gpt-3.5-turbo',
+            'gpt-3.5-turbo-16k',
+            'gpt-4',
+            'gpt-4-32k',
+            'gpt-4-1106-preview',
+            'gpt-4-vision-preview'
+        ]
+    },
+    // ...providers and models
+    {
+        provider: 'StabilityAI',
+        value: 'stability.ai',
+        models: ['stable-diffusion-v1-6', 'stable-diffusion-xl-1024-v1-0']
+    }
 ]
 ```
 
@@ -175,6 +173,35 @@ Output:
     "promptTokens": 20,
     "completionTokens": 13,
     "totalTokens": 33
+}
+```
+
+**[New] Chat with image**
+
+```js
+const input = [
+    {
+        role: 'user',
+        content: 'Describe this picture, is it a man or a woman, and what is she doing?',
+        img: {
+            url: 'https://pics7.baidu.com/feed/1f178a82b9014a903fcc22f1e98d931fb11bee90.jpeg@f_auto?token=d5a33ea74668787d60d6f61c7b8f9ca2'
+        }
+    }
+]
+const res = await ai.chat(input, { model: 'gpt-4-vision-preview' })
+console.log(res)
+```
+
+**Output**
+
+```json
+{
+    "content": "The image shows a person taking a mirror selfie using a smartphone. It appears to be a woman based on the visible physical characteristics and the style of clothing being worn. She is wearing a costume that seems to be inspired by a mix of traditional and modern design elements, with vibrant blue accents and fabric that resembles silk. There are some anime or game-related motifs on the costume, suggesting it might be a cosplay outfit. Her hair is partially up, with some hair accessories visible. The background is a simple indoor setting, likely a changing room or a personal room, with a subtly patterned wallpaper. There are also social media interface elements, indicating that the image may be a screenshot from a social media platform.",
+    "model": "gpt-4-1106-vision-preview",
+    "object": "chat.completion",
+    "promptTokens": 450,
+    "completionTokens": 141,
+    "totalTokens": 591
 }
 ```
 

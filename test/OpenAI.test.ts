@@ -1,8 +1,8 @@
 /** @format */
 import 'dotenv/config'
 import '../env.d.ts'
-import UniAI from '../src'
-import { ChatModelProvider, ModelProvider, OpenAIChatModel, OpenAIEmbedModel } from '../interface/Enum'
+import UniAI, { ChatMessage } from '../src'
+import { ChatModelProvider, ChatRoleEnum, ModelProvider, OpenAIChatModel, OpenAIEmbedModel } from '../interface/Enum'
 import { Readable } from 'stream'
 
 const { OPENAI_KEY, OPENAI_API } = process.env
@@ -44,6 +44,29 @@ describe('OpenAI Tests', () => {
             stream.on('close', () => done())
         })
     })
+
+    test('Test chat openai gpt-4 vision preview', done => {
+        const input: ChatMessage[] = [
+            {
+                role: ChatRoleEnum.USER,
+                content: '描述下这张图片，是个男人还是女人，她在做什么？',
+                img: {
+                    url: 'https://pics7.baidu.com/feed/1f178a82b9014a903fcc22f1e98d931fb11bee90.jpeg@f_auto?token=d5a33ea74668787d60d6f61c7b8f9ca2'
+                }
+            }
+        ]
+        uni.chat(input, { stream: true, provider: ChatModelProvider.OpenAI, model: OpenAIChatModel.GPT4_VISION }).then(
+            res => {
+                expect(res).toBeInstanceOf(Readable)
+                const stream = res as Readable
+                let data = ''
+                stream.on('data', chunk => (data += JSON.parse(chunk.toString()).content))
+                stream.on('end', () => console.log(data))
+                stream.on('error', e => console.error(e))
+                stream.on('close', () => done())
+            }
+        )
+    }, 60000)
 
     test('Test OpenAI/text-embedding-ada2 embedding', done => {
         uni.embedding(input, { provider: ModelProvider.OpenAI, model: OpenAIEmbedModel.ADA2 })

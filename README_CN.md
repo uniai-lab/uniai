@@ -1,5 +1,3 @@
-<!-- @format -->
-
 <p align="center"><img src="./icon/logo.png" width="80px"></p>
 
 <h1 align="center">UniAI</h1>
@@ -182,6 +180,35 @@ console.log(res)
     "promptTokens": 20,
     "completionTokens": 13,
     "totalTokens": 33
+}
+```
+
+**【新功能】带图片的聊天**
+
+```js
+const input = [
+    {
+        role: 'user',
+        content: '描述下这张图片，是个男人还是女人，她在做什么？',
+        img: {
+            url: 'https://pics7.baidu.com/feed/1f178a82b9014a903fcc22f1e98d931fb11bee90.jpeg@f_auto?token=d5a33ea74668787d60d6f61c7b8f9ca2'
+        }
+    }
+]
+const res = await ai.chat(input, { model: 'gpt-4-vision-preview' })
+console.log(res)
+```
+
+**输出**
+
+```json
+{
+    "content": "这张图片展示了一位女性，她正站在镜子前用手机自拍。她穿着一件带有蓝色边缘和装饰的黑色及膝服装，这件衣服似乎有着亚洲风格的设计元素。她的头发有一部分被夹起，而手机遮住了她的部分脸庞。图片中还可看到几个社交媒体的互动按钮，如点赞和评论的图标，并有数字显示互动数量。右下角还有一个表情符号，看上去像是一张夸张的笑脸。整个场景给人一种轻松的自拍氛围。",
+    "model": "gpt-4-1106-vision-preview",
+    "object": "chat.completion",
+    "promptTokens": 456,
+    "completionTokens": 204,
+    "totalTokens": 660
 }
 ```
 

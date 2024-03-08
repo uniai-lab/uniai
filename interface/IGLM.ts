@@ -1,5 +1,6 @@
 /** @format */
 
+import { ChatCompletionContentPart } from 'openai/resources'
 import { GLMChatModel } from './Enum'
 
 export interface GLMChatRequest {
@@ -23,7 +24,7 @@ interface SystemMessage {
 
 interface UserMessage {
     role: 'user'
-    content: string
+    content: string | Array<ChatCompletionContentPart>
 }
 
 interface AssistantMessage {

@@ -1,8 +1,8 @@
 /** @format */
 import 'dotenv/config'
 import '../env.d.ts'
-import UniAI from '../src'
-import { ModelProvider, GLMChatModel } from '../interface/Enum'
+import UniAI, { ChatMessage } from '../src'
+import { ModelProvider, GLMChatModel, ChatRoleEnum } from '../interface/Enum'
 import { Readable } from 'stream'
 
 const { GLM_API, ZHIPU_AI_API, ZHIPU_AI_KEY } = process.env
@@ -47,4 +47,25 @@ describe('GLM Tests', () => {
             stream.on('close', () => done())
         })
     })
+
+    test('Test chat ZhiPu glm-4 vision', done => {
+        const input: ChatMessage[] = [
+            {
+                role: ChatRoleEnum.USER,
+                content: '描述下这张图片，是个男人还是女人，她在做什么？',
+                img: {
+                    url: 'https://pics7.baidu.com/feed/1f178a82b9014a903fcc22f1e98d931fb11bee90.jpeg@f_auto?token=d5a33ea74668787d60d6f61c7b8f9ca2'
+                }
+            }
+        ]
+        uni.chat(input, { stream: true, provider: ModelProvider.GLM, model: GLMChatModel.GLM_4V }).then(res => {
+            expect(res).toBeInstanceOf(Readable)
+            const stream = res as Readable
+            let data = ''
+            stream.on('data', chunk => (data += JSON.parse(chunk.toString()).content))
+            stream.on('end', () => console.log(data))
+            stream.on('error', e => console.error(e))
+            stream.on('close', () => done())
+        })
+    }, 60000)
 })

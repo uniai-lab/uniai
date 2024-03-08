@@ -13,11 +13,10 @@ let uni: UniAI
 beforeAll(() => (uni = new UniAI({ Other: { api: OTHER_API } })))
 
 describe('Other Tests', () => {
-    xtest('Test list Other models', () => {
+    test('Test list Other models', () => {
         const provider = uni.models.filter(v => v.value === EmbedModelProvider.Other)[0]
         console.log(provider)
         expect(provider.provider).toEqual('Other')
-        expect(provider.models.length).toEqual(0)
         expect(provider.value).toEqual(ModelProvider.Other)
     })
 

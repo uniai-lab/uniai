@@ -21,14 +21,7 @@ import {
     OpenAIImagineResponse
 } from '../../interface/IOpenAI'
 
-import {
-    ChatRoleEnum,
-    DETaskType,
-    GPTChatRoleEnum,
-    OpenAIChatModel,
-    OpenAIEmbedModel,
-    OpenAIImagineModel
-} from '../../interface/Enum'
+import { ChatRoleEnum, DETaskType, OpenAIChatModel, OpenAIEmbedModel, OpenAIImagineModel } from '../../interface/Enum'
 
 import { ChatResponse, ChatMessage, TaskResponse, ImagineResponse } from '../../interface/IModel'
 import { EmbeddingResponse } from '../../interface/IModel'
@@ -37,6 +30,7 @@ import $ from '../util'
 const STORAGE_KEY = 'task_open_ai'
 const API = 'https://api.openai.com'
 const VER = 'v1'
+const MAX_TOKEN = 2096
 
 export default class OpenAI {
     private api: string
@@ -102,6 +96,8 @@ export default class OpenAI {
     ) {
         const key = Array.isArray(this.key) ? $.getRandomKey(this.key) : this.key
         if (!key) throw new Error('OpenAI API key is not set in config')
+
+        if (model === OpenAIChatModel.GPT4_VISION) maxLength = MAX_TOKEN
 
         // temperature is float in [0,1]
         if (typeof temperature === 'number') {
@@ -231,11 +227,23 @@ export default class OpenAI {
     private formatMessage(messages: ChatMessage[]) {
         const prompt: GPTChatMessage[] = []
 
-        for (const { role, content } of messages)
+        for (const { role, content, img } of messages) {
+            // GPT not support function role
             if (role === ChatRoleEnum.FUNCTION) continue
-            else prompt.push({ role, content })
 
-        if (prompt[prompt.length - 1].role !== GPTChatRoleEnum.USER) throw new Error('User input nothing')
+            // has image
+            if (img)
+                prompt.push({
+                    role: 'user',
+                    content: [
+                        { type: 'text', text: content },
+                        { type: 'image_url', image_url: img }
+                    ]
+                })
+            // text only
+            else prompt.push({ role, content })
+        }
+
         return prompt
     }
 }
