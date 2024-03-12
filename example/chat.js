@@ -36,13 +36,12 @@ async function main() {
                 {
                     role: 'user',
                     content: 'Describe this picture, is it a man or a woman, and what is she doing?',
-                    img: 'https://pics7.baidu.com/feed/1f178a82b9014a903fcc22f1e98d931fb11bee90.jpeg@f_auto?token=d5a33ea74668787d60d6f61c7b8f9ca2'
+                    img: 'https://api.uniai.cas-ll.cn/wechat/file?path=minio/6c9b6317-97a8-43ec-b949-cf3f861f8575.png&name=IMG_20190208_132658%20(2).png'
                 }
             ],
-            { provider: 'openai', model: 'gpt-4-vision-preview' }
+            { provider: 'google', model: 'gemini-pro-vision' }
         )
         .then(res => console.log('🤖', res))
-    /*
     console.log('\n')
     await stream('你是谁？是谁开发的？', { provider: 'baidu', temperature: 0, top: 0, maxLength: 10 })
     await stream('Introduce yourself in 10 words', { provider: 'google', maxLength: 1024, top: 1, temperature: 1 })
@@ -54,7 +53,6 @@ async function main() {
         top: 1,
         temperature: 1
     })
-    */
 }
 
 async function stream(query, option) {

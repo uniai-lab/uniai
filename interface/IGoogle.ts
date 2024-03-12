@@ -19,7 +19,7 @@ interface Part {
 }
 
 interface InlineData {
-    mime_type: string
+    mime_type: string // 'image/png' | 'image/jpeg' | 'image/webp' | 'image/heic' | 'image/heif'
     data: string
 }
 

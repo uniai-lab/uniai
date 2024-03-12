@@ -191,7 +191,7 @@ export default class Google {
             }
         } else if (img.startsWith('http')) {
             const res: Buffer = await $.get(img, {}, { responseType: 'arraybuffer' })
-            mime = `image/${['png', 'jpg', 'jpeg', 'webp', 'gif'].find(f => img.toLowerCase().includes(f)) || 'png'}`
+            mime = `image/${['png', 'jpg', 'jpeg', 'webp', 'heic', 'heif'].find(f => img.toLowerCase().includes(f))?.replace('jpg', 'jpeg') || 'png'}`
             data = res.toString('base64')
         } else {
             mime = `image/${extname(img).replace('.', '').toLowerCase()}`
