@@ -47,7 +47,6 @@ export const EmbedModel = { ...OpenAIEmbedModel, ...OtherEmbedModel }
 export enum OpenAIChatModel {
     GPT3 = 'gpt-3.5-turbo',
     GPT3_16K = 'gpt-3.5-turbo-16k',
-    // GPT3_INSTRUCT = 'gpt-3.5-turbo-instruct',
     GPT4 = 'gpt-4',
     GPT4_TURBO = 'gpt-4-turbo-preview',
     GPT4_VISION = 'gpt-4-vision-preview'
@@ -70,22 +69,24 @@ export enum GLMChatModel {
 
 // https://cloud.baidu.com/doc/WENXINWORKSHOP/s/clntwmv7t
 export enum BaiduChatModel {
-    ERNIE = 'completions', // ERNIE-Bot
-    ERNIE4 = 'completions_pro', // ERNIE-Bot 4.0
-    ERNIE_8K = 'ernie_bot_8k', // ERNIE-Bot-8K
-    ERNIE_TURBO = 'eb-instant' // ERNIE-Bot-turbo
+    ERNIE4 = 'completions_pro', // ERNIE 4.0
+    ERNIE_3_5_8K = 'completions', // ERNIE-3.5-8K
+    ERNIE_SPEED = 'ernie_speed', // ERNIE-Speed-8K
+    ERNIE_LITE = 'eb-instant' // ERNIE-Lite-8K-0922
 }
 
 // iFlyTek spark model
 export enum IFlyTekChatModel {
     SPARK_V1 = 'v1.1',
     SPARK_V2 = 'v2.1',
-    SPARK_V3 = 'v3.1'
+    SPARK_V3 = 'v3.1',
+    SPARK_V3_5 = 'v3.5'
 }
 export const SparkDomain = {
     [IFlyTekChatModel.SPARK_V1]: 'general',
     [IFlyTekChatModel.SPARK_V2]: 'generalv2',
-    [IFlyTekChatModel.SPARK_V3]: 'generalv3'
+    [IFlyTekChatModel.SPARK_V3]: 'generalv3',
+    [IFlyTekChatModel.SPARK_V3_5]: 'generalv3.5'
 }
 
 export enum MoonShotChatModel {

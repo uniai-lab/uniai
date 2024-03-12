@@ -7,6 +7,8 @@ import { GEMChatRequest, GEMChatResponse, GEMChatMessage } from '../../interface
 import { ChatRoleEnum, GEMChatRoleEnum, GoogleChatModel } from '../../interface/Enum'
 import { ChatMessage, ChatResponse } from '../../interface/IModel'
 import $ from '../util'
+import { extname } from 'path'
+import { readFileSync } from 'fs'
 
 const API = 'https://generativelanguage.googleapis.com'
 const SAFE_SET = [
@@ -77,7 +79,7 @@ export default class Google {
         const res = await $.post<GEMChatRequest, GEMChatResponse | Readable>(
             `${this.api}/v1beta/models/${model}:${stream ? 'streamGenerateContent' : 'generateContent'}?key=${key}`,
             {
-                contents: this.formatMessage(messages),
+                contents: await this.formatMessage(messages),
                 generationConfig: { topP: top, temperature, maxOutputTokens: maxLength },
                 safetySettings: SAFE_SET
             },
@@ -103,7 +105,7 @@ export default class Google {
                     if (!obj.candidates) return output.destroy(new Error('Google API error, no candidates'))
                     const candidate = obj.candidates[0]
                     if (!candidate.content) return output.destroy(new Error(candidate.finishReason))
-                    data.content = candidate.content.parts[0].text
+                    data.content = candidate.content.parts[0].text || ''
                     data.object = `chat.completion.chunk`
                     return output.write(JSON.stringify(data))
                 } else return output
@@ -132,20 +134,72 @@ export default class Google {
      * @param messages - An array of chat messages.
      * @returns A formatted array of GEMChatMessage.
      */
-    private formatMessage(messages: ChatMessage[]) {
+    private async formatMessage(messages: ChatMessage[]) {
         const prompt: GEMChatMessage[] = []
         let input = ''
-        for (const { role, content } of messages) {
+        let base64: { mime: string; data: string } | null = null
+
+        for (const { role, content, img } of messages) {
             if (!content) continue
+            if (img) base64 = await this.toBase64(img)
             if (role !== ChatRoleEnum.ASSISTANT) input += `\n${content}`
             else {
-                prompt.push({ role: GEMChatRoleEnum.USER, parts: [{ text: input.trim() || ' ' }] })
+                input = input.trim()
+                prompt.push({
+                    role: GEMChatRoleEnum.USER,
+                    parts: base64
+                        ? [{ text: input || ' ' }, { inline_data: { mime_type: base64.mime, data: base64.data } }]
+                        : [{ text: input || ' ' }]
+                })
                 prompt.push({ role: GEMChatRoleEnum.MODEL, parts: [{ text: content }] })
                 input = ''
             }
         }
-        if (!input.trim()) throw new Error('User input nothing')
-        prompt.push({ role: GEMChatRoleEnum.USER, parts: [{ text: input.trim() }] })
-        return prompt
+        input = input.trim()
+
+        if (!input) throw new Error('User input nothing')
+        prompt.push({
+            role: GEMChatRoleEnum.USER,
+            parts: base64
+                ? [{ text: input || ' ' }, { inline_data: { mime_type: base64.mime, data: base64.data } }]
+                : [{ text: input || ' ' }]
+        })
+        // Gemini Vision currently only support 1 prompt
+        return base64 ? [prompt[prompt.length - 1]] : prompt
+    }
+
+    /**
+     * Convert an image to base64 format object.
+     * @param img The image string to convert.
+     * @returns An object containing the MIME type and base64 data.
+     */
+    private async toBase64(img: string): Promise<{ mime: string; data: string }> {
+        let mime: string = ''
+        let data: string = ''
+
+        if ($.isBase64(img)) {
+            // Handle pure base64 data
+            if ($.isBase64(img, false)) {
+                data = img
+                mime = 'image/png'
+            } else {
+                const match = img.match(/^data:image\/([a-zA-Z]*);base64,([^\"']*)$/)
+                if (match) {
+                    mime = `image/${match[1]}`
+                    data = match[2]
+                }
+            }
+        } else if (img.startsWith('http')) {
+            const res: Buffer = await $.get(img, {}, { responseType: 'arraybuffer' })
+            mime = `image/${['png', 'jpg', 'jpeg', 'webp', 'gif'].find(f => img.toLowerCase().includes(f)) || 'png'}`
+            data = res.toString('base64')
+        } else {
+            mime = `image/${extname(img).replace('.', '').toLowerCase()}`
+            data = readFileSync(img).toString('base64')
+        }
+
+        if (!mime || !data) throw new Error('Can not transfer base64')
+
+        return { mime, data }
     }
 }

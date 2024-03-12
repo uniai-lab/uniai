@@ -14,7 +14,13 @@ export interface GEMChatMessage {
 }
 
 interface Part {
-    text: string
+    text?: string
+    inline_data?: InlineData
+}
+
+interface InlineData {
+    mime_type: string
+    data: string
 }
 
 interface SafetySetting {

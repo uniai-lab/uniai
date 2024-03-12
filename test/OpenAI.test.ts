@@ -50,9 +50,7 @@ describe('OpenAI Tests', () => {
             {
                 role: ChatRoleEnum.USER,
                 content: '描述下这张图片，是个男人还是女人，她在做什么？',
-                img: {
-                    url: 'https://pics7.baidu.com/feed/1f178a82b9014a903fcc22f1e98d931fb11bee90.jpeg@f_auto?token=d5a33ea74668787d60d6f61c7b8f9ca2'
-                }
+                img: 'https://pics7.baidu.com/feed/1f178a82b9014a903fcc22f1e98d931fb11bee90.jpeg@f_auto?token=d5a33ea74668787d60d6f61c7b8f9ca2'
             }
         ]
         uni.chat(input, { stream: true, provider: ChatModelProvider.OpenAI, model: OpenAIChatModel.GPT4_VISION }).then(

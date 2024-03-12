@@ -158,7 +158,6 @@ export default class OpenAI {
      * Generates images based on a prompt.
      *
      * @param prompt - The prompt for image generation.
-     * @param nPrompt - The negative prompt (optional).
      * @param width - Image width (default: 1024).
      * @param height - Image height (default: 1024).
      * @param n - Number of images to generate (default: 1).
@@ -167,7 +166,6 @@ export default class OpenAI {
      */
     async imagine(
         prompt: string,
-        negativePrompt: string = '',
         width: number = 1024,
         height: number = 1024,
         n: number = 1,
@@ -175,7 +173,6 @@ export default class OpenAI {
     ): Promise<ImagineResponse> {
         const key = Array.isArray(this.key) ? $.getRandomKey(this.key) : this.key
         if (!key) throw new Error('OpenAI API key is not set in config')
-        prompt = `Positive prompt: ${prompt}\nNegative prompt: ${negativePrompt}`
 
         const res = await $.post<OpenAIImagineRequest, OpenAIImagineResponse>(
             `${this.api}/${VER}/images/${DETaskType.GENERATION}`,
@@ -231,16 +228,18 @@ export default class OpenAI {
             // GPT not support function role
             if (role === ChatRoleEnum.FUNCTION) continue
 
-            // has image
-            if (img)
+            // with image
+            if (img) {
+                if (!img.startsWith('http')) throw new Error('Invalid img HTTP URL')
                 prompt.push({
                     role: 'user',
                     content: [
                         { type: 'text', text: content },
-                        { type: 'image_url', image_url: img }
+                        { type: 'image_url', image_url: { url: img } }
                     ]
                 })
-            // text only
+            }
+            // only text
             else prompt.push({ role, content })
         }
 

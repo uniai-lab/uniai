@@ -153,7 +153,7 @@ export default class UniAI {
         const provider = option.provider || ImagineModelProvider.OpenAI
         const { negativePrompt, width, height, num, model } = option
         if (provider === ImagineModelProvider.OpenAI)
-            return await this.openai.imagine(prompt, negativePrompt, width, height, num, model as OpenAIImagineModel)
+            return await this.openai.imagine(prompt, width, height, num, model as OpenAIImagineModel)
         else if (provider === ImagineModelProvider.MidJourney)
             return await this.mj.imagine(prompt, negativePrompt, width, height)
         else if (provider === ImagineModelProvider.StabilityAI)

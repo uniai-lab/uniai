@@ -9,6 +9,7 @@ import axios, { AxiosRequestConfig } from 'axios'
 import { LocalStorage } from 'node-localstorage'
 import path from 'path'
 import { Readable } from 'stream'
+import isBase64 from 'is-base64'
 
 // Initialize local storage
 const localStorage = new LocalStorage('./cache', Infinity)
@@ -136,5 +137,9 @@ export default {
         } else writeFileSync(filepath, Buffer.from(data, 'base64'))
 
         return filepath
+    },
+
+    isBase64(data: string, allowMime: boolean = true) {
+        return isBase64(data, { allowMime })
     }
 }

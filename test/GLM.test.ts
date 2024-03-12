@@ -53,9 +53,18 @@ describe('GLM Tests', () => {
             {
                 role: ChatRoleEnum.USER,
                 content: '描述下这张图片，是个男人还是女人，她在做什么？',
-                img: {
-                    url: 'https://pics7.baidu.com/feed/1f178a82b9014a903fcc22f1e98d931fb11bee90.jpeg@f_auto?token=d5a33ea74668787d60d6f61c7b8f9ca2'
-                }
+                img: 'https://pics7.baidu.com/feed/1f178a82b9014a903fcc22f1e98d931fb11bee90.jpeg@f_auto?token=d5a33ea74668787d60d6f61c7b8f9ca2'
+            },
+            {
+                role: ChatRoleEnum.ASSISTANT,
+                content:
+                    '这是一位年轻的女孩，在自拍。她身穿蓝色、黑色和银色相间的服装，手持手机站在镜子前拍照。她的头发披散着，头上戴着装饰性的发夹。从她的表情和姿态来看，她似乎很自信和放松。此外，图片的右下方显示这张照片来源于“娱乐那点事1533评论”，这可能意味着这张照片是在某个社交平台或论坛上分享的，并且引起了用户的关注和讨论。',
+                img: 'https://pics7.baidu.com/feed/1f178a82b9014a903fcc22f1e98d931fb11bee90.jpeg@f_auto?token=d5a33ea74668787d60d6f61c7b8f9ca2'
+            },
+            {
+                role: ChatRoleEnum.USER,
+                content: '连同当前这幅画，我一共给你传了几张图？',
+                img: 'https://api.uniai.cas-ll.cn/wechat/file?path=minio/a82db85d-d8e6-4281-8734-bedd54420c0d.jpg&name=IMG_20190208_132658%20(1).jpg'
             }
         ]
         uni.chat(input, { stream: true, provider: ModelProvider.GLM, model: GLMChatModel.GLM_4V }).then(res => {

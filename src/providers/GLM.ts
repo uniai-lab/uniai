@@ -189,16 +189,18 @@ export default class GLM {
             // GLM not support function role
             if (role === ChatRoleEnum.FUNCTION) continue
 
-            // has image
-            if (img)
+            // with image
+            if (img) {
+                if (!img.startsWith('http')) throw new Error('Invalid img HTTP URL')
                 prompt.push({
                     role: 'user',
                     content: [
                         { type: 'text', text: content },
-                        { type: 'image_url', image_url: img }
+                        { type: 'image_url', image_url: { url: img } }
                     ]
                 })
-            // text only
+            }
+            // only text
             else prompt.push({ role, content })
         }
 
