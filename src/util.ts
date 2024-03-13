@@ -4,11 +4,10 @@
  * Utils for UniAI
  **/
 
-import { createWriteStream, writeFileSync } from 'fs'
+import { writeFileSync } from 'fs'
 import axios, { AxiosRequestConfig } from 'axios'
 import { LocalStorage } from 'node-localstorage'
 import path from 'path'
-import { Readable } from 'stream'
 import isBase64 from 'is-base64'
 
 // Initialize local storage
@@ -124,16 +123,11 @@ export default {
         const filepath = path.join('./cache', filename)
 
         if (data.startsWith('http://') || data.startsWith('https://')) {
-            // Use the get method to fetch the data as a stream
-            const res = await this.get<{}, Readable>(data, {}, { responseType: 'stream' })
-            if (!(res instanceof Readable)) throw new Error('Img is not a readable stream')
-            // Create a write stream to save the image to a file
-            const writer = createWriteStream(filepath, { flags: 'w' })
-            res.pipe(writer)
-            await new Promise((resolve, reject) => {
-                writer.on('finish', resolve)
-                writer.on('error', reject)
-            })
+            // Use the get method to fetch the image
+            const res: Buffer = await this.get(data, {}, { responseType: 'arraybuffer' })
+            if (!(res instanceof Buffer)) throw new Error('Img is not a buffer')
+            // write to file
+            writeFileSync(filepath, res)
         } else writeFileSync(filepath, Buffer.from(data, 'base64'))
 
         return filepath

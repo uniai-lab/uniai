@@ -80,7 +80,7 @@ export default class MidJourney {
                     imgs: res.imageUrl ? [await $.writeFile(res.imageUrl, `${res.id}.png`)] : [],
                     info: res.description,
                     fail: res.failReason || '',
-                    progress: parseInt(res.progress),
+                    progress: parseInt(res.progress) || 0,
                     created: res.startTime,
                     model: MidJourneyImagineModel.MJ
                 }
