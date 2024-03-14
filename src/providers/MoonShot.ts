@@ -3,7 +3,7 @@
 import { PassThrough, Readable } from 'stream'
 import EventSourceStream from '@server-sent-stream/node'
 import { decodeStream } from 'iconv-lite'
-import { ChatRoleEnum, GPTChatRoleEnum, MoonShotChatModel } from '../../interface/Enum'
+import { ChatRoleEnum, MoonShotChatModel } from '../../interface/Enum'
 import { ChatMessage, ChatResponse } from '../../interface/IModel'
 import {
     GPTChatMessage,
@@ -115,11 +115,12 @@ export default class MoonShot {
     private formatMessage(messages: ChatMessage[]) {
         const prompt: GPTChatMessage[] = []
 
-        for (const { role, content } of messages)
+        for (const { role, content } of messages) {
             if (role === ChatRoleEnum.FUNCTION) continue
-            else prompt.push({ role, content })
 
-        if (prompt[prompt.length - 1].role !== GPTChatRoleEnum.USER) throw new Error('User input nothing')
+            prompt.push({ role, content })
+        }
+
         return prompt
     }
 }

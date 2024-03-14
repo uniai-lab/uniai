@@ -118,7 +118,7 @@ export default class Google {
             return output as Readable
         } else {
             const block = res.promptFeedback?.blockReason
-            if (block) throw new Error(block)
+            if (block) throw new Error(`Content blocked, reason: ${block}`)
             if (!res.candidates) throw new Error('Google API error, no candidates')
 
             const candidate = res.candidates[0]
