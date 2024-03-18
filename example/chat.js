@@ -28,21 +28,18 @@ const ai = new UniAI({
 })
 
 async function main() {
-    console.log(`One-time chat: [OpenAI/GPT] default`)
+    // chat not stream
     await ai.chat('你是谁？是谁开发的？', { temperature: 0, top: 1 }).then(res => console.log('🤖', res))
-    await ai
-        .chat(
-            [
-                {
-                    role: 'user',
-                    content: 'Describe this picture, is it a man or a woman, and what is she doing?',
-                    img: 'https://api.uniai.cas-ll.cn/wechat/file?path=minio/6c9b6317-97a8-43ec-b949-cf3f861f8575.png&name=IMG_20190208_132658%20(2).png'
-                }
-            ],
-            { provider: 'google', model: 'gemini-pro-vision' }
-        )
-        .then(res => console.log('🤖', res))
-    console.log('\n')
+    // image chat
+    const input = [
+        {
+            role: 'user',
+            content: 'Describe this guy',
+            img: 'https://api.uniai.cas-ll.cn/wechat/file?path=minio/6c9b6317-97a8-43ec-b949-cf3f861f8575.png&name=IMG_20190208_132658%20(2).png'
+        }
+    ]
+    await stream(input, { provider: 'openai', model: 'gpt-3.5-turbo' })
+    await stream(input, { provider: 'google', model: 'gemini-pro-vision' })
     await stream('你是谁？是谁开发的？', { provider: 'baidu', temperature: 0, top: 0, maxLength: 10 })
     await stream('Introduce yourself in 10 words', { provider: 'google', maxLength: 1024, top: 1, temperature: 1 })
     await stream('你是谁？是谁开发的？', { provider: 'iflytek', model: 'v3.1', temperature: 11 })
@@ -58,13 +55,15 @@ async function main() {
 async function stream(query, option) {
     return new Promise((resolve, reject) => {
         option.stream = true
-        ai.chat(query, option).then(res => {
-            console.log(`🤖 [${option.provider} ${option.model}]: ${query}`)
-            res.on('data', buff => process.stdout.write(JSON.parse(buff.toString()).content))
-            res.on('end', resolve)
-            res.on('error', reject)
-            res.on('close', () => console.log('\n'))
-        })
+        ai.chat(query, option)
+            .then(res => {
+                console.log(`🤖 [${option.provider}/${option.model}]: ${query[0].content || query}`)
+                res.on('data', buff => process.stdout.write(JSON.parse(buff.toString()).content))
+                res.on('end', resolve)
+                res.on('error', reject)
+                res.on('close', () => console.log('\n'))
+            })
+            .catch(e => console.log(e.message))
     })
 }
 

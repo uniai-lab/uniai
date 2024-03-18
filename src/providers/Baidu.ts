@@ -46,6 +46,8 @@ export default class Baidu {
         temperature?: number,
         maxLength?: number
     ) {
+        if (!Object.values(BaiduChatModel).includes(model)) throw new Error('Baidu chat model not found')
+
         // temperature is float in (0,1]
         if (typeof temperature === 'number') {
             if (temperature <= 0) temperature = 0.1

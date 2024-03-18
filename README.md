@@ -183,11 +183,10 @@ const input = [
     {
         role: 'user',
         content: 'Describe this picture, is it a man or a woman, and what is she doing?',
-        img: {
-            url: 'https://pics7.baidu.com/feed/1f178a82b9014a903fcc22f1e98d931fb11bee90.jpeg@f_auto?token=d5a33ea74668787d60d6f61c7b8f9ca2'
-        }
+        img: 'https://pics7.baidu.com/feed/1f178a82b9014a903fcc22f1e98d931fb11bee90.jpeg@f_auto?token=d5a33ea74668787d60d6f61c7b8f9ca2'
     }
 ]
+// Warn: If you choose a non-image model, img attributes will be dropped!
 const res = await ai.chat(input, { model: 'gpt-4-vision-preview' })
 console.log(res)
 ```

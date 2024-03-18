@@ -45,6 +45,8 @@ export default class GLM {
     ) {
         if (!Object.values(GLMChatModel).includes(model)) throw new Error('GLM chat model not found')
 
+        if (![GLMChatModel.GLM_4V].includes(model)) messages = messages.map(({ role, content }) => ({ role, content }))
+
         const data: ChatResponse = {
             content: '',
             model,

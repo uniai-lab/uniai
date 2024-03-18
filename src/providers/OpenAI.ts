@@ -94,10 +94,13 @@ export default class OpenAI {
         temperature?: number,
         maxLength?: number
     ) {
+        if (!Object.values(OpenAIChatModel).includes(model)) throw new Error('OpenAI chat model not found')
+
         const key = Array.isArray(this.key) ? $.getRandomKey(this.key) : this.key
         if (!key) throw new Error('OpenAI API key is not set in config')
 
-        if (model === OpenAIChatModel.GPT4_VISION) maxLength = MAX_TOKEN
+        if ([OpenAIChatModel.GPT4_VISION].includes(model)) maxLength = MAX_TOKEN
+        else messages = messages.map(({ role, content }) => ({ role, content }))
 
         // temperature is float in [0,1]
         if (typeof temperature === 'number') {

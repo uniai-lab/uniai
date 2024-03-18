@@ -62,6 +62,12 @@ export default class Google {
         temperature?: number,
         maxLength?: number
     ) {
+        if (!Object.values(GoogleChatModel).includes(model)) throw new Error('Google chat model not found')
+
+        if ([GoogleChatModel.GEM_VISION].includes(model)) {
+            if (!messages.some(v => v.img)) throw new Error('Use Google vision model but input no image')
+        } else messages = messages.map(({ role, content }) => ({ role, content }))
+
         const key = Array.isArray(this.key) ? $.getRandomKey(this.key) : this.key
         if (!key) throw new Error('Google AI API key is not set in config')
 
@@ -101,7 +107,7 @@ export default class Google {
                 if (value.candidates || value.promptFeedback) {
                     const obj: GEMChatResponse = value
                     const block = obj.promptFeedback?.blockReason
-                    if (block) return output.destroy(new Error(block))
+                    if (block) return output.destroy(new Error(`Content blocked, reason: ${block}`))
                     if (!obj.candidates) return output.destroy(new Error('Google API error, no candidates'))
                     const candidate = obj.candidates[0]
                     if (!candidate.content) return output.destroy(new Error(candidate.finishReason))
