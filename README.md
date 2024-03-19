@@ -48,6 +48,19 @@ const task2 = await ai.change('midjourney', task.taskId, 'UPSCALE', 4)
 
 English · [🇨🇳 中文说明](./README_CN.md)
 
+## Try Application
+
+We have developed several sample applications using uniai:
+
+<div align=center>
+<img width=300 src="./icon/lechat-green.png">
+<br>
+<img width=150 src="./icon/lechat-pro-qrcode.png">
+<img width=150 src="./icon/miniapp-qrcode.jpg">
+<br>
+<img width="100%" src="./icon/lechat-pro.png">
+</div>
+
 ## Supported Models
 
 <p align="left">
@@ -71,17 +84,6 @@ English · [🇨🇳 中文说明](./README_CN.md)
 -   [Stability AI](https://platform.stability.ai/docs/getting-started)
 -   [Stable Diffusion](https://github.com/AUTOMATIC1111/stable-diffusion-webui)
 -   [GanymedeNil/text2vec-large-chinese](https://huggingface.co/GanymedeNil/text2vec-large-chinese)
-
-## Project structure
-
-```javascript
-├─example         //A simple example of calling
-├─icon            //The placement of each model icon
-├─interface       //Interface Placement Directory
-├─src
-│  └─providers    //Each model provider
-└─test            //Automated test case
-```
 
 ## Installation
 
@@ -125,26 +127,26 @@ console.log(ai.models)
 
 Output:
 
-```js
-;[
+```json
+[
     {
-        provider: 'OpenAI',
-        value: 'openai',
-        models: [
-            'gpt-3.5-turbo-1106',
-            'gpt-3.5-turbo',
-            'gpt-3.5-turbo-16k',
-            'gpt-4',
-            'gpt-4-32k',
-            'gpt-4-1106-preview',
-            'gpt-4-vision-preview'
+        "provider": "OpenAI",
+        "value": "openai",
+        "models": [
+            "gpt-3.5-turbo-1106",
+            "gpt-3.5-turbo",
+            "gpt-3.5-turbo-16k",
+            "gpt-4",
+            "gpt-4-32k",
+            "gpt-4-1106-preview",
+            "gpt-4-vision-preview"
         ]
     },
     // ...providers and models
     {
-        provider: 'StabilityAI',
-        value: 'stability.ai',
-        models: ['stable-diffusion-v1-6', 'stable-diffusion-xl-1024-v1-0']
+        "provider": "StabilityAI",
+        "value": "stability.ai",
+        "models": ["stable-diffusion-v1-6", "stable-diffusion-xl-1024-v1-0"]
     }
 ]
 ```

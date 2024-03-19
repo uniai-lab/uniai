@@ -50,6 +50,20 @@ const task2 = await ai.change('midjourney', task.taskId, 'UPSCALE', 4)
 
 [🇺🇸 🇬🇧 English Readme](./README.md) · 中文
 
+## 体验应用
+
+我们使用uniai开发了一些app示范，欢迎体验：
+
+<div align=center>
+<img width=300 src="./icon/lechat-green.png">
+<br>
+<img width=150 src="./icon/lechat-pro-qrcode.png">
+<img width=150 src="./icon/miniapp-qrcode.jpg">
+<br>
+<img width="100%" src="./icon/lechat-pro.png">
+</div>
+
+
 ## 已支持模型
 
 <p align="left">
