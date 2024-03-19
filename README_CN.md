@@ -1,4 +1,4 @@
-<p align="center"><img src="./icon/logo.png" width="80px"></p>
+<p align="center"><img src="./icon/logo.png" width="66px"></p>
 
 <h1 align="center">UniAI</h1>
 
@@ -8,10 +8,10 @@
 
 <!-- ![visitors](https://visitor-badge.glitch.me/badge?page_id=devilyouwei.UniAI&left_color=green&right_color=red) -->
 
-<h3 align=center>Chat</h3>
+<h3 align=center>聊天</h3>
 <img width='100%' src='./example/img/example.gif'/>
 
-<h3 align=center>Imagine</h3>
+<h3 align=center>生图</h3>
 
 <table>
     <tr>
@@ -50,20 +50,6 @@ const task2 = await ai.change('midjourney', task.taskId, 'UPSCALE', 4)
 
 [🇺🇸 🇬🇧 English Readme](./README.md) · 中文
 
-## 体验应用
-
-我们使用uniai开发了一些app示范，欢迎体验：
-
-<div align=center>
-<img width=300 src="./icon/lechat-green.png">
-<br>
-<img width=150 src="./icon/lechat-pro-qrcode.png">
-<img width=150 src="./icon/miniapp-qrcode.jpg">
-<br>
-<img width="100%" src="./icon/lechat-pro.png">
-</div>
-
-
 ## 已支持模型
 
 <p align="left">
@@ -88,16 +74,17 @@ const task2 = await ai.change('midjourney', task.taskId, 'UPSCALE', 4)
 -   [Stable Diffusion](https://github.com/AUTOMATIC1111/stable-diffusion-webui)
 -   [GanymedeNil/text2vec-large-chinese](https://huggingface.co/GanymedeNil/text2vec-large-chinese)
 
-## 项目结构
+## 体验应用
 
-```javascript
-├─example         //简单的调用示例
-├─icon            //各个模型图标的放置位子
-├─interface       //interface放置目录
-├─src
-│  └─providers    //各个模型provider
-└─test            //自动化测试用例
-```
+我们使用 **uniai** 开发了一些App作为示范，欢迎体验和打赏支持我们：
+
+<div align=center>
+<img style="margin-right:20px" height=120 src="./icon/lechat-green.png">
+<img style="margin-right:20px" height=120 src="./icon/lechat-pro-qrcode.png">
+<img height=120 src="./icon/miniapp-qrcode.jpg">
+<br>
+<img width="100%" src="./icon/lechat-pro.png">
+</div>
 
 ## 安装
 

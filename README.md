@@ -1,9 +1,9 @@
-<p align="center"><img src="./icon/logo.png" width="80px"></p>
+<p align="center"><img src="./icon/logo.png" width="66px"></p>
 <h1 align="center">UniAI</h1>
 <h3 align="center">To Unify AI Models!</h3>
 
 <p>
-UniAI, built on Node.js, serves as an integrated AI model library. It provides a unified interface for various leading models, streamlining the development process by ensuring a consistent model input and output experience.
+UniAI, built on Node.js, serves as an integrated AI model library. It provides a unified interface for various models, streamlining the development process by ensuring a consistent model input and output experience.
 </p>
 
 <h3 align=center>Chat</h3>
@@ -48,19 +48,6 @@ const task2 = await ai.change('midjourney', task.taskId, 'UPSCALE', 4)
 
 English · [🇨🇳 中文说明](./README_CN.md)
 
-## Try Application
-
-We have developed several sample applications using uniai:
-
-<div align=center>
-<img width=300 src="./icon/lechat-green.png">
-<br>
-<img width=150 src="./icon/lechat-pro-qrcode.png">
-<img width=150 src="./icon/miniapp-qrcode.jpg">
-<br>
-<img width="100%" src="./icon/lechat-pro.png">
-</div>
-
 ## Supported Models
 
 <p align="left">
@@ -85,7 +72,19 @@ We have developed several sample applications using uniai:
 -   [Stable Diffusion](https://github.com/AUTOMATIC1111/stable-diffusion-webui)
 -   [GanymedeNil/text2vec-large-chinese](https://huggingface.co/GanymedeNil/text2vec-large-chinese)
 
-## Installation
+## Try Application
+
+We have developed several sample applications using **uniai**:
+
+<div align=center>
+<img style="margin-right:20px" height=120 src="./icon/lechat-green.png">
+<img style="margin-right:20px" height=120 src="./icon/lechat-pro-qrcode.png">
+<img height=120 src="./icon/miniapp-qrcode.jpg">
+<br>
+<img width="100%" src="./icon/lechat-pro.png">
+</div>
+
+## Install
 
 **Using yarn:**
 
@@ -266,7 +265,7 @@ huangyw@iict.ac.cn
 | :----------------------------------------------------: | :---------------------------------------------------------------------------------------------------: |
 | [UniAI MaaS](https://github.com/uni-openai/uniai-maas) | UniAI is a unified API platform designed to simplify interaction with a variety of complex AI models. |
 |  [LeChat](https://github.com/CAS-IICT/lechat-uniapp)   |         Document analysis based on large language model, dialogue with WeChat Mini Programs.          |
-|       [LeChat Pro](https://lechat.cas-ll.cn/#/)        |             Full-platform client based on UniAI, multi-model streaming dialogue platform.             |
+|         [LeChat Pro](https://lechat.cas-ll.cn)         |             Full-platform client based on UniAI, multi-model streaming dialogue platform.             |
 
 ## Star History
 
