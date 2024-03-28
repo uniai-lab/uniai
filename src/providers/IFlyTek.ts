@@ -1,15 +1,30 @@
 /** @format */
 
 import WebSocket from 'ws'
-import { ChatMessage, ChatResponse } from '../../interface/IModel'
-import { SPKChatMessage, SPKChatRequest, SPKChatResponse } from '../../interface/IFlyTek'
-import { ChatRoleEnum, IFlyTekChatModel, SPKChatRoleEnum, SparkDomain } from '../../interface/Enum'
+import { ChatMessage, ChatResponse, TaskResponse } from '../../interface/IModel'
+import {
+    SPKChatMessage,
+    SPKChatRequest,
+    SPKChatResponse,
+    SPKImagineRequest,
+    SPKImagineResponse
+} from '../../interface/IFlyTek'
+import {
+    ChatRoleEnum,
+    IFlyTekChatModel,
+    SPKChatRoleEnum,
+    SparkDomain,
+    IFlyTekImagineModel,
+    SPKTaskType
+} from '../../interface/Enum'
 import { createHmac } from 'crypto'
 import { hostname } from 'os'
 import { PassThrough, Readable } from 'stream'
 import $ from '../util'
 
 const SPARK_API = 'wss://spark-api.xf-yun.com'
+const IMAGINE_API = 'https://spark-api.cn-huabei-1.xf-yun.com'
+const STORAGE_KEY = 'task_iflytek'
 
 export default class IFlyTek {
     private appid?: string
@@ -128,6 +143,66 @@ export default class IFlyTek {
     }
 
     /**
+     * Generate an image based on the given prompt.
+     * @param prompt The prompt for image generation.
+     * @param width The width of the image, default is 512.
+     * @param height The height of the image, default is 512.
+     * @param model The model to use for generating the image, default is IFlyTekImagineModel.V2.
+     */
+    async imagine(
+        prompt: string,
+        width: number = 512,
+        height: number = 512,
+        model: IFlyTekImagineModel = IFlyTekImagineModel.V2
+    ) {
+        if (!this.appid) throw new Error('IFlyTek APP ID is not set in config')
+        // get specific generated URL
+        const url = this.getImagineURL(model)
+        const res = await $.post<SPKImagineRequest, SPKImagineResponse>(url, {
+            header: { app_id: this.appid },
+            payload: { message: { text: [{ role: 'user', content: prompt }] } },
+            parameter: { chat: { domain: 'general', width, height } }
+        })
+        if (res.header.code !== 0) throw new Error(res.header.message)
+        if (!res.payload) throw new Error('Fail to generate image, empty payload')
+
+        const id = $.getRandomId()
+        const imgs: string[] = []
+        for (const i in res.payload.choices.text)
+            imgs.push(await $.writeFile(res.payload.choices.text[i].content, `${id}-${i}.png`))
+
+        const time = Date.now()
+        const task: TaskResponse = {
+            id,
+            type: SPKTaskType.GENERATION,
+            info: 'success',
+            progress: 100,
+            imgs,
+            fail: '',
+            created: time,
+            model
+        }
+
+        const tasks: TaskResponse[] = $.getItem(STORAGE_KEY) || []
+        tasks.push(task)
+        $.setItem(STORAGE_KEY, tasks)
+        return { taskId: task.id, time }
+    }
+
+    /**
+     * Simulate tasks.
+     *
+     * @param id - The task ID to retrieve (optional).
+     * @returns An array of task responses or a specific task by ID.
+     */
+    task(id?: string) {
+        const tasks: TaskResponse[] = $.getItem(STORAGE_KEY) || []
+
+        if (id) return tasks.filter(v => v.id === id)
+        else return tasks
+    }
+
+    /**
      * Generates the WebSocket URL for the Spark API request.
      *
      * @param version - The Spark model version.
@@ -147,6 +222,23 @@ export default class IFlyTek {
         const authorizationOrigin = `api_key="${this.key}", algorithm="${algorithm}", headers="${headers}", signature="${signature}"`
         const authorization = Buffer.from(authorizationOrigin).toString('base64')
         return `${SPARK_API}/${version}/chat?authorization=${authorization}&date=${date}&host=${host}`
+    }
+
+    // get imagine url
+    private getImagineURL(model: IFlyTekImagineModel) {
+        if (!this.secret) throw new Error('IFlyTek API secret is not set in config')
+        if (!this.key) throw new Error('IFlyTek API key is not set in config')
+
+        const host = 'spark-api.xf-yun.com'
+        const date = new Date().toUTCString()
+        const algorithm = 'hmac-sha256'
+        const headers = 'host date request-line'
+        const signatureOrigin = `host: ${host}\ndate: ${date}\nPOST /${model}/tti HTTP/1.1`
+        const signatureSha = createHmac('sha256', this.secret).update(signatureOrigin).digest('hex')
+        const signature = Buffer.from(signatureSha, 'hex').toString('base64')
+        const authorizationOrigin = `api_key="${this.key}", algorithm="${algorithm}", headers="${headers}", signature="${signature}"`
+        const authorization = Buffer.from(authorizationOrigin).toString('base64')
+        return `${IMAGINE_API}/${model}/tti?authorization=${authorization}&date=${date}&host=${host}`
     }
 
     private formatMessage(messages: ChatMessage[]) {

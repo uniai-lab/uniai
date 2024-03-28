@@ -3,7 +3,17 @@ import 'dotenv/config'
 import '../env.d.ts'
 import UniAI, { ImagineModelProvider, ModelProvider, OpenAIImagineModel } from '../src'
 
-const { MID_JOURNEY_API, MID_JOURNEY_TOKEN, OPENAI_API, OPENAI_KEY, STABILITY_API, STABILITY_KEY } = process.env
+const {
+    MID_JOURNEY_API,
+    MID_JOURNEY_TOKEN,
+    OPENAI_API,
+    OPENAI_KEY,
+    STABILITY_API,
+    STABILITY_KEY,
+    FLY_API_KEY,
+    FLY_API_SECRET,
+    FLY_APP_ID
+} = process.env
 
 const prompt = 'a cute panda is eating bamboo'
 
@@ -13,7 +23,8 @@ beforeAll(() => {
     uni = new UniAI({
         MidJourney: { token: MID_JOURNEY_TOKEN, proxy: MID_JOURNEY_API },
         OpenAI: { proxy: OPENAI_API, key: OPENAI_KEY },
-        StabilityAI: { key: STABILITY_KEY, proxy: STABILITY_API }
+        StabilityAI: { key: STABILITY_KEY, proxy: STABILITY_API },
+        IFlyTek: { apiKey: FLY_API_KEY, appId: FLY_APP_ID, apiSecret: FLY_API_SECRET }
     })
 })
 
@@ -46,7 +57,7 @@ describe('Imagine Tests', () => {
         uni.task(ModelProvider.MidJourney, '1707125639729316').then(console.log).catch(console.error).finally(done)
     }, 60000)
 
-    test('Test DALLE tasks', done => {
+    test('Test DALL-E tasks', done => {
         uni.task(ModelProvider.OpenAI)
             .then(res => console.log(res.pop()))
             .catch(console.error)
@@ -59,4 +70,12 @@ describe('Imagine Tests', () => {
             .catch(console.error)
             .finally(done)
     })
+
+    test('Test IFlyTek imagine', done => {
+        uni.imagine(prompt, { provider: ImagineModelProvider.IFlyTek })
+            .then(res => uni.task(ModelProvider.IFlyTek, res.taskId))
+            .then(console.log)
+            .catch(console.error)
+            .finally(done)
+    }, 60000)
 })

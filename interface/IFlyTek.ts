@@ -62,32 +62,55 @@ export interface SPKChatResponse {
     }
 }
 
-export interface FlyAuditParams {
-    accessKeyId: string
-    accessKeySecret: string
-    appId: string
-    utc: string
-    uuid: string
-    modeType?: 'base64' | 'link'
-}
-
-export interface FlyAuditRequest {
-    content: string
-    is_match_all?: number
-    categories?: string[]
-    lib_ids?: string[]
-    biz_type?: string
-}
-
-export interface FlyAuditResponse {
-    code: string
-    desc: string
-    data: {
-        result: {
-            suggest: 'pass' | 'block'
-            detail: object
-        }
-        request_id: string
+export interface SPKImagineRequest {
+    header: {
+        app_id: string
+        uid?: string
     }
-    sid: string
+    parameter: {
+        chat: {
+            domain: string
+            width: number
+            height: number
+        }
+    }
+    payload: {
+        message: {
+            text: {
+                role: string
+                content: string
+            }[]
+        }
+    }
+}
+
+// 错误码	错误信息
+// 0	成功
+// 10003	用户的消息格式有错误
+// 10004	用户数据的schema错误
+// 10005	用户参数值有错误
+// 10008	服务容量不足
+// 10021	输入审核不通过
+// 10022	模型生产的图片涉及敏感信息，审核不通过
+
+export interface SPKImagineResponse {
+    header: {
+        code: number
+        message: string
+        sid: string
+        status: number
+    }
+    payload?: {
+        choices: {
+            status: number
+            seq: number
+            text: [
+                {
+                    content: string
+                    index: number
+                    role: string
+                }
+            ]
+        }
+    }
 }

@@ -3,7 +3,7 @@
 <h3 align="center">To Unify AI Models!</h3>
 
 <p>
-UniAI, built on Node.js, serves as an integrated AI model library. It provides a unified interface for various models, streamlining the development process by ensuring a consistent model input and output experience.
+UniAI, built on Node.js, serves as an integrated AI model library. It provides a unified interface for various models, streamlining the development process by ensuring a consistent model input and output.
 </p>
 
 <h3 align=center>Chat</h3>
@@ -29,6 +29,8 @@ UniAI, built on Node.js, serves as an integrated AI model library. It provides a
         <td width="33.3%"><img width="100%" src="./example/img/dall-e-3.png" alt="DALL-E-3"></td>
     </tr>
 </table>
+
+<h3 align=center>Easy to Use</h3>
 
 ```typescript
 import UniAI from 'uniai'
@@ -72,7 +74,7 @@ English · [🇨🇳 中文说明](./README_CN.md)
 -   [Stable Diffusion](https://github.com/AUTOMATIC1111/stable-diffusion-webui)
 -   [GanymedeNil/text2vec-large-chinese](https://huggingface.co/GanymedeNil/text2vec-large-chinese)
 
-## Try Application
+## Applications Developed on UniAI
 
 We have developed several sample applications using **uniai**:
 
@@ -103,11 +105,11 @@ npm install uniai
 > We have written a simple call demo for you, which is placed in the `/examples` folder. You can read the `/examples` file directly to learn how to use UniAI.
 > You can also read on to learn how to use UniAI based on the documentation.
 
-### Listing Supported Models
+### List Models
 
 You can use `.models` to list all the available models in UniAI.
 
-TypeScript & JavaScript ES6+
+**TypeScript & JavaScript ES6+**
 
 ```typescript
 import UniAI from 'uniai'
@@ -116,15 +118,16 @@ const ai = new UniAI()
 console.log(ai.models)
 ```
 
-JavaScript ES5
+**JavaScript ES5**
 
 ```javascript
 const UniAI = require('uniai').default
+
 const ai = new UniAI()
 console.log(ai.models)
 ```
 
-Output:
+**Output**
 
 ```json
 [
@@ -150,7 +153,7 @@ Output:
 ]
 ```
 
-### Chat with Models
+### Chat
 
 To interact with a model, use `.chat()` and remember to provide the required API key or secret parameters when initializing `new UniAI()`.
 
@@ -164,7 +167,7 @@ const res = await uni.chat()
 console.log(res)
 ```
 
-Output:
+**Output**
 
 ```json
 {
@@ -177,7 +180,7 @@ Output:
 }
 ```
 
-**[New] Chat with image**
+**Chat with image**
 
 ```js
 const input = [
@@ -196,7 +199,7 @@ console.log(res)
 
 ```json
 {
-    "content": "The image shows a person taking a mirror selfie using a smartphone. It appears to be a woman based on the visible physical characteristics and the style of clothing being worn. She is wearing a costume that seems to be inspired by a mix of traditional and modern design elements, with vibrant blue accents and fabric that resembles silk. There are some anime or game-related motifs on the costume, suggesting it might be a cosplay outfit. Her hair is partially up, with some hair accessories visible. The background is a simple indoor setting, likely a changing room or a personal room, with a subtly patterned wallpaper. There are also social media interface elements, indicating that the image may be a screenshot from a social media platform.",
+    "content": "The image shows a person taking a mirror selfie using a smartphone...",
     "model": "gpt-4-1106-vision-preview",
     "object": "chat.completion",
     "promptTokens": 450,
@@ -222,7 +225,7 @@ stream.on('data', chunk => (data += JSON.parse(chunk.toString()).content))
 stream.on('end', () => console.log(data))
 ```
 
-Output:
+**Output (Stream)**
 
 ```
 Language model trained by Google, at your service.
@@ -239,17 +242,13 @@ yarn test
 If you want to run unit tests for a specific model provider:
 
 ```bash
-# OpenAI, Google, Baidu, IFlyTek, MoonShot, GLM, Other
+# OpenAI, Google, Baidu, IFlyTek, MoonShot, GLM, Other, Imagine...
 yarn test OpenAI
 ```
 
 ## Thanks
 
 [Institute of Intelligent Computing Technology, Suzhou, CAS](http://iict.ac.cn/)
-
-## Participate in development
-
-We welcome any type of PR as well as issue.
 
 ## Contributors
 

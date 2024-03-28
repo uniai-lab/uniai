@@ -2,7 +2,7 @@
 import 'dotenv/config'
 import '../env.d.ts'
 import UniAI from '../src'
-import { ModelProvider, IFlyTekChatModel } from '../interface/Enum'
+import { ModelProvider, IFlyTekChatModel, ChatModelProvider } from '../interface/Enum'
 import { Readable } from 'stream'
 
 const { FLY_API_KEY, FLY_API_SECRET, FLY_APP_ID } = process.env
@@ -23,14 +23,14 @@ describe('IFlyTek Tests', () => {
     })
 
     test('Test chat iFlyTek spark v3.1', done => {
-        uni.chat(input, { provider: ModelProvider.IFlyTek, model: IFlyTekChatModel.SPARK_V3 })
+        uni.chat(input, { provider: ChatModelProvider.IFlyTek, model: IFlyTekChatModel.SPARK_V3 })
             .then(console.log)
             .catch(console.error)
             .finally(done)
     })
 
     test('Test chat IFlyTek spark v1.1 stream', done => {
-        uni.chat(input, { stream: true, provider: ModelProvider.IFlyTek, model: IFlyTekChatModel.SPARK_V1 }).then(
+        uni.chat(input, { stream: true, provider: ChatModelProvider.IFlyTek, model: IFlyTekChatModel.SPARK_V1 }).then(
             res => {
                 expect(res).toBeInstanceOf(Readable)
                 const stream = res as Readable

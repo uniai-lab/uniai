@@ -19,7 +19,8 @@ export enum EmbedModelProvider {
 export enum ImagineModelProvider {
     OpenAI = 'openai',
     MidJourney = 'midjourney',
-    StabilityAI = 'stability.ai'
+    StabilityAI = 'stability.ai',
+    IFlyTek = 'iflytek'
 }
 
 export type ModelProvider = ChatModelProvider | EmbedModelProvider | ImagineModelProvider
@@ -47,9 +48,9 @@ export const EmbedModel = { ...OpenAIEmbedModel, ...OtherEmbedModel }
 export enum OpenAIChatModel {
     GPT3 = 'gpt-3.5-turbo',
     GPT3_16K = 'gpt-3.5-turbo-16k',
-    GPT4 = 'gpt-4',
     GPT4_TURBO = 'gpt-4-turbo-preview',
-    GPT4_VISION = 'gpt-4-vision-preview'
+    GPT4_VISION = 'gpt-4-vision-preview',
+    GPT4 = 'gpt-4'
 }
 
 // google chat models
@@ -126,13 +127,17 @@ export enum StabilityAIImagineModel {
     SD_1_6 = 'stable-diffusion-v1-6',
     SD_XL_1024 = 'stable-diffusion-xl-1024-v1-0'
 }
+export enum IFlyTekImagineModel {
+    V2 = 'v2.1'
+}
 
 export const ImagineModel = {
     ...OpenAIImagineModel,
     ...MidJourneyImagineModel,
-    ...StabilityAIImagineModel
+    ...StabilityAIImagineModel,
+    ...IFlyTekImagineModel
 }
-export type ImagineModel = OpenAIImagineModel | MidJourneyImagineModel | StabilityAIImagineModel
+export type ImagineModel = OpenAIImagineModel | MidJourneyImagineModel | StabilityAIImagineModel | IFlyTekImagineModel
 
 export type ModelModel = ChatModel | ImagineModel | EmbedModel
 export const ModelModel = { ...ChatModel, ...ImagineModel, ...EmbedModel }
@@ -156,8 +161,12 @@ export enum SDTaskType {
     GENERATION = 'generation'
 }
 
-export const ImgTaskType = { ...MJTaskType, ...DETaskType, ...SDTaskType }
-export type ImgTaskType = MJTaskType | DETaskType | SDTaskType
+export enum SPKTaskType {
+    GENERATION = 'generation'
+}
+
+export const ImgTaskType = { ...MJTaskType, ...DETaskType, ...SDTaskType, ...SPKTaskType }
+export type ImgTaskType = MJTaskType | DETaskType | SDTaskType | SPKTaskType
 
 // UniAI specified model roles
 export enum ChatRoleEnum {

@@ -32,6 +32,8 @@
     </tr>
 </table>
 
+<h3 align=center>写法</h3>
+
 ```typescript
 import UniAI from 'uniai'
 // 初始化一个UniAI对象，传入需要用的模型的key和proxy
@@ -109,7 +111,7 @@ npm install uniai
 
 您可以使用 `.models` 来列出 UniAI 中所有可用的模型。
 
-TypeScript 和 JavaScript ES6+
+**使用 TypeScript 和 JavaScript ES6+**
 
 ```typescript
 import UniAI from 'uniai'
@@ -118,7 +120,7 @@ const ai = new UniAI()
 console.log(ai.models)
 ```
 
-JavaScript ES5
+**使用 JavaScript ES5**
 
 ```javascript
 const UniAI = require('uniai').default
@@ -126,7 +128,7 @@ const ai = new UniAI()
 console.log(ai.models)
 ```
 
-输出：
+**输出**
 
 ```json
 [
@@ -157,7 +159,7 @@ console.log(ai.models)
 ]
 ```
 
-### 与模型聊天
+### 模型聊天
 
 要与模型交互，请使用 `.chat()`，并在初始化 `new UniAI()` 时记得提供所需的 API 密钥或代理参数。
 
@@ -171,7 +173,7 @@ const res = await uni.chat()
 console.log(res)
 ```
 
-输出：
+**输出**
 
 ```json
 {
@@ -184,7 +186,7 @@ console.log(res)
 }
 ```
 
-**【新功能】带图片的聊天**
+**带图聊天**
 
 ```js
 const input = [
@@ -202,7 +204,7 @@ console.log(res)
 
 ```json
 {
-    "content": "这张图片展示了一位女性，她正站在镜子前用手机自拍。她穿着一件带有蓝色边缘和装饰的黑色及膝服装，这件衣服似乎有着亚洲风格的设计元素。她的头发有一部分被夹起，而手机遮住了她的部分脸庞。图片中还可看到几个社交媒体的互动按钮，如点赞和评论的图标，并有数字显示互动数量。右下角还有一个表情符号，看上去像是一张夸张的笑脸。整个场景给人一种轻松的自拍氛围。",
+    "content": "这张图片展示了一位女性，她正站在镜子前用手机自拍。她穿着一件带有蓝色边缘和装饰的黑色及膝服装...",
     "model": "gpt-4-1106-vision-preview",
     "object": "chat.completion",
     "promptTokens": 456,
@@ -213,7 +215,7 @@ console.log(res)
 
 ### 流式聊天
 
-对于流式聊天，响应是一个 JSON 缓冲区。
+对于流式聊天，响应是一个 JSON Buffer。
 
 以下是与 Google gemini-pro 进行流式聊天的示例。
 
@@ -228,11 +230,12 @@ stream.on('data', chunk => (data += JSON.parse(chunk.toString()).content))
 stream.on('end', () => console.log(data))
 ```
 
-输出：
+**输出**
 
 ```
 Google 训练的语言模型，为您提供服务。
 ```
+可自行添加包围：`data: {string}\n\n`，可实现`SSE`给前端
 
 ## 运行测试
 
@@ -245,13 +248,9 @@ yarn test
 如果要运行特定模型提供商的单元测试：
 
 ```bash
-# OpenAI、Google、Baidu、IFlyTek、MoonShot、GLM、Other
+# OpenAI、Google、Baidu、IFlyTek、MoonShot、GLM、Other, Imagine...
 yarn test OpenAI
 ```
-
-## 参与开发
-
-我们欢迎任何类型的 PR 以及 issue。🎉
 
 ## 贡献者
 

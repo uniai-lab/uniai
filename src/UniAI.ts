@@ -9,6 +9,7 @@ import {
     GLMChatModel,
     GoogleChatModel,
     IFlyTekChatModel,
+    IFlyTekImagineModel,
     ImagineModel,
     ImagineModelProvider,
     MJTaskType,
@@ -97,7 +98,8 @@ export default class UniAI {
                 {
                     [ImagineModelProvider.OpenAI]: OpenAIImagineModel,
                     [ImagineModelProvider.MidJourney]: MidJourneyImagineModel,
-                    [ImagineModelProvider.StabilityAI]: StabilityAIImagineModel
+                    [ImagineModelProvider.StabilityAI]: StabilityAIImagineModel,
+                    [ImagineModelProvider.IFlyTek]: IFlyTekImagineModel
                 }[v]
             )
         }))
@@ -165,6 +167,8 @@ export default class UniAI {
                 num,
                 model as StabilityAIImagineModel
             )
+        else if (provider === ImagineModelProvider.IFlyTek)
+            return await this.fly.imagine(prompt, width, height, model as IFlyTekImagineModel)
         else throw new Error('Imagine model provider not found')
     }
 
@@ -172,6 +176,7 @@ export default class UniAI {
         if (provider === ImagineModelProvider.OpenAI) return this.openai.task(id)
         else if (provider === ImagineModelProvider.MidJourney) return await this.mj.task(id)
         else if (provider === ImagineModelProvider.StabilityAI) return this.stability.task(id)
+        else if (provider === ImagineModelProvider.IFlyTek) return this.fly.task(id)
         else throw new Error('Imagine model provider not found')
     }
 
