@@ -40,7 +40,7 @@ export default class Baidu {
      */
     async chat(
         messages: ChatMessage[],
-        model: BaiduChatModel = BaiduChatModel.ERNIE4,
+        model: BaiduChatModel = BaiduChatModel.ERNIE_3_5,
         stream: boolean = false,
         top?: number,
         temperature?: number,

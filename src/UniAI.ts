@@ -7,6 +7,7 @@ import {
     EmbedModel,
     EmbedModelProvider,
     GLMChatModel,
+    GLMEmbedModel,
     GoogleChatModel,
     IFlyTekChatModel,
     IFlyTekImagineModel,
@@ -111,7 +112,8 @@ export default class UniAI {
             models: Object.values<EmbedModel>(
                 {
                     [EmbedModelProvider.OpenAI]: OpenAIEmbedModel,
-                    [EmbedModelProvider.Other]: OtherEmbedModel
+                    [EmbedModelProvider.Other]: OtherEmbedModel,
+                    [EmbedModelProvider.GLM]: GLMEmbedModel
                 }[v]
             )
         }))
@@ -148,6 +150,7 @@ export default class UniAI {
             return await this.openai.embedding(content, model as OpenAIEmbedModel)
         else if (provider === EmbedModelProvider.Other)
             return await this.other.embedding(content, model as OtherEmbedModel)
+        else if (provider === EmbedModelProvider.GLM) return await this.glm.embedding(content, model as GLMEmbedModel)
         else throw new Error('Embedding model provider not found')
     }
 

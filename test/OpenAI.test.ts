@@ -2,7 +2,14 @@
 import 'dotenv/config'
 import '../env.d.ts'
 import UniAI, { ChatMessage } from '../src'
-import { ChatModelProvider, ChatRoleEnum, ModelProvider, OpenAIChatModel, OpenAIEmbedModel } from '../interface/Enum'
+import {
+    ChatModelProvider,
+    ChatRoleEnum,
+    EmbedModelProvider,
+    ModelProvider,
+    OpenAIChatModel,
+    OpenAIEmbedModel
+} from '../interface/Enum'
 import { Readable } from 'stream'
 
 const { OPENAI_KEY, OPENAI_API } = process.env
@@ -67,7 +74,7 @@ describe('OpenAI Tests', () => {
     }, 60000)
 
     test('Test OpenAI/text-embedding-ada2 embedding', done => {
-        uni.embedding(input, { provider: ModelProvider.OpenAI, model: OpenAIEmbedModel.ADA })
+        uni.embedding(input, { provider: EmbedModelProvider.OpenAI, model: OpenAIEmbedModel.ADA })
             .then(res => {
                 expect(res.dimension).toBe(1536)
                 expect(res.embedding.length).toBe(1)

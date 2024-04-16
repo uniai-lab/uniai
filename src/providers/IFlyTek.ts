@@ -56,8 +56,8 @@ export default class IFlyTek {
         temperature?: number,
         maxLength?: number
     ) {
-        if (!this.appid) throw new Error('IFlyTek APP ID is not set in config')
         if (!Object.values(IFlyTekChatModel).includes(model)) throw new Error('IFlyTek chat model not found')
+        if (!this.appid) throw new Error('IFlyTek APP ID is not set in config')
 
         // get specific generated URL
         const url = this.getSparkURL(model)

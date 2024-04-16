@@ -4,10 +4,18 @@ import jwt from 'jsonwebtoken'
 import { PassThrough, Readable } from 'stream'
 import EventSourceStream from '@server-sent-stream/node'
 import { decodeStream } from 'iconv-lite'
-import { GLMChatMessage, GLMChatRequest, GLMChatResponse, GLMTokenCache } from '../../interface/IGLM'
-import { ChatRoleEnum, GLMChatModel } from '../../interface/Enum'
-import { ChatMessage, ChatResponse } from '../../interface/IModel'
+import {
+    GLMChatMessage,
+    GLMChatRequest,
+    GLMChatResponse,
+    GLMEmbedRequest,
+    GLMEmbedResponse,
+    GLMTokenCache
+} from '../../interface/IGLM'
+import { ChatRoleEnum, GLMChatModel, GLMEmbedModel } from '../../interface/Enum'
+import { ChatMessage, ChatResponse, EmbeddingResponse } from '../../interface/IModel'
 import $ from '../util'
+import { AxiosHeaders } from 'axios'
 
 const EXPIRE = 3 * 60 * 1000
 const API = 'https://open.bigmodel.cn'
@@ -22,6 +30,37 @@ export default class GLM {
         this.key = key
         this.localAPI = localAPI
         this.proxyAPI = proxyAPI
+    }
+
+    /**
+     * Fetches embeddings for input text.
+     *
+     * @param input - An array of input strings.
+     * @param model - The model to use for embeddings (default: text-embedding-ada-002).
+     * @returns A promise resolving to the embedding response.
+     */
+    async embedding(input: string[], model: GLMEmbedModel = GLMEmbedModel.EMBED_2) {
+        const url = `${this.proxyAPI || API}/api/paas/v4/embeddings`
+        const headers = new AxiosHeaders()
+        const key = Array.isArray(this.key) ? $.getRandomKey(this.key) : this.key
+        if (!key) throw new Error('ZhiPu GLM API key is not set in config')
+        headers['Authorization'] = this.generateToken(key)
+
+        // simulate array input strings, GLM only support one input string
+        const request: Promise<GLMEmbedResponse>[] = []
+        for (const item of input)
+            request.push($.post<GLMEmbedRequest, GLMEmbedResponse>(url, { model, input: item }, { headers }))
+        const res = await Promise.all(request)
+
+        const data: EmbeddingResponse = {
+            embedding: res.map(v => v.data[0].embedding),
+            object: 'embedding',
+            model: res[0].model as GLMEmbedModel,
+            dimension: res[0].data[0].embedding.length || 0,
+            promptTokens: res.reduce((acc, cur) => acc + (cur.usage.prompt_tokens || 0), 0),
+            totalTokens: res.reduce((acc, cur) => acc + (cur.usage.total_tokens || 0), 0)
+        }
+        return data
     }
 
     /**
@@ -45,7 +84,19 @@ export default class GLM {
     ) {
         if (!Object.values(GLMChatModel).includes(model)) throw new Error('GLM chat model not found')
 
+        // filter images
         if (![GLMChatModel.GLM_4V].includes(model)) messages = messages.map(({ role, content }) => ({ role, content }))
+
+        // temperature is float in (0,1]
+        if (typeof temperature === 'number') {
+            if (temperature <= 0) temperature = 0.1
+            if (temperature > 1) temperature = 1
+        }
+        // top is float in (0,1)
+        if (typeof top === 'number') {
+            if (top <= 0) top = 0.1
+            if (top >= 1) top = 0.9
+        }
 
         const data: ChatResponse = {
             content: '',
@@ -56,101 +107,50 @@ export default class GLM {
             totalTokens: 0
         }
 
+        let url = `${this.proxyAPI}/api/paas/v4/chat/completions`
+        const headers = new AxiosHeaders()
         if (model === GLMChatModel.GLM_6B) {
-            if (!this.localAPI) throw new Error('Local ChatGLM-6B API is not set in config')
-
-            const res = await $.post<GLMChatRequest, Readable | GLMChatResponse>(
-                `${this.localAPI}/chat`,
-                { messages: this.formatMessage(messages), stream, temperature, top_p: top, max_tokens: maxLength },
-                { responseType: stream ? 'stream' : 'json' }
-            )
-            if (res instanceof Readable) {
-                const output = new PassThrough()
-                const parser = new EventSourceStream()
-
-                parser.on('data', (e: MessageEvent) => {
-                    const obj = $.json<GLMChatResponse>(e.data)
-                    if (obj?.choices[0].delta?.content) {
-                        data.content = obj.choices[0].delta.content
-                        data.object = 'chat.completion.chunk'
-                        data.promptTokens = obj.usage?.prompt_tokens || 0
-                        data.completionTokens = obj.usage?.completion_tokens || 0
-                        data.totalTokens = obj.usage?.total_tokens || 0
-                        output.write(JSON.stringify(data))
-                    }
-                })
-
-                parser.on('error', e => output.destroy(e))
-                parser.on('end', () => output.end())
-
-                res.pipe(decodeStream('utf-8')).pipe(parser)
-                return output as Readable
-            } else {
-                data.content = res.choices[0].message?.content || ''
-                data.object = 'chat.completion'
-                data.promptTokens = res.usage?.prompt_tokens || 0
-                data.completionTokens = res.usage?.completion_tokens || 0
-                data.totalTokens = res.usage?.total_tokens || 0
-                return data
-            }
+            if (!this.localAPI) throw new Error('Local GLM API is not set in config')
+            url = `${this.localAPI}/chat`
         } else {
             const key = Array.isArray(this.key) ? $.getRandomKey(this.key) : this.key
-            if (!key) throw new Error('ZhiPu API key is not set in config')
+            if (!key) throw new Error('ZhiPu GLM API key is not set in config')
+            headers['Authorization'] = this.generateToken(key)
+        }
 
-            // temperature is float in (0,1]
-            if (typeof temperature === 'number') {
-                if (temperature <= 0) temperature = 0.1
-                if (temperature > 1) temperature = 1
-            }
-            // top is float in (0,1)
-            if (typeof top === 'number') {
-                if (top <= 0) top = 0.1
-                if (top >= 1) top = 0.9
-            }
+        const res = await $.post<GLMChatRequest, Readable | GLMChatResponse>(
+            url,
+            { model, messages: this.formatMessage(messages), stream, temperature, top_p: top, max_tokens: maxLength },
+            { headers, responseType: stream ? 'stream' : 'json' }
+        )
+        if (res instanceof Readable) {
+            const output = new PassThrough()
+            const parser = new EventSourceStream()
 
-            const token = this.generateToken(key)
-            const res = await $.post<GLMChatRequest, Readable | GLMChatResponse>(
-                `${this.proxyAPI}/api/paas/v4/chat/completions`,
-                {
-                    model,
-                    messages: this.formatMessage(messages),
-                    stream,
-                    temperature,
-                    top_p: top,
-                    max_tokens: maxLength
-                },
-                { headers: { Authorization: token }, responseType: stream ? 'stream' : 'json' }
-            )
+            parser.on('data', (e: MessageEvent) => {
+                const obj = $.json<GLMChatResponse>(e.data)
+                if (obj?.choices[0].delta?.content) {
+                    data.content = obj.choices[0].delta.content
+                    data.object = 'chat.completion.chunk'
+                    data.promptTokens = obj.usage?.prompt_tokens || 0
+                    data.completionTokens = obj.usage?.completion_tokens || 0
+                    data.totalTokens = obj.usage?.total_tokens || 0
+                    output.write(JSON.stringify(data))
+                }
+            })
 
-            if (res instanceof Readable) {
-                const output = new PassThrough()
-                const parser = new EventSourceStream()
+            parser.on('error', e => output.destroy(e))
+            parser.on('end', () => output.end())
 
-                parser.on('data', (e: MessageEvent) => {
-                    const obj = $.json<GLMChatResponse>(e.data)
-                    if (obj?.choices[0].delta?.content) {
-                        data.content = obj.choices[0].delta.content
-                        data.object = 'chat.completion.chunk'
-                        data.promptTokens = obj.usage?.prompt_tokens || 0
-                        data.completionTokens = obj.usage?.completion_tokens || 0
-                        data.totalTokens = obj.usage?.total_tokens || 0
-                        output.write(JSON.stringify(data))
-                    }
-                })
-
-                parser.on('error', e => output.destroy(e))
-                parser.on('end', () => output.end())
-
-                res.pipe(decodeStream('utf-8')).pipe(parser)
-                return output as Readable
-            } else {
-                data.content = res.choices[0].message?.content || ''
-                data.object = 'chat.completion'
-                data.promptTokens = res.usage?.prompt_tokens || 0
-                data.completionTokens = res.usage?.completion_tokens || 0
-                data.totalTokens = res.usage?.total_tokens || 0
-                return data
-            }
+            res.pipe(decodeStream('utf-8')).pipe(parser)
+            return output as Readable
+        } else {
+            data.content = res.choices[0].message?.content || ''
+            data.object = 'chat.completion'
+            data.promptTokens = res.usage?.prompt_tokens || 0
+            data.completionTokens = res.usage?.completion_tokens || 0
+            data.totalTokens = res.usage?.total_tokens || 0
+            return data
         }
     }
 

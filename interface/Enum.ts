@@ -13,6 +13,7 @@ export enum ChatModelProvider {
 
 export enum EmbedModelProvider {
     OpenAI = 'openai',
+    GLM = 'glm',
     Other = 'other'
 }
 
@@ -41,8 +42,12 @@ export enum OtherEmbedModel {
     BASE_CHN_PARA = 'text2vec-base-chinese-paraphrase'
 }
 
-export type EmbedModel = OpenAIEmbedModel | OtherEmbedModel
-export const EmbedModel = { ...OpenAIEmbedModel, ...OtherEmbedModel }
+export enum GLMEmbedModel {
+    EMBED_2 = 'embedding-2'
+}
+
+export type EmbedModel = OpenAIEmbedModel | OtherEmbedModel | GLMEmbedModel
+export const EmbedModel = { ...OpenAIEmbedModel, ...OtherEmbedModel, ...GLMEmbedModel }
 
 // openai chat models
 export enum OpenAIChatModel {
@@ -70,10 +75,13 @@ export enum GLMChatModel {
 
 // https://cloud.baidu.com/doc/WENXINWORKSHOP/s/clntwmv7t
 export enum BaiduChatModel {
-    ERNIE4 = 'completions_pro', // ERNIE 4.0
-    ERNIE_3_5_8K = 'completions', // ERNIE-3.5-8K
+    ERNIE_3_5 = 'completions', // ERNIE-3.5-8K
+    ERNIE_4 = 'completions_pro', // ERNIE 4.0 8K
+    ERNIE_LITE = 'eb-instant', // ERNIE-Lite-8K-0922
     ERNIE_SPEED = 'ernie_speed', // ERNIE-Speed-8K
-    ERNIE_LITE = 'eb-instant' // ERNIE-Lite-8K-0922
+    ERNIE_SPEED_128K = 'ernie-speed-128k', // ERNIE-Speed-128kK
+    ERNIE_TINY = 'ernie-tiny-8k', // ERNIE-Tiny-8K
+    ERNIE_CHAR = 'ernie-char-8k' // ERNIE-Character-8K-0321
 }
 
 // iFlyTek spark model

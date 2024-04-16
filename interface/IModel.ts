@@ -9,7 +9,8 @@ import {
     ChatModelProvider,
     ImagineModelProvider,
     ImgTaskType,
-    ModelModel
+    ModelModel,
+    EmbedModelProvider
 } from './Enum'
 
 export interface ChatMessage {
@@ -46,7 +47,7 @@ export interface ChatOption {
 }
 
 export interface EmbedOption {
-    provider?: ModelProvider
+    provider?: EmbedModelProvider
     model?: EmbedModel
 }
 

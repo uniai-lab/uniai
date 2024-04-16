@@ -1,7 +1,7 @@
 /** @format */
 
 import { ChatCompletionContentPart } from 'openai/resources'
-import { GLMChatModel } from './Enum'
+import { GLMChatModel, GLMEmbedModel } from './Enum'
 
 export interface GLMChatRequest {
     model?: GLMChatModel
@@ -15,6 +15,26 @@ export interface GLMChatRequest {
     stop?: string[]
     tools?: Tool[]
     tool_choice?: 'auto'
+}
+export interface GLMEmbedRequest {
+    model: GLMEmbedModel
+    input: string
+}
+
+export interface GLMEmbedResponse {
+    model: string
+    data: {
+        index: number
+        object: string
+        embedding: number[]
+    }[]
+    index: number
+    object: string
+    usage: {
+        prompt_tokens: number
+        completion_tokens: number
+        total_tokens: number
+    }
 }
 
 interface SystemMessage {
