@@ -30,7 +30,6 @@ import $ from '../util'
 const STORAGE_KEY = 'task_open_ai'
 const API = 'https://api.openai.com'
 const VER = 'v1'
-const MAX_TOKEN = 2096
 
 export default class OpenAI {
     private api: string
@@ -99,8 +98,9 @@ export default class OpenAI {
         const key = Array.isArray(this.key) ? $.getRandomKey(this.key) : this.key
         if (!key) throw new Error('OpenAI API key is not set in config')
 
-        if ([OpenAIChatModel.GPT4_VISION].includes(model)) maxLength = MAX_TOKEN
-        else messages = messages.map(({ role, content }) => ({ role, content }))
+        // remove imgs for not vision model
+        if (![OpenAIChatModel.GPT4_TURBO].includes(model))
+            messages = messages.map(({ role, content }) => ({ role, content }))
 
         // temperature is float in [0,1]
         if (typeof temperature === 'number') {

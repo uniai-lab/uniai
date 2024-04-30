@@ -33,13 +33,6 @@ describe('OpenAI Tests', () => {
         uni.chat().then(console.log).catch(console.error).finally(done)
     })
 
-    test('Test chat openai gpt-3.5-turbo-16k', done => {
-        uni.chat(input, { provider: ChatModelProvider.OpenAI, model: OpenAIChatModel.GPT3_16K })
-            .then(console.log)
-            .catch(console.error)
-            .finally(done)
-    })
-
     test('Test chat openai gpt-4 stream', done => {
         uni.chat(input, { stream: true, provider: ChatModelProvider.OpenAI, model: OpenAIChatModel.GPT4 }).then(res => {
             expect(res).toBeInstanceOf(Readable)
@@ -52,7 +45,7 @@ describe('OpenAI Tests', () => {
         })
     })
 
-    test('Test chat openai gpt-4 vision preview', done => {
+    test('Test chat openai gpt-4 turbo with vision', done => {
         const input: ChatMessage[] = [
             {
                 role: ChatRoleEnum.USER,
@@ -60,7 +53,7 @@ describe('OpenAI Tests', () => {
                 img: 'https://pics7.baidu.com/feed/1f178a82b9014a903fcc22f1e98d931fb11bee90.jpeg@f_auto?token=d5a33ea74668787d60d6f61c7b8f9ca2'
             }
         ]
-        uni.chat(input, { stream: true, provider: ChatModelProvider.OpenAI, model: OpenAIChatModel.GPT4_VISION }).then(
+        uni.chat(input, { stream: true, provider: ChatModelProvider.OpenAI, model: OpenAIChatModel.GPT4_TURBO }).then(
             res => {
                 expect(res).toBeInstanceOf(Readable)
                 const stream = res as Readable

@@ -54,9 +54,7 @@ export const EmbedModel = { ...OpenAIEmbedModel, ...OtherEmbedModel, ...GLMEmbed
 // openai chat models
 export enum OpenAIChatModel {
     GPT3 = 'gpt-3.5-turbo',
-    GPT3_16K = 'gpt-3.5-turbo-16k',
-    GPT4_TURBO = 'gpt-4-turbo-preview',
-    GPT4_VISION = 'gpt-4-vision-preview',
+    GPT4_TURBO = 'gpt-4-turbo',
     GPT4 = 'gpt-4'
 }
 
