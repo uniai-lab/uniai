@@ -38,8 +38,10 @@ export enum OpenAIEmbedModel {
 export enum OtherEmbedModel {
     BASE_CHN = 'text2vec-base-chinese',
     LARGE_CHN = 'text2vec-large-chinese',
-    BGE_LARGE_CHN = 'text2vec-bge-large-chinese',
-    BASE_CHN_PARA = 'text2vec-base-chinese-paraphrase'
+    BASE_CHN_PARAPH = 'text2vec-base-chinese-paraphrase',
+    BASE_CHN_SENTENCE = 'text2vec-base-chinese-sentence',
+    BASE_MUL = 'text2vec-base-multilingual',
+    PARAPH_MUL_MINI = 'paraphrase-multilingual-MiniLM-L12-v2'
 }
 
 export enum GLMEmbedModel {
@@ -67,7 +69,7 @@ export enum GoogleChatModel {
 
 // glm chat models
 export enum GLMChatModel {
-    GLM_6B = 'chatglm3-6b-32k',
+    GLM_6B = 'chatglm3-6b',
     GLM_3_TURBO = 'glm-3-turbo',
     GLM_4 = 'glm-4',
     GLM_4V = 'glm-4v'
