@@ -4,13 +4,13 @@ import '../env.d.ts'
 import UniAI from '../src'
 import { EmbedModelProvider, ModelProvider, OtherEmbedModel } from '../interface/Enum'
 
-const { OTHER_API } = process.env
+const { GLM_API } = process.env
 
 const input = 'Hi, who are you? Answer in 10 words!'
 
 let uni: UniAI
 
-beforeAll(() => (uni = new UniAI({ Other: { api: OTHER_API } })))
+beforeAll(() => (uni = new UniAI({ Other: { api: GLM_API } })))
 
 describe('Other Tests', () => {
     test('Test list Other models', () => {

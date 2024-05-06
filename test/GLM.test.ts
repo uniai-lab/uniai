@@ -29,7 +29,7 @@ describe('GLM Tests', () => {
         expect(provider.value).toEqual(ModelProvider.GLM)
     })
 
-    test('Test chat local chatglm3-6b-32k', done => {
+    test('Test chat local chatglm3-6b', done => {
         uni.chat(input, { provider: ChatModelProvider.GLM, model: GLMChatModel.GLM_6B })
             .then(console.log)
             .catch(console.error)
@@ -64,7 +64,7 @@ describe('GLM Tests', () => {
             },
             {
                 role: ChatRoleEnum.USER,
-                content: '连同当前这幅画，我一共给你传了几张图？',
+                content: '连同当前这幅画，我一共给你传了几张图？分别描述下',
                 img: 'https://api.uniai.cas-ll.cn/wechat/file?path=minio/a82db85d-d8e6-4281-8734-bedd54420c0d.jpg&name=IMG_20190208_132658%20(1).jpg'
             }
         ]
