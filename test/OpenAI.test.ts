@@ -33,6 +33,20 @@ describe('OpenAI Tests', () => {
         uni.chat().then(console.log).catch(console.error).finally(done)
     })
 
+    test('Test chat openai gpt4o', done => {
+        const input: ChatMessage[] = [
+            {
+                role: ChatRoleEnum.USER,
+                content: '描述下这张图片，是个男人还是女人，她在做什么？',
+                img: 'https://pics7.baidu.com/feed/1f178a82b9014a903fcc22f1e98d931fb11bee90.jpeg@f_auto?token=d5a33ea74668787d60d6f61c7b8f9ca2'
+            }
+        ]
+        uni.chat(input, { stream: false, provider: ChatModelProvider.OpenAI, model: OpenAIChatModel.GPT4_O })
+            .then(console.log)
+            .catch(console.error)
+            .finally(done)
+    }, 10000)
+
     test('Test chat openai gpt-4 stream', done => {
         uni.chat(input, { stream: true, provider: ChatModelProvider.OpenAI, model: OpenAIChatModel.GPT4 }).then(res => {
             expect(res).toBeInstanceOf(Readable)
