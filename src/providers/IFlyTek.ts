@@ -9,14 +9,7 @@ import {
     SPKImagineRequest,
     SPKImagineResponse
 } from '../../interface/IFlyTek'
-import {
-    ChatRoleEnum,
-    IFlyTekChatModel,
-    SPKChatRoleEnum,
-    SparkDomain,
-    IFlyTekImagineModel,
-    SPKTaskType
-} from '../../interface/Enum'
+import { ChatRoleEnum, IFlyTekChatModel, SparkDomain, IFlyTekImagineModel, SPKTaskType } from '../../interface/Enum'
 import { createHmac } from 'crypto'
 import { hostname } from 'os'
 import { PassThrough, Readable } from 'stream'
@@ -243,18 +236,11 @@ export default class IFlyTek {
 
     private formatMessage(messages: ChatMessage[]) {
         const prompt: SPKChatMessage[] = []
-        let input = ''
+
         for (const { role, content } of messages) {
-            if (!content) continue
-            if (role !== ChatRoleEnum.ASSISTANT) input += `\n${content}`
-            else {
-                prompt.push({ role: SPKChatRoleEnum.USER, content: input.trim() || ' ' })
-                prompt.push({ role: SPKChatRoleEnum.ASSISTANT, content })
-                input = ''
-            }
+            if (role === ChatRoleEnum.FUNCTION) continue
+            prompt.push({ role, content })
         }
-        if (!input.trim()) throw new Error('User input nothing')
-        prompt.push({ role: SPKChatRoleEnum.USER, content: input.trim() })
         return prompt
     }
 }

@@ -1,13 +1,42 @@
 /** @format */
 import 'dotenv/config'
 import '../env.d.ts'
-import UniAI from '../src'
-import { ModelProvider, IFlyTekChatModel, ChatModelProvider } from '../interface/Enum'
+import UniAI, { ChatMessage } from '../src'
+import { ModelProvider, IFlyTekChatModel, ChatModelProvider, ChatRoleEnum } from '../interface/Enum'
 import { Readable } from 'stream'
 
 const { FLY_API_KEY, FLY_API_SECRET, FLY_APP_ID } = process.env
 
-const input = 'Hi, who are you? Answer in 10 words!'
+const input: ChatMessage[] = [
+    {
+        role: ChatRoleEnum.SYSTEM,
+        content: 'Remember, now, You are a translator, you can only translate English to Chinese'
+    },
+    {
+        role: ChatRoleEnum.USER,
+        content: 'Hello, bull shit'
+    },
+    {
+        role: ChatRoleEnum.USER,
+        content: 'Hello, shiba inu'
+    },
+    {
+        role: ChatRoleEnum.ASSISTANT,
+        content: '你好，牛屎'
+    },
+    {
+        role: ChatRoleEnum.ASSISTANT,
+        content: '你好，柴犬'
+    },
+    {
+        role: ChatRoleEnum.USER,
+        content: 'I am a really good guy, I dont want to go to school'
+    },
+    {
+        role: ChatRoleEnum.USER,
+        content: 'Translate all above'
+    }
+]
 
 let uni: UniAI
 

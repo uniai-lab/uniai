@@ -1,7 +1,5 @@
 /** @format */
 
-import { SPKChatRoleEnum } from './Enum'
-
 // spark chat model request interface
 export interface SPKChatRequest {
     header: {
@@ -24,10 +22,20 @@ export interface SPKChatRequest {
     }
 }
 
-export interface SPKChatMessage {
-    role: SPKChatRoleEnum
+interface SystemMessage {
+    role: 'system'
     content: string
 }
+interface UserMessage {
+    role: 'user'
+    content: string
+}
+interface AssistantMessage {
+    role: 'assistant'
+    content: string
+}
+
+export type SPKChatMessage = SystemMessage | AssistantMessage | UserMessage
 
 // spark chat model response interface
 export interface SPKChatResponse {

@@ -196,8 +196,10 @@ export enum GPTChatRoleEnum {
 
 // IflyTek Spark model roles
 export enum SPKChatRoleEnum {
+    SYSTEM = 'system',
     USER = 'user',
-    ASSISTANT = 'assistant'
+    ASSISTANT = 'assistant',
+    FUNCTION = 'function'
 }
 
 // ChatGLM model roles
