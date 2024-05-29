@@ -52,14 +52,14 @@ describe('IFlyTek Tests', () => {
     })
 
     test('Test chat iFlyTek spark v3.1', done => {
-        uni.chat(input, { provider: ChatModelProvider.IFlyTek, model: IFlyTekChatModel.SPARK_V3 })
+        uni.chat(input, { provider: ChatModelProvider.IFlyTek, model: IFlyTekChatModel.SPARK_PRO })
             .then(console.log)
             .catch(console.error)
             .finally(done)
     })
 
-    test('Test chat IFlyTek spark v1.1 stream', done => {
-        uni.chat(input, { stream: true, provider: ChatModelProvider.IFlyTek, model: IFlyTekChatModel.SPARK_V1 }).then(
+    test('Test chat IFlyTek spark v3.5 stream', done => {
+        uni.chat(input, { stream: true, provider: ChatModelProvider.IFlyTek, model: IFlyTekChatModel.SPARK_MAX }).then(
             res => {
                 expect(res).toBeInstanceOf(Readable)
                 const stream = res as Readable

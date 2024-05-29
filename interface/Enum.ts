@@ -87,16 +87,23 @@ export enum BaiduChatModel {
 
 // iFlyTek spark model
 export enum IFlyTekChatModel {
-    SPARK_V1 = 'v1.1',
-    SPARK_V2 = 'v2.1',
-    SPARK_V3 = 'v3.1',
-    SPARK_V3_5 = 'v3.5'
+    SPARK_LITE = 'lite',
+    SPARK_V2 = 'v2.0',
+    SPARK_PRO = 'pro',
+    SPARK_MAX = 'max'
+}
+// iFlyTek spark model version
+export const IFlyTekModelVersion = {
+    [IFlyTekChatModel.SPARK_LITE]: 'v1.1',
+    [IFlyTekChatModel.SPARK_V2]: 'v2.1',
+    [IFlyTekChatModel.SPARK_PRO]: 'v3.1',
+    [IFlyTekChatModel.SPARK_MAX]: 'v3.5'
 }
 export const SparkDomain = {
-    [IFlyTekChatModel.SPARK_V1]: 'general',
+    [IFlyTekChatModel.SPARK_LITE]: 'general',
     [IFlyTekChatModel.SPARK_V2]: 'generalv2',
-    [IFlyTekChatModel.SPARK_V3]: 'generalv3',
-    [IFlyTekChatModel.SPARK_V3_5]: 'generalv3.5'
+    [IFlyTekChatModel.SPARK_PRO]: 'generalv3',
+    [IFlyTekChatModel.SPARK_MAX]: 'generalv3.5'
 }
 
 export enum MoonShotChatModel {

@@ -9,7 +9,14 @@ import {
     SPKImagineRequest,
     SPKImagineResponse
 } from '../../interface/IFlyTek'
-import { ChatRoleEnum, IFlyTekChatModel, SparkDomain, IFlyTekImagineModel, SPKTaskType } from '../../interface/Enum'
+import {
+    ChatRoleEnum,
+    IFlyTekChatModel,
+    IFlyTekModelVersion,
+    SparkDomain,
+    IFlyTekImagineModel,
+    SPKTaskType
+} from '../../interface/Enum'
 import { createHmac } from 'crypto'
 import { hostname } from 'os'
 import { PassThrough, Readable } from 'stream'
@@ -43,7 +50,7 @@ export default class IFlyTek {
      */
     chat(
         messages: ChatMessage[],
-        model: IFlyTekChatModel = IFlyTekChatModel.SPARK_V3,
+        model: IFlyTekChatModel = IFlyTekChatModel.SPARK_LITE,
         stream: boolean = false,
         top?: number,
         temperature?: number,
@@ -196,15 +203,15 @@ export default class IFlyTek {
     }
 
     /**
-     * Generates the WebSocket URL for the Spark API request.
+     * Generates the WebSocket URL for the Spark Chat API request.
      *
-     * @param version - The Spark model version.
-     * @returns The WebSocket URL.
+     * @param model - The Spark model.
      */
-    private getSparkURL(version: IFlyTekChatModel) {
+    private getSparkURL(model: IFlyTekChatModel) {
         if (!this.secret) throw new Error('IFlyTek API secret is not set in config')
         if (!this.key) throw new Error('IFlyTek API key is not set in config')
 
+        const version = IFlyTekModelVersion[model]
         const host = hostname()
         const date = new Date().toUTCString()
         const algorithm = 'hmac-sha256'
@@ -217,12 +224,16 @@ export default class IFlyTek {
         return `${SPARK_API}/${version}/chat?authorization=${authorization}&date=${date}&host=${host}`
     }
 
-    // get imagine url
+    /**
+     * Generates the Imagine API URL.
+     *
+     * @param model - The Spark imagine model.
+     */
     private getImagineURL(model: IFlyTekImagineModel) {
         if (!this.secret) throw new Error('IFlyTek API secret is not set in config')
         if (!this.key) throw new Error('IFlyTek API key is not set in config')
 
-        const host = 'spark-api.xf-yun.com'
+        const host = hostname()
         const date = new Date().toUTCString()
         const algorithm = 'hmac-sha256'
         const headers = 'host date request-line'
@@ -234,6 +245,11 @@ export default class IFlyTek {
         return `${IMAGINE_API}/${model}/tti?authorization=${authorization}&date=${date}&host=${host}`
     }
 
+    /**
+     * Format the chat message for IFlyTek Spark model.
+     *
+     * @param messages - Original chat messages
+     */
     private formatMessage(messages: ChatMessage[]) {
         const prompt: SPKChatMessage[] = []
 

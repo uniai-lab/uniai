@@ -1,7 +1,7 @@
 /** @format */
 import 'dotenv/config'
 import '../env.d.ts'
-import UniAI, { ImagineModelProvider, ModelProvider, OpenAIImagineModel } from '../src'
+import UniAI, { ImagineModel, ImagineModelProvider, ModelProvider } from '../src'
 
 const {
     MID_JOURNEY_API,
@@ -30,7 +30,7 @@ beforeAll(() => {
 
 describe('Imagine Tests', () => {
     test('Test OpenAI imagine', done => {
-        uni.imagine(prompt, { provider: ImagineModelProvider.OpenAI, model: OpenAIImagineModel.DALL_E_3 })
+        uni.imagine(prompt, { provider: ImagineModelProvider.OpenAI, model: ImagineModel.DALL_E_3 })
             .then(res => uni.task(ModelProvider.OpenAI, res.taskId))
             .then(console.log)
             .catch(console.error)
