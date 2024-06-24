@@ -78,7 +78,7 @@ export default class Baidu {
         if (res instanceof Readable) {
             const output = new PassThrough()
             const parser = new EventSourceStream()
-            parser.on('data', (e: MessageEvent) => {
+            parser.on('data', (e: MessageEvent<string>) => {
                 const obj = $.json<BaiduChatResponse>(e.data)
                 if (obj?.result) {
                     data.content = obj.result

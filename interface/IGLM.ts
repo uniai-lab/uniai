@@ -110,6 +110,8 @@ interface WebSearchTool {
 
 export interface GLMChatResponse {
     id: string
+    model: string
+    object: string
     created: number
     choices: Choice[]
     usage: Usage

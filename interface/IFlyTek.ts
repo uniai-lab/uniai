@@ -46,7 +46,7 @@ export interface SPKChatResponse {
         status: number
     }
     payload?: {
-        choices: {
+        choices?: {
             status: number
             seq: number
             text: [
@@ -65,8 +65,6 @@ export interface SPKChatResponse {
                 total_tokens: number
             }
         }
-        model: string
-        object: string
     }
 }
 

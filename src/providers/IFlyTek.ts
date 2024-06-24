@@ -97,23 +97,25 @@ export default class IFlyTek {
                 ws.on('message', (e: Buffer) => {
                     const res = $.json<SPKChatResponse>(e.toString('utf-8'))
                     if (!res) {
-                        ws.close()
                         output.destroy(new Error('Response data is not JSON'))
-                    } else {
-                        if (res && res.header.code === 0 && res.payload) {
-                            data.content = res.payload.choices.text[0].content
-                            data.promptTokens = res.payload?.usage?.text.prompt_tokens || 0
-                            data.completionTokens = res.payload?.usage?.text.completion_tokens || 0
-                            data.totalTokens = res.payload?.usage?.text.total_tokens || 0
-                            data.object = `chat.completion.chunk`
-                            output.write(JSON.stringify(data))
-                        } else {
-                            output.destroy(new Error(res.header.message))
-                            ws.close()
-                        }
-
-                        if (res.header.status === 2) ws.close()
+                        return ws.close()
                     }
+                    if (res.header.code !== 0) {
+                        output.destroy(new Error(res.header.message))
+                        return ws.close()
+                    }
+                    const { payload } = res
+                    if (payload) {
+                        data.content = payload.choices?.text[0].content || ''
+                        data.promptTokens = payload.usage?.text.prompt_tokens || 0
+                        data.completionTokens = payload.usage?.text.completion_tokens || 0
+                        data.totalTokens = payload.usage?.text.total_tokens || 0
+                        data.object = `chat.completion.chunk`
+                        if (data.content) output.write(JSON.stringify(data))
+                    }
+
+                    // status=2 is the last response
+                    if (res.header.status === 2) ws.close()
                 })
                 ws.on('close', () => output.end())
                 ws.on('error', e => output.destroy(e))
@@ -121,17 +123,22 @@ export default class IFlyTek {
             } else {
                 ws.on('message', (e: Buffer) => {
                     const res = $.json<SPKChatResponse>(e.toString('utf-8'))
-                    if (!res) return reject(new Error('Response data is not JSON'))
-
-                    if (res.header.code === 0 && res.payload) {
-                        data.content += res.payload.choices.text[0].content
-                        data.promptTokens = res.payload.usage?.text.prompt_tokens || 0
-                        data.completionTokens = res.payload.usage?.text.completion_tokens || 0
-                        data.totalTokens = res.payload.usage?.text.total_tokens || 0
-                        data.object = `chat.completion`
-                    } else {
+                    if (!res) {
+                        reject(new Error('Response data is not JSON'))
+                        return ws.close()
+                    }
+                    if (res.header.code !== 0) {
                         reject(new Error(res.header.message))
-                        ws.close()
+                        return ws.close()
+                    }
+
+                    const { payload } = res
+                    if (payload) {
+                        data.content += payload.choices?.text[0].content || ''
+                        data.promptTokens = payload.usage?.text.prompt_tokens || 0
+                        data.completionTokens = payload.usage?.text.completion_tokens || 0
+                        data.totalTokens = payload.usage?.text.total_tokens || 0
+                        data.object = `chat.completion`
                     }
 
                     if (res.header.status === 2) ws.close()

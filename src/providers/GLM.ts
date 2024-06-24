@@ -107,9 +107,11 @@ export default class GLM {
             totalTokens: 0
         }
 
+        // ZHIPU GLM official API
         let url = `${this.proxyAPI}/api/paas/v4/chat/completions`
         const headers = new AxiosHeaders()
-        if (model === GLMChatModel.GLM_6B) {
+        if (model === GLMChatModel.GLM_6B || model === GLMChatModel.GLM_9B) {
+            // use local deployed open source GLM API, 6B and 9B
             if (!this.localAPI) throw new Error('Local GLM API is not set in config')
             url = `${this.localAPI}/chat`
         } else {
@@ -129,13 +131,14 @@ export default class GLM {
 
             parser.on('data', (e: MessageEvent) => {
                 const obj = $.json<GLMChatResponse>(e.data)
-                if (obj?.choices[0].delta?.content) {
-                    data.content = obj.choices[0].delta.content
-                    data.object = 'chat.completion.chunk'
+                if (obj) {
+                    data.content = obj.choices[0].delta?.content || ''
+                    data.model = obj.model
+                    data.object = obj.object
                     data.promptTokens = obj.usage?.prompt_tokens || 0
                     data.completionTokens = obj.usage?.completion_tokens || 0
                     data.totalTokens = obj.usage?.total_tokens || 0
-                    output.write(JSON.stringify(data))
+                    if (data.content) output.write(JSON.stringify(data))
                 }
             })
 
@@ -146,7 +149,8 @@ export default class GLM {
             return output as Readable
         } else {
             data.content = res.choices[0].message?.content || ''
-            data.object = 'chat.completion'
+            data.model = res.model
+            data.object = res.object
             data.promptTokens = res.usage?.prompt_tokens || 0
             data.completionTokens = res.usage?.completion_tokens || 0
             data.totalTokens = res.usage?.total_tokens || 0

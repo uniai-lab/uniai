@@ -51,24 +51,33 @@ describe('IFlyTek Tests', () => {
         expect(provider.value).toEqual(ModelProvider.IFlyTek)
     })
 
-    test('Test chat iFlyTek spark v3.1', done => {
-        uni.chat(input, { provider: ChatModelProvider.IFlyTek, model: IFlyTekChatModel.SPARK_PRO })
+    test('Test chat iFlyTek spark lite', done => {
+        uni.chat(input, { provider: ChatModelProvider.IFlyTek, model: IFlyTekChatModel.SPARK_LITE })
             .then(console.log)
             .catch(console.error)
             .finally(done)
     })
 
-    test('Test chat IFlyTek spark v3.5 stream', done => {
-        uni.chat(input, { stream: true, provider: ChatModelProvider.IFlyTek, model: IFlyTekChatModel.SPARK_MAX }).then(
-            res => {
-                expect(res).toBeInstanceOf(Readable)
-                const stream = res as Readable
-                let data = ''
-                stream.on('data', chunk => (data += JSON.parse(chunk.toString()).content))
-                stream.on('end', () => console.log(data))
-                stream.on('error', e => console.error(e))
-                stream.on('close', () => done())
-            }
-        )
+    test('Test chat iFlyTek spark pro', done => {
+        uni.chat(input, { provider: ChatModelProvider.IFlyTek, model: IFlyTekChatModel.SPARK_MAX })
+            .then(console.log)
+            .catch(console.error)
+            .finally(done)
     })
+
+    test('Test chat IFlyTek spark max stream', done => {
+        uni.chat('查询最近5天苏州的气温，绘制成折线图', {
+            stream: true,
+            provider: ChatModelProvider.IFlyTek,
+            model: IFlyTekChatModel.SPARK_MAX
+        }).then(res => {
+            expect(res).toBeInstanceOf(Readable)
+            const stream = res as Readable
+            let data = ''
+            stream.on('data', chunk => (data += JSON.parse(chunk.toString()).content))
+            stream.on('end', () => console.log(data))
+            stream.on('error', e => console.error(e))
+            stream.on('close', () => done())
+        })
+    }, 60000)
 })
