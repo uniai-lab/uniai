@@ -67,7 +67,6 @@ export default class OpenAI {
             embedding: res.data.map(v => v.embedding),
             object: 'embedding',
             model,
-            dimension: res.data[0].embedding.length || 0,
             promptTokens: res.usage.prompt_tokens || 0,
             totalTokens: res.usage.total_tokens || 0
         }

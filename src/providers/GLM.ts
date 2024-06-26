@@ -55,8 +55,7 @@ export default class GLM {
         const data: EmbeddingResponse = {
             embedding: res.map(v => v.data[0].embedding),
             object: 'embedding',
-            model: res[0].model as GLMEmbedModel,
-            dimension: res[0].data[0].embedding.length || 0,
+            model,
             promptTokens: res.reduce((acc, cur) => acc + (cur.usage.prompt_tokens || 0), 0),
             totalTokens: res.reduce((acc, cur) => acc + (cur.usage.total_tokens || 0), 0)
         }

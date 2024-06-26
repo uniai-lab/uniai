@@ -21,7 +21,6 @@ export interface ChatMessage {
 
 export interface EmbeddingResponse {
     embedding: number[][]
-    dimension: number
     model: EmbedModel
     object: 'embedding'
     promptTokens: number
