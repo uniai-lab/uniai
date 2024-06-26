@@ -134,7 +134,7 @@ export default class GLM {
                 if (obj) {
                     data.content = obj.choices[0].delta?.content || ''
                     data.model = obj.model
-                    data.object = obj.object
+                    data.object = obj.object || 'chat.completion.chunk'
                     data.promptTokens = obj.usage?.prompt_tokens || 0
                     data.completionTokens = obj.usage?.completion_tokens || 0
                     data.totalTokens = obj.usage?.total_tokens || 0
@@ -150,7 +150,7 @@ export default class GLM {
         } else {
             data.content = res.choices[0].message?.content || ''
             data.model = res.model
-            data.object = res.object
+            data.object = res.object || 'chat.completion'
             data.promptTokens = res.usage?.prompt_tokens || 0
             data.completionTokens = res.usage?.completion_tokens || 0
             data.totalTokens = res.usage?.total_tokens || 0

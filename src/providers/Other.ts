@@ -35,7 +35,7 @@ export default class Other {
         const res = await $.post<OtherEmbedRequest, OtherEmbedResponse>(`${this.api}/embedding`, { prompt, model })
         const data: EmbeddingResponse = {
             embedding: res.data,
-            dimension: res.data[0].length,
+            dimension: res.data[0].length || 0,
             model,
             object: 'embedding',
             promptTokens: 0,

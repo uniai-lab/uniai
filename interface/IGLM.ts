@@ -111,15 +111,16 @@ interface WebSearchTool {
 export interface GLMChatResponse {
     id: string
     model: string
-    object: string
+    object?: string
     created: number
     choices: Choice[]
     usage: Usage
+    web_search?: WebSearch
 }
 
 interface Choice {
     index: number
-    finish_reason: 'stop' | 'tool_calls' | 'length'
+    finish_reason: 'stop' | 'tool_calls' | 'length' | 'sensitive' | 'network_error'
     delta?: Message
     message?: Message
 }
@@ -141,6 +142,14 @@ interface Usage {
     prompt_tokens: number
     completion_tokens: number
     total_tokens: number
+}
+
+interface WebSearch {
+    icon: string
+    title: string
+    link: string
+    media: string
+    content: string
 }
 
 export interface GLMTokenCache {

@@ -69,7 +69,7 @@ export enum GoogleChatModel {
 // glm chat models
 export enum GLMChatModel {
     GLM_6B = 'chatglm3-6b',
-    GLM_9B = 'glm4-9b-chat',
+    GLM_9B = 'glm-4-9b-chat',
     GLM_3_TURBO = 'glm-3-turbo',
     GLM_4 = 'glm-4',
     GLM_4V = 'glm-4v'
