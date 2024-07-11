@@ -72,7 +72,11 @@ export enum GLMChatModel {
     GLM_9B = 'glm-4-9b-chat',
     GLM_3_TURBO = 'glm-3-turbo',
     GLM_4 = 'glm-4',
+    GLM_4_AIR = 'glm-4-air',
+    GLM_4_AIRX = 'glm-4-airx',
+    GLM_4_FLASH = 'glm-4-flash',
     GLM_4V = 'glm-4v'
+    // GLM_4_ALL = 'glm-4-alltools'
 }
 
 // https://cloud.baidu.com/doc/WENXINWORKSHOP/s/clntwmv7t
@@ -89,22 +93,22 @@ export enum BaiduChatModel {
 // iFlyTek spark model
 export enum IFlyTekChatModel {
     SPARK_LITE = 'lite',
-    SPARK_V2 = 'v2.0',
     SPARK_PRO = 'pro',
-    SPARK_MAX = 'max'
+    SPARK_MAX = 'max',
+    SPARK_ULTRA = 'ultra'
 }
 // iFlyTek spark model version
 export const IFlyTekModelVersion = {
     [IFlyTekChatModel.SPARK_LITE]: 'v1.1',
-    [IFlyTekChatModel.SPARK_V2]: 'v2.1',
     [IFlyTekChatModel.SPARK_PRO]: 'v3.1',
-    [IFlyTekChatModel.SPARK_MAX]: 'v3.5'
+    [IFlyTekChatModel.SPARK_MAX]: 'v3.5',
+    [IFlyTekChatModel.SPARK_ULTRA]: 'v4.0'
 }
 export const SparkDomain = {
     [IFlyTekChatModel.SPARK_LITE]: 'general',
-    [IFlyTekChatModel.SPARK_V2]: 'generalv2',
     [IFlyTekChatModel.SPARK_PRO]: 'generalv3',
-    [IFlyTekChatModel.SPARK_MAX]: 'generalv3.5'
+    [IFlyTekChatModel.SPARK_MAX]: 'generalv3.5',
+    [IFlyTekChatModel.SPARK_ULTRA]: '4.0Ultra'
 }
 
 export enum MoonShotChatModel {

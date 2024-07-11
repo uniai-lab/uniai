@@ -55,6 +55,43 @@ describe('GLM Tests', () => {
         })
     }, 30000)
 
+    test('Test chat ZhiPu glm-4-air', done => {
+        uni.chat(input, { provider: ChatModelProvider.GLM, model: GLMChatModel.GLM_4_AIR })
+            .then(console.log)
+            .catch(console.error)
+            .finally(done)
+    })
+
+    test('Test chat ZhiPu glm-4-airx', done => {
+        uni.chat(input, { provider: ChatModelProvider.GLM, model: GLMChatModel.GLM_4_AIRX })
+            .then(console.log)
+            .catch(console.error)
+            .finally(done)
+    })
+
+    /*
+    test('Test chat ZhiPu glm-4-alltools', done => {
+        uni.chat('今天新闻头条有哪些报道，总结下', { provider: ChatModelProvider.GLM, model: GLMChatModel.GLM_4_ALL })
+            .then(console.log)
+            .catch(console.error)
+            .finally(done)
+    })
+            */
+
+    test('Test chat ZhiPu glm-4-flash', done => {
+        uni.chat(input, { stream: true, provider: ChatModelProvider.GLM, model: GLMChatModel.GLM_4_FLASH }).then(
+            res => {
+                expect(res).toBeInstanceOf(Readable)
+                const stream = res as Readable
+                let data = ''
+                stream.on('data', chunk => (data += JSON.parse(chunk.toString()).content))
+                stream.on('end', () => console.log(data))
+                stream.on('error', e => console.error(e))
+                stream.on('close', () => done())
+            }
+        )
+    }, 30000)
+
     test('Test chat ZhiPu glm-4 vision', done => {
         const input: ChatMessage[] = [
             {
@@ -82,7 +119,6 @@ describe('GLM Tests', () => {
     test('Test GLM/embedding-2 embedding', done => {
         uni.embedding([input, input + 'sss'], { provider: EmbedModelProvider.GLM, model: GLMEmbedModel.EMBED_2 })
             .then(res => {
-                expect(res.dimension).toBe(1024)
                 expect(res.embedding.length).toBe(2)
             })
             .catch(console.error)

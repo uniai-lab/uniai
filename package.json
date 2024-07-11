@@ -1,8 +1,8 @@
 {
     "name": "uniai",
-    "version": "1.7.9",
+    "version": "1.8.0",
     "author": "devilyouwei",
-    "description": "To unify all AI models!",
+    "description": "To unify AI models!",
     "repository": "https://github.com/uni-openai/uniai",
     "license": "MIT",
     "private": false,
