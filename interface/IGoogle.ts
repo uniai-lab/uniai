@@ -13,6 +13,19 @@ export interface GEMChatMessage {
     parts: Part[]
 }
 
+export interface GoogleEmbedRequest {
+    model: string
+    content: {
+        parts: { text: string }[]
+    }
+}
+
+export interface GoogleEmbedResponse {
+    embedding: {
+        values: number[]
+    }
+}
+
 interface Part {
     text?: string
     inline_data?: InlineData

@@ -13,6 +13,7 @@ export enum ChatModelProvider {
 
 export enum EmbedModelProvider {
     OpenAI = 'openai',
+    Google = 'google',
     GLM = 'glm',
     Other = 'other'
 }
@@ -48,8 +49,12 @@ export enum GLMEmbedModel {
     EMBED_2 = 'embedding-2'
 }
 
-export type EmbedModel = OpenAIEmbedModel | OtherEmbedModel | GLMEmbedModel
-export const EmbedModel = { ...OpenAIEmbedModel, ...OtherEmbedModel, ...GLMEmbedModel }
+export enum GoogleEmbedModel {
+    EMBED_4 = 'text-embedding-004'
+}
+
+export type EmbedModel = OpenAIEmbedModel | OtherEmbedModel | GLMEmbedModel | GoogleEmbedModel
+export const EmbedModel = { ...OpenAIEmbedModel, ...OtherEmbedModel, ...GLMEmbedModel, ...GoogleEmbedModel }
 
 // openai chat models
 export enum OpenAIChatModel {
@@ -61,9 +66,9 @@ export enum OpenAIChatModel {
 
 // google chat models
 export enum GoogleChatModel {
-    GEM_PRO = 'gemini-pro',
-    GEM_VISION = 'gemini-pro-vision',
-    GEM_ULTRA = 'gemini-ultra'
+    GEM_PRO_1_5 = 'gemini-1.5-pro',
+    GEM_FLASH_1_5 = 'gemini-1.5-flash',
+    GEM_PRO_1 = 'gemini-1.0-pro'
 }
 
 // glm chat models

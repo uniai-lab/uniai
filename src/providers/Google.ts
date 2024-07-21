@@ -3,31 +3,25 @@
 import { PassThrough, Readable } from 'stream'
 import { JSONParser } from '@streamparser/json-node'
 import { decodeStream } from 'iconv-lite'
-import { GEMChatRequest, GEMChatResponse, GEMChatMessage } from '../../interface/IGoogle'
-import { ChatRoleEnum, GEMChatRoleEnum, GoogleChatModel } from '../../interface/Enum'
-import { ChatMessage, ChatResponse } from '../../interface/IModel'
-import $ from '../util'
+import {
+    GEMChatRequest,
+    GEMChatResponse,
+    GEMChatMessage,
+    GoogleEmbedRequest,
+    GoogleEmbedResponse
+} from '../../interface/IGoogle'
+import { ChatRoleEnum, GEMChatRoleEnum, GoogleChatModel, GoogleEmbedModel } from '../../interface/Enum'
+import { ChatMessage, ChatResponse, EmbeddingResponse } from '../../interface/IModel'
 import { extname } from 'path'
 import { readFileSync } from 'fs'
+import $ from '../util'
 
 const API = 'https://generativelanguage.googleapis.com'
 const SAFE_SET = [
-    {
-        category: 'HARM_CATEGORY_HARASSMENT',
-        threshold: 'BLOCK_NONE'
-    },
-    {
-        category: 'HARM_CATEGORY_HATE_SPEECH',
-        threshold: 'BLOCK_NONE'
-    },
-    {
-        category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT',
-        threshold: 'BLOCK_NONE'
-    },
-    {
-        category: 'HARM_CATEGORY_DANGEROUS_CONTENT',
-        threshold: 'BLOCK_NONE'
-    }
+    { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_NONE' },
+    { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_NONE' },
+    { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_NONE' },
+    { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_NONE' }
 ]
 
 export default class Google {
@@ -45,6 +39,38 @@ export default class Google {
     }
 
     /**
+     * Fetches embeddings for input text.
+     *
+     * @param input - An array of input strings.
+     * @param model - The model to use for embeddings (default: text-embedding-ada-002).
+     * @returns A promise resolving to the embedding response.
+     */
+    async embedding(input: string[], model: GoogleEmbedModel = GoogleEmbedModel.EMBED_4) {
+        const key = Array.isArray(this.key) ? $.getRandomKey(this.key) : this.key
+        if (!key) throw new Error('Google API key is not set in config')
+
+        const request: Promise<GoogleEmbedResponse>[] = []
+        for (const text of input) {
+            request.push(
+                $.post<GoogleEmbedRequest, GoogleEmbedResponse>(
+                    `${this.api}/v1beta/models/${model}:embedContent?key=${key}`,
+                    { model: `models/${model}`, content: { parts: [{ text }] } }
+                )
+            )
+        }
+        const res = await Promise.all(request)
+
+        const data: EmbeddingResponse = {
+            embedding: res.map(v => v.embedding.values),
+            object: 'embedding',
+            model,
+            promptTokens: 0,
+            totalTokens: 0
+        }
+        return data
+    }
+
+    /**
      * Sends messages to the Google Gemini chat model.
      * @param messages - An array of chat messages.
      * @param model - The model to use for chat (default: gemini-pro).
@@ -56,7 +82,7 @@ export default class Google {
      */
     async chat(
         messages: ChatMessage[],
-        model: GoogleChatModel = GoogleChatModel.GEM_PRO,
+        model: GoogleChatModel = GoogleChatModel.GEM_PRO_1_5,
         stream: boolean = false,
         top?: number,
         temperature?: number,
@@ -64,9 +90,8 @@ export default class Google {
     ) {
         if (!Object.values(GoogleChatModel).includes(model)) throw new Error('Google chat model not found')
 
-        if ([GoogleChatModel.GEM_VISION].includes(model)) {
-            if (!messages.some(v => v.img)) throw new Error('Use Google vision model but input no image')
-        } else messages = messages.map(({ role, content }) => ({ role, content }))
+        if (![GoogleChatModel.GEM_PRO_1_5, GoogleChatModel.GEM_FLASH_1_5].includes(model))
+            messages = messages.map(({ role, content }) => ({ role, content }))
 
         const key = Array.isArray(this.key) ? $.getRandomKey(this.key) : this.key
         if (!key) throw new Error('Google AI API key is not set in config')
