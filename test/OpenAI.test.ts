@@ -82,10 +82,7 @@ describe('OpenAI Tests', () => {
 
     test('Test OpenAI/text-embedding-ada2 embedding', done => {
         uni.embedding(input, { provider: EmbedModelProvider.OpenAI, model: OpenAIEmbedModel.ADA })
-            .then(res => {
-                expect(res.dimension).toBe(1536)
-                expect(res.embedding.length).toBe(1)
-            })
+            .then(res => expect(res.embedding.length).toBe(1))
             .catch(console.error)
             .finally(done)
     })

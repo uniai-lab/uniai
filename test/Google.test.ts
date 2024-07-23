@@ -79,9 +79,7 @@ describe('Google Tests', () => {
 
     test('Test Google/embedding-2 embedding', done => {
         uni.embedding([input, input + 'sss'], { provider: EmbedModelProvider.Google, model: EmbedModel.EMBED_4 })
-            .then(res => {
-                expect(res.embedding.length).toBe(2)
-            })
+            .then(res => expect(res.embedding.length).toBe(2))
             .catch(console.error)
             .finally(done)
     })

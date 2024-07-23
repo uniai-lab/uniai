@@ -38,18 +38,13 @@ async function main() {
             img: 'https://api.uniai.cas-ll.cn/wechat/file?path=minio/6c9b6317-97a8-43ec-b949-cf3f861f8575.png&name=IMG_20190208_132658%20(2).png'
         }
     ]
-    await stream(input, { provider: 'openai', model: 'gpt-3.5-turbo' })
-    await stream(input, { provider: 'google', model: 'gemini-pro-vision' })
+    await stream(input, { provider: 'openai', model: 'gpt-4o' })
+    await stream(input, { provider: 'google', model: 'gemini-1.5-pro' })
     await stream('你是谁？是谁开发的？', { provider: 'baidu', temperature: 0, top: 0, maxLength: 10 })
     await stream('Introduce yourself in 10 words', { provider: 'google', maxLength: 1024, top: 1, temperature: 1 })
-    await stream('你是谁？是谁开发的？', { provider: 'iflytek', model: 'v3.1', temperature: 11 })
+    await stream('你是谁？是谁开发的？', { provider: 'iflytek', model: 'pro', temperature: 11 })
     await stream('あなたは誰ですか。誰が開発したの?', { provider: 'glm', model: 'glm-4' })
-    await stream('누구세요?누가 당신을 개발했습니까?', {
-        provider: 'moonshot',
-        model: 'moonshot-v1-8k',
-        top: 1,
-        temperature: 1
-    })
+    await stream('누구세요?누가 당신을 개발했습니까?', { provider: 'moonshot', model: 'moonshot-v1-8k' })
 }
 
 async function stream(query, option) {

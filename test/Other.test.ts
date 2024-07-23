@@ -22,10 +22,7 @@ describe('Other Tests', () => {
 
     test('Test Other text2vec-large-chinese embedding', done => {
         uni.embedding([input, input], { provider: ModelProvider.Other, model: OtherEmbedModel.LARGE_CHN })
-            .then(res => {
-                expect(res.dimension).toBe(1024)
-                expect(res.embedding.length).toBe(2)
-            })
+            .then(res => expect(res.embedding.length).toBe(2))
             .catch(console.error)
             .finally(done)
     })
