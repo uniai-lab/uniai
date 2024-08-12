@@ -63,7 +63,14 @@ export default class Baidu {
 
         const res = await $.post<BaiduChatRequest, BaiduChatResponse | Readable>(
             `${this.api}/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/${model}?access_token=${token}`,
-            { messages: this.formatMessage(messages), stream, temperature, top_p: top, max_output_tokens: maxLength },
+            {
+                messages: this.formatMessage(messages),
+                system: messages[0]?.role === ChatRoleEnum.SYSTEM ? messages[0].content : '',
+                stream,
+                temperature,
+                top_p: top,
+                max_output_tokens: maxLength
+            },
             { responseType: stream ? 'stream' : 'json' }
         )
 
@@ -136,9 +143,9 @@ export default class Baidu {
     private formatMessage(messages: ChatMessage[]) {
         const prompt: BaiduChatMessage[] = []
         let input = ''
-        const { USER, ASSISTANT } = ChatRoleEnum
+        const { USER, ASSISTANT, SYSTEM } = ChatRoleEnum
         for (const { role, content } of messages) {
-            if (!content) continue
+            if (!content.trim() || role === SYSTEM) continue
             if (role !== ASSISTANT) input += `\n${content}`
             else {
                 prompt.push({ role: USER, content: input.trim() || ' ' })

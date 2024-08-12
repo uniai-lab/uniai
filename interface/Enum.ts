@@ -86,13 +86,16 @@ export enum GLMChatModel {
 
 // https://cloud.baidu.com/doc/WENXINWORKSHOP/s/clntwmv7t
 export enum BaiduChatModel {
-    ERNIE_3_5 = 'completions', // ERNIE-3.5-8K
-    ERNIE_4 = 'completions_pro', // ERNIE 4.0 8K
-    ERNIE_LITE = 'eb-instant', // ERNIE-Lite-8K-0922
-    ERNIE_SPEED = 'ernie_speed', // ERNIE-Speed-8K
-    ERNIE_SPEED_128K = 'ernie-speed-128k', // ERNIE-Speed-128kK
+    ERNIE_NOVEL = 'ernie-novel-8k', // ERNIE-Novel-8K
     ERNIE_TINY = 'ernie-tiny-8k', // ERNIE-Tiny-8K
-    ERNIE_CHAR = 'ernie-char-8k' // ERNIE-Character-8K-0321
+    ERNIE_LITE = 'ernie-lite-8k', // ERNIE-Lite-8K
+    ERNIE_SPEED = 'ernie_speed', // ERNIE-Speed-8K
+    ERNIE_SPEED_128K = 'ernie-speed-128k', // ERNIE-Speed-128K
+    ERNIE_3_5 = 'ernie-3.5-128k', // ERNIE-3.5-128K
+    ERNIE_4_TURBO = 'ernie-4.0-turbo-8k', // ERNIE 4.0 8K turbo
+    ERNIE_4 = 'ernie-4.0-8k-latest', // ERNIE 4.0 8K latest
+    ERNIE_CHAR = 'ernie-char-8k', // ERNIE-Character-8K-0321
+    ERNIE_CHAR_FICTION = 'ernie-char-fiction-8k' // ERNIE-Character-Fiction-8K
 }
 
 // iFlyTek spark model
@@ -102,6 +105,7 @@ export enum IFlyTekChatModel {
     SPARK_MAX = 'max',
     SPARK_ULTRA = 'ultra'
 }
+
 // iFlyTek spark model version
 export const IFlyTekModelVersion = {
     [IFlyTekChatModel.SPARK_LITE]: 'v1.1',
@@ -109,6 +113,7 @@ export const IFlyTekModelVersion = {
     [IFlyTekChatModel.SPARK_MAX]: 'v3.5',
     [IFlyTekChatModel.SPARK_ULTRA]: 'v4.0'
 }
+
 export const SparkDomain = {
     [IFlyTekChatModel.SPARK_LITE]: 'general',
     [IFlyTekChatModel.SPARK_PRO]: 'generalv3',

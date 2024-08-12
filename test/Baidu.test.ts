@@ -2,7 +2,7 @@
 import 'dotenv/config'
 import '../env.d.ts'
 import UniAI from '../src'
-import { ModelProvider, BaiduChatModel, ChatModelProvider } from '../interface/Enum'
+import { ModelProvider, BaiduChatModel, ChatModelProvider, ChatRoleEnum } from '../interface/Enum'
 import { Readable } from 'stream'
 
 const { BAIDU_API_KEY, BAIDU_SECRET_KEY, BAIDU_API } = process.env
@@ -22,7 +22,7 @@ describe('Baidu Tests', () => {
         expect(provider.value).toEqual(ModelProvider.Baidu)
     })
 
-    test('Test chat Baidu ernie3', done => {
+    test('Test chat Baidu ernie3 128k', done => {
         uni.chat(input, { provider: ChatModelProvider.Baidu, model: BaiduChatModel.ERNIE_3_5 })
             .then(console.log)
             .finally(done)
@@ -30,6 +30,12 @@ describe('Baidu Tests', () => {
 
     test('Test chat Baidu ernie4', done => {
         uni.chat(input, { provider: ChatModelProvider.Baidu, model: BaiduChatModel.ERNIE_4 })
+            .then(console.log)
+            .finally(done)
+    })
+
+    test('Test chat Baidu ernie4 turbo', done => {
+        uni.chat(input, { provider: ChatModelProvider.Baidu, model: BaiduChatModel.ERNIE_4_TURBO })
             .then(console.log)
             .finally(done)
     })
@@ -61,22 +67,60 @@ describe('Baidu Tests', () => {
     })
 
     test('Test chat Baidu ernie character', done => {
-        uni.chat(input, { provider: ChatModelProvider.Baidu, model: BaiduChatModel.ERNIE_CHAR })
+        uni.chat(
+            [
+                {
+                    role: ChatRoleEnum.SYSTEM,
+                    content: '你现在是一个严肃的新闻记者，叫做鲁豫，请模拟新闻记者报道的口吻回答问题'
+                },
+                {
+                    role: ChatRoleEnum.USER,
+                    content: '你好，who are U? Bro'
+                }
+            ],
+            {
+                provider: ChatModelProvider.Baidu,
+                model: BaiduChatModel.ERNIE_CHAR
+            }
+        )
             .then(console.log)
             .finally(done)
     })
 
-    test('Test chat Baidu ernie speed stream', done => {
-        uni.chat(input, { stream: true, provider: ChatModelProvider.Baidu, model: BaiduChatModel.ERNIE_SPEED_128K })
-            .then(res => {
-                expect(res).toBeInstanceOf(Readable)
-                const stream = res as Readable
-                let data = ''
-                stream.on('data', chunk => console.log(JSON.parse(chunk.toString())))
-                stream.on('end', () => console.log(data))
-                stream.on('error', e => console.error(e))
-                stream.on('close', () => done())
-            })
+    test('Test chat Baidu ernie character fiction', done => {
+        uni.chat(
+            [
+                {
+                    role: ChatRoleEnum.SYSTEM,
+                    content: '你现在是三体中的三体星人，用户是地球人，你将入侵地球，请以三体人的角色回答用户问题。'
+                },
+                {
+                    role: ChatRoleEnum.USER,
+                    content: '你们是谁？为什么要入侵地球？'
+                }
+            ],
+            {
+                provider: ChatModelProvider.Baidu,
+                model: BaiduChatModel.ERNIE_CHAR_FICTION
+            }
+        )
+            .then(console.log)
             .finally(done)
-    }, 6000)
+    })
+
+    test('Test chat Baidu ernie speed 128K stream', done => {
+        uni.chat(input, {
+            stream: true,
+            provider: ChatModelProvider.Baidu,
+            model: BaiduChatModel.ERNIE_SPEED_128K
+        }).then(res => {
+            expect(res).toBeInstanceOf(Readable)
+            const stream = res as Readable
+            let data = ''
+            stream.on('data', chunk => console.log(JSON.parse(chunk.toString())))
+            stream.on('end', () => console.log(data))
+            stream.on('error', e => console.error(e))
+            stream.on('close', () => done())
+        })
+    }, 60000)
 })
