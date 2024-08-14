@@ -29,7 +29,7 @@ describe('OpenAI Tests', () => {
         expect(provider.value).toEqual(ModelProvider.OpenAI)
     })
 
-    test('Test chat openai default', done => {
+    test('Test chat openai default, gpt-3.5-turbo', done => {
         uni.chat().then(console.log).catch(console.error).finally(done)
     })
 
@@ -42,6 +42,20 @@ describe('OpenAI Tests', () => {
             }
         ]
         uni.chat(input, { stream: false, provider: ChatModelProvider.OpenAI, model: OpenAIChatModel.GPT4_O })
+            .then(console.log)
+            .catch(console.error)
+            .finally(done)
+    }, 10000)
+
+    test('Test chat openai gpt4o mini', done => {
+        const input: ChatMessage[] = [
+            {
+                role: ChatRoleEnum.USER,
+                content: '描述下这张图片，是个男人还是女人，她在做什么？',
+                img: 'https://pics7.baidu.com/feed/1f178a82b9014a903fcc22f1e98d931fb11bee90.jpeg@f_auto?token=d5a33ea74668787d60d6f61c7b8f9ca2'
+            }
+        ]
+        uni.chat(input, { stream: false, provider: ChatModelProvider.OpenAI, model: OpenAIChatModel.GPT4_O_MINI })
             .then(console.log)
             .catch(console.error)
             .finally(done)
