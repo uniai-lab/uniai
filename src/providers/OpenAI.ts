@@ -98,7 +98,14 @@ export default class OpenAI {
         if (!key) throw new Error('OpenAI API key is not set in config')
 
         // remove imgs for not vision model
-        if (![OpenAIChatModel.GPT4_TURBO, OpenAIChatModel.GPT4_O, OpenAIChatModel.GPT4_O_MINI].includes(model))
+        if (
+            ![
+                OpenAIChatModel.GPT4_TURBO,
+                OpenAIChatModel.GPT_4O,
+                OpenAIChatModel.GPT_4O_MINI,
+                OpenAIChatModel.CHAT_GPT_4O
+            ].includes(model)
+        )
             messages = messages.map(({ role, content }) => ({ role, content }))
 
         // temperature is float in [0,1]

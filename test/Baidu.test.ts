@@ -22,8 +22,14 @@ describe('Baidu Tests', () => {
         expect(provider.value).toEqual(ModelProvider.Baidu)
     })
 
-    test('Test chat Baidu ernie3 128k', done => {
+    test('Test chat Baidu ernie3', done => {
         uni.chat(input, { provider: ChatModelProvider.Baidu, model: BaiduChatModel.ERNIE_3_5 })
+            .then(console.log)
+            .finally(done)
+    })
+
+    test('Test chat Baidu ernie3 128k', done => {
+        uni.chat(input, { provider: ChatModelProvider.Baidu, model: BaiduChatModel.ERNIE_3_5_128K })
             .then(console.log)
             .finally(done)
     })
@@ -40,6 +46,20 @@ describe('Baidu Tests', () => {
             .finally(done)
     })
 
+    test('Test chat Baidu ernie tiny stream', done => {
+        uni.chat(input, { stream: true, provider: ChatModelProvider.Baidu, model: BaiduChatModel.ERNIE_TINY }).then(
+            res => {
+                expect(res).toBeInstanceOf(Readable)
+                const stream = res as Readable
+                let data = ''
+                stream.on('data', chunk => (data += JSON.parse(chunk.toString()).content))
+                stream.on('end', () => console.log(data))
+                stream.on('error', e => console.error(e))
+                stream.on('close', () => done())
+            }
+        )
+    })
+
     test('Test chat Baidu ernie lite stream', done => {
         uni.chat(input, { stream: true, provider: ChatModelProvider.Baidu, model: BaiduChatModel.ERNIE_LITE }).then(
             res => {
@@ -54,14 +74,32 @@ describe('Baidu Tests', () => {
         )
     })
 
+    test('Test chat Baidu lite pro 128k', done => {
+        uni.chat(input, { provider: ChatModelProvider.Baidu, model: BaiduChatModel.ERNIE_LITE_PRO_128K })
+            .then(console.log)
+            .finally(done)
+    })
+
     test('Test chat Baidu ernie speed', done => {
         uni.chat(input, { provider: ChatModelProvider.Baidu, model: BaiduChatModel.ERNIE_SPEED })
             .then(console.log)
             .finally(done)
     })
 
-    test('Test chat Baidu ernie tiny', done => {
-        uni.chat(input, { provider: ChatModelProvider.Baidu, model: BaiduChatModel.ERNIE_TINY })
+    test('Test chat Baidu ernie speed 128k', done => {
+        uni.chat(input, { provider: ChatModelProvider.Baidu, model: BaiduChatModel.ERNIE_SPEED_128K })
+            .then(console.log)
+            .finally(done)
+    })
+
+    test('Test chat Baidu ernie speed pro 128k', done => {
+        uni.chat(input, { provider: ChatModelProvider.Baidu, model: BaiduChatModel.ERNIE_SPEED_PRO_128K })
+            .then(console.log)
+            .finally(done)
+    })
+
+    test('Test chat Baidu ernie novel', done => {
+        uni.chat(input, { provider: ChatModelProvider.Baidu, model: BaiduChatModel.ERNIE_NOVEL })
             .then(console.log)
             .finally(done)
     })
@@ -87,7 +125,7 @@ describe('Baidu Tests', () => {
             .finally(done)
     })
 
-    test('Test chat Baidu ernie character fiction', done => {
+    test('Test chat Baidu QianFan Dynamic', done => {
         uni.chat(
             [
                 {
@@ -101,26 +139,10 @@ describe('Baidu Tests', () => {
             ],
             {
                 provider: ChatModelProvider.Baidu,
-                model: BaiduChatModel.ERNIE_CHAR_FICTION
+                model: BaiduChatModel.QIANFAN_DYN
             }
         )
             .then(console.log)
             .finally(done)
     })
-
-    test('Test chat Baidu ernie speed 128K stream', done => {
-        uni.chat(input, {
-            stream: true,
-            provider: ChatModelProvider.Baidu,
-            model: BaiduChatModel.ERNIE_SPEED_128K
-        }).then(res => {
-            expect(res).toBeInstanceOf(Readable)
-            const stream = res as Readable
-            let data = ''
-            stream.on('data', chunk => console.log(JSON.parse(chunk.toString())))
-            stream.on('end', () => console.log(data))
-            stream.on('error', e => console.error(e))
-            stream.on('close', () => done())
-        })
-    }, 60000)
 })

@@ -29,7 +29,7 @@ describe('GLM Tests', () => {
         expect(provider.value).toEqual(ModelProvider.GLM)
     })
 
-    test('Test chat local chatglm3-6b', done => {
+    xtest('Test chat local chatglm3-6b', done => {
         uni.chat(input, { provider: ChatModelProvider.GLM, model: GLMChatModel.GLM_6B })
             .then(console.log)
             .catch(console.error)
@@ -53,7 +53,14 @@ describe('GLM Tests', () => {
             stream.on('error', e => console.error(e))
             stream.on('close', () => done())
         })
-    }, 30000)
+    }, 60000)
+
+    test('Test chat ZhiPu glm-4-plus', done => {
+        uni.chat(input, { provider: ChatModelProvider.GLM, model: GLMChatModel.GLM_4_PLUS })
+            .then(console.log)
+            .catch(console.error)
+            .finally(done)
+    })
 
     test('Test chat ZhiPu glm-4-air', done => {
         uni.chat(input, { provider: ChatModelProvider.GLM, model: GLMChatModel.GLM_4_AIR })
@@ -92,6 +99,23 @@ describe('GLM Tests', () => {
         )
     }, 30000)
 
+    test('Test chat ZhiPu glm-4-flashx', done => {
+        uni.chat('今天新闻头条有哪些报道，总结下', {
+            provider: ChatModelProvider.GLM,
+            model: GLMChatModel.GLM_4_FLASHX
+        })
+            .then(console.log)
+            .catch(console.error)
+            .finally(done)
+    })
+
+    test('Test chat ZhiPu glm-4-long', done => {
+        uni.chat('今天新闻头条有哪些报道，总结下', { provider: ChatModelProvider.GLM, model: GLMChatModel.GLM_4_LONG })
+            .then(console.log)
+            .catch(console.error)
+            .finally(done)
+    }, 60000)
+
     test('Test chat ZhiPu glm-4 vision', done => {
         const input: ChatMessage[] = [
             {
@@ -114,6 +138,32 @@ describe('GLM Tests', () => {
             stream.on('error', e => console.error(e))
             stream.on('close', () => done())
         })
+    }, 60000)
+
+    test('Test chat ZhiPu glm-4 vision plus', done => {
+        const input: ChatMessage[] = [
+            {
+                role: ChatRoleEnum.USER,
+                content: '描述下这张图片，是个男人还是女人，她在做什么？',
+                img: 'https://pics7.baidu.com/feed/1f178a82b9014a903fcc22f1e98d931fb11bee90.jpeg@f_auto?token=d5a33ea74668787d60d6f61c7b8f9ca2'
+            },
+            {
+                role: ChatRoleEnum.USER,
+                content: '连同当前这幅画，我一共给你传了几张图？分别描述下',
+                img: 'https://api.uniai.cas-ll.cn/wechat/file?path=minio/a82db85d-d8e6-4281-8734-bedd54420c0d.jpg&name=IMG_20190208_132658%20(1).jpg'
+            }
+        ]
+        uni.chat(input, { stream: true, provider: ChatModelProvider.GLM, model: GLMChatModel.GLM_4V_PLUS }).then(
+            res => {
+                expect(res).toBeInstanceOf(Readable)
+                const stream = res as Readable
+                let data = ''
+                stream.on('data', chunk => (data += JSON.parse(chunk.toString()).content))
+                stream.on('end', () => console.log(data))
+                stream.on('error', e => console.error(e))
+                stream.on('close', () => done())
+            }
+        )
     }, 60000)
 
     test('Test GLM/embedding-2 embedding', done => {
