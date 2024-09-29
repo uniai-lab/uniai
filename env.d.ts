@@ -17,6 +17,8 @@ declare global {
             BAIDU_SECRET_KEY: string
             MOONSHOT_API: string
             MOONSHOT_KEY: string
+            ALI_KEY: string
+            ALI_API: string
             STABLE_DIFFUSION_API: string
             MID_JOURNEY_API: string
             MID_JOURNEY_TOKEN: string

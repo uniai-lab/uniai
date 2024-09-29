@@ -1,5 +1,6 @@
 /** @format */
 import {
+    AliChatModel,
     BaiduChatModel,
     ChatModel,
     ChatModelProvider,
@@ -35,8 +36,9 @@ import Baidu from './providers/Baidu'
 import MoonShot from './providers/MoonShot'
 import MidJourney from './providers/MidJourney'
 import Stability from './providers/Stability'
+import AliYun from './providers/AliYun'
 
-const DEFAULT_MESSAGE = 'Hello, who are you? Answer me in 10 words!'
+const DEFAULT_MESSAGE = 'Hi, who are you? Answer in 10 words!'
 
 export default class UniAI {
     public config: UniAIConfig | null = null
@@ -52,6 +54,7 @@ export default class UniAI {
     private baidu: Baidu
     private other: Other
     private moon: MoonShot
+    private ali: AliYun
     private mj: MidJourney
     private stability: Stability
 
@@ -69,6 +72,8 @@ export default class UniAI {
         this.baidu = new Baidu(config.Baidu?.apiKey, config.Baidu?.secretKey, config.Baidu?.proxy)
         // MoonShot, moonshot API key
         this.moon = new MoonShot(config.MoonShot?.key, config.MoonShot?.proxy)
+        // AliYun, QWen API key
+        this.ali = new AliYun(config.AliYun?.key, config.AliYun?.proxy)
         // Other model text2vec
         this.other = new Other(config.Other?.api)
         // Midjourney, proxy
@@ -87,7 +92,8 @@ export default class UniAI {
                     [ChatModelProvider.IFlyTek]: IFlyTekChatModel,
                     [ChatModelProvider.GLM]: GLMChatModel,
                     [ChatModelProvider.Google]: GoogleChatModel,
-                    [ChatModelProvider.MoonShot]: MoonShotChatModel
+                    [ChatModelProvider.MoonShot]: MoonShotChatModel,
+                    [ChatModelProvider.AliYun]: AliChatModel
                 }[v]
             )
         }))
@@ -140,6 +146,8 @@ export default class UniAI {
             return await this.baidu.chat(messages, model as BaiduChatModel, stream, top, temperature, maxLength)
         else if (provider === ChatModelProvider.MoonShot)
             return await this.moon.chat(messages, model as MoonShotChatModel, stream, top, temperature, maxLength)
+        else if (provider === ChatModelProvider.AliYun)
+            return await this.ali.chat(messages, model as AliChatModel, stream, top, temperature, maxLength)
         else throw new Error('Chat model Provider not found')
     }
 

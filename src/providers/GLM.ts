@@ -84,7 +84,8 @@ export default class GLM {
         if (!Object.values(GLMChatModel).includes(model)) throw new Error('GLM chat model not found')
 
         // filter images
-        if (![GLMChatModel.GLM_4V].includes(model)) messages = messages.map(({ role, content }) => ({ role, content }))
+        if (![GLMChatModel.GLM_4V, GLMChatModel.GLM_4V_PLUS].includes(model))
+            messages = messages.map(({ role, content }) => ({ role, content }))
 
         // temperature is float in (0,1]
         if (typeof temperature === 'number') {
@@ -106,10 +107,10 @@ export default class GLM {
             totalTokens: 0
         }
 
-        // ZHIPU GLM official API
+        // ZhiPu GLM official API
         let url = `${this.proxyAPI}/api/paas/v4/chat/completions`
         const headers = new AxiosHeaders()
-        if (model === GLMChatModel.GLM_6B || model === GLMChatModel.GLM_9B) {
+        if ([GLMChatModel.GLM_6B, GLMChatModel.GLM_9B].includes(model)) {
             // use local deployed open source GLM API, 6B and 9B
             if (!this.localAPI) throw new Error('Local GLM API is not set in config')
             url = `${this.localAPI}/chat`

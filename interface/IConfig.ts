@@ -40,6 +40,11 @@ export interface UniAIConfig {
         proxy?: string
     }
 
+    AliYun?: {
+        key: string | string[]
+        proxy?: string
+    }
+
     // stable diffusion (local)
     StableDiffusion?: {
         api: string

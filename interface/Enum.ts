@@ -8,7 +8,8 @@ export enum ChatModelProvider {
     Baidu = 'baidu',
     Google = 'google',
     GLM = 'glm',
-    MoonShot = 'moonshot'
+    MoonShot = 'moonshot',
+    AliYun = 'aliyun'
 }
 
 export enum EmbedModelProvider {
@@ -137,6 +138,17 @@ export enum MoonShotChatModel {
     MOON_V1_128K = 'moonshot-v1-128k'
 }
 
+export enum AliChatModel {
+    QWEN_MAX = 'qwen-max',
+    QWEN_PLUS = 'qwen-plus',
+    QWEN_TURBO = 'qwen-turbo',
+    QWEN_LONG = 'qwen-long',
+    QWEN_CODE = 'qwen-coder-turbo',
+    QWEN_MATH = 'qwen-math-plus',
+    QWEN_VL_MAX = 'qwen-vl-max',
+    QWEN_VL_PLUS = 'qwen-vl-plus'
+}
+
 // All chat models
 export type ChatModel =
     | OpenAIChatModel
@@ -145,6 +157,7 @@ export type ChatModel =
     | IFlyTekChatModel
     | GoogleChatModel
     | MoonShotChatModel
+    | AliChatModel
 
 export const ChatModel = {
     ...OpenAIChatModel,
@@ -153,7 +166,8 @@ export const ChatModel = {
     ...IFlyTekChatModel,
     ...GoogleChatModel,
     ...OpenAIChatModel,
-    ...MoonShotChatModel
+    ...MoonShotChatModel,
+    ...AliChatModel
 }
 
 // image models
