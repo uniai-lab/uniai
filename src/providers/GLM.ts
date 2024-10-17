@@ -81,8 +81,6 @@ export default class GLM {
         temperature?: number,
         maxLength?: number
     ) {
-        if (!Object.values(GLMChatModel).includes(model)) throw new Error('GLM chat model not found')
-
         // filter images
         if (![GLMChatModel.GLM_4V, GLMChatModel.GLM_4V_PLUS].includes(model))
             messages = messages.map(({ role, content }) => ({ role, content }))

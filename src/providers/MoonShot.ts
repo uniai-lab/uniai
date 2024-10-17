@@ -50,7 +50,7 @@ export default class MoonShot {
         temperature?: number,
         maxLength?: number
     ) {
-        if (!Object.values(MoonShotChatModel).includes(model)) throw new Error('MoonShot chat model not found')
+        // if (!Object.values(MoonShotChatModel).includes(model)) throw new Error('MoonShot chat model not found')
 
         const key = Array.isArray(this.key) ? $.getRandomKey(this.key) : this.key
         if (!key) throw new Error('MoonShot API key is not set in config')

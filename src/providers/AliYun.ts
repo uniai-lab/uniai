@@ -50,7 +50,7 @@ export default class AliYun {
         temperature?: number,
         maxLength?: number
     ) {
-        if (!Object.values(AliChatModel).includes(model)) throw new Error('Qian Wen chat model not found')
+        // if (!Object.values(AliChatModel).includes(model)) throw new Error('Qian Wen chat model not found')
 
         const key = Array.isArray(this.key) ? $.getRandomKey(this.key) : this.key
         if (!key) throw new Error('Qian Wen API key is not set in config')

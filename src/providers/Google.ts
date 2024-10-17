@@ -88,8 +88,6 @@ export default class Google {
         temperature?: number,
         maxLength?: number
     ) {
-        if (!Object.values(GoogleChatModel).includes(model)) throw new Error('Google chat model not found')
-
         if (![GoogleChatModel.GEM_PRO_1_5, GoogleChatModel.GEM_FLASH_1_5].includes(model))
             messages = messages.map(({ role, content }) => ({ role, content }))
 

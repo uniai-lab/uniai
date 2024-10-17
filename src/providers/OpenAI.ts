@@ -92,7 +92,7 @@ export default class OpenAI {
         temperature?: number,
         maxLength?: number
     ) {
-        if (!Object.values(OpenAIChatModel).includes(model)) throw new Error('OpenAI chat model not found')
+        // if (!Object.values(OpenAIChatModel).includes(model)) throw new Error('OpenAI chat model not found')
 
         const key = Array.isArray(this.key) ? $.getRandomKey(this.key) : this.key
         if (!key) throw new Error('OpenAI API key is not set in config')

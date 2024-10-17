@@ -94,7 +94,8 @@ export enum GLMChatModel {
 
 // https://cloud.baidu.com/doc/WENXINWORKSHOP/s/clntwmv7t
 export enum BaiduChatModel {
-    ERNIE_3_5 = 'ernie-3.5-8k-preview', // ERNIE-3.5-8K
+    ERNIE_3_5 = 'completions', // ERNIE-3.5-8K
+    ERNIE_3_5_PRE = 'ernie-3.5-8k-preview', // ERNIE-3.5-8K
     ERNIE_3_5_128K = 'ernie-3.5-128k', // ERNIE-3.5-128K
     ERNIE_4 = 'ernie-4.0-8k-latest', // ERNIE 4.0 8K latest
     ERNIE_4_TURBO = 'ernie-4.0-turbo-8k', // ERNIE 4.0 8K turbo
