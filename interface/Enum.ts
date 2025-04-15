@@ -79,16 +79,23 @@ export const EmbedModel = {
 
 // openai chat models
 export enum OpenAIChatModel {
-    GPT_4O = 'gpt-4o',
-    GPT_4O_MINI = 'gpt-4o-mini',
-    CHAT_GPT_4O = 'chatgpt-4o-latest',
-    GPT4_TURBO = 'gpt-4-turbo',
+    // older models
+    GPT3 = 'gpt-3.5-turbo',
     GPT4 = 'gpt-4',
+    GPT4_TURBO = 'gpt-4-turbo',
+    // Cost-optimized models
+    GPT_4O_MINI = 'gpt-4o-mini',
+    GPT_4_1_MINI = 'gpt-4.1-mini',
+    GPT_4_1_NANO = 'gpt-4.1-nano',
+    // Flagship chat models
+    GPT_4_1 = 'gpt-4.1',
+    CHAT_GPT_4O = 'chatgpt-4o-latest',
+    GPT_4O = 'gpt-4o',
+    // Reasoning models
     O1 = 'o1',
-    O1_PRE = 'o1-preview',
     O1_MINI = 'o1-mini',
-    O3_MINI = 'o3-mini',
-    GPT3 = 'gpt-3.5-turbo'
+    O1_PRO = 'o1-pro',
+    O3_MINI = 'o3-mini'
 }
 
 export enum DeepSeekChatModel {

@@ -111,7 +111,10 @@ export default class OpenAI {
                 OpenAIChatModel.CHAT_GPT_4O,
                 OpenAIChatModel.O1,
                 OpenAIChatModel.O1_MINI,
-                OpenAIChatModel.O1_PRE
+                OpenAIChatModel.O1_PRO,
+                OpenAIChatModel.GPT_4_1,
+                OpenAIChatModel.GPT_4_1_NANO,
+                OpenAIChatModel.GPT_4_1_MINI
             ].includes(model)
         )
             messages = messages.map(({ role, content }) => ({ role, content }))
