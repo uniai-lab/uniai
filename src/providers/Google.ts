@@ -45,7 +45,7 @@ export default class Google {
      * @param model - The model to use for embeddings (default: text-embedding-ada-002).
      * @returns A promise resolving to the embedding response.
      */
-    async embedding(input: string[], model: GoogleEmbedModel = GoogleEmbedModel.EMBED_4) {
+    async embedding(input: string[], model: GoogleEmbedModel = GoogleEmbedModel.GEM_EMBED) {
         const key = Array.isArray(this.key) ? $.getRandomKey(this.key) : this.key
         if (!key) throw new Error('Google API key is not set in config')
 

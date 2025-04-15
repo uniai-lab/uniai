@@ -107,29 +107,15 @@ describe('Google Tests', () => {
             .finally(done)
     })
 
-    test('Test chat Google Gemini 2.0 Flash Thinking Exp', done => {
-        uni.chat(input, { provider: ChatModelProvider.Google, model: GoogleChatModel.GEM_FLASH_2_THINK_EXP })
-            .then(console.log)
-            .catch(console.error)
-            .finally(done)
-    }, 60000)
-
-    test('Test chat Google Gemini 2.0 Pro Exp', done => {
+    test.only('Test chat Google Gemini Pro 2.5', done => {
         uni.chat(input2, { provider: ChatModelProvider.Google, model: GoogleChatModel.GEM_PRO_2 })
             .then(console.log)
             .catch(console.error)
             .finally(done)
     }, 60000)
 
-    test.only('Test chat Google LearnLM 1.5 Pro Exp', done => {
-        uni.chat(input2, { provider: ChatModelProvider.Google, model: GoogleChatModel.LEARNLM_PRO_1_5 })
-            .then(console.log)
-            .catch(console.error)
-            .finally(done)
-    }, 60000)
-
     test('Test Google text embedding 4', done => {
-        uni.embedding([input, input + 'sss'], { provider: EmbedModelProvider.Google, model: EmbedModel.EMBED_4 })
+        uni.embedding([input, input + 'sss'], { provider: EmbedModelProvider.Google, model: EmbedModel.GEM_EMBED })
             .then(res => expect(res.embedding.length).toBe(2))
             .catch(console.error)
             .finally(done)

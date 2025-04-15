@@ -57,7 +57,7 @@ export enum GLMEmbedModel {
 }
 
 export enum GoogleEmbedModel {
-    EMBED_4 = 'text-embedding-004'
+    GEM_EMBED = 'gemini-embedding-exp'
 }
 
 export enum AliEmbedModel {
@@ -109,11 +109,9 @@ export enum GoogleChatModel {
     GEM_FLASH_1_5 = 'gemini-1.5-flash',
     GEM_FLASH_1_5_8B = 'gemini-1.5-flash-8b',
     GEM_FLASH_2 = 'gemini-2.0-flash',
-    GEM_FLASH_2_LITE = 'gemini-2.0-flash-lite-preview',
+    GEM_FLASH_2_LITE = 'gemini-2.0-flash-lite',
     // experimental
-    GEM_PRO_2 = 'gemini-2.0-pro-exp',
-    GEM_FLASH_2_THINK_EXP = 'gemini-2.0-flash-thinking-exp',
-    LEARNLM_PRO_1_5 = 'learnlm-1.5-pro-experimental'
+    GEM_PRO_2 = 'gemini-2.5-pro-exp-03-25'
 }
 
 // glm chat models
