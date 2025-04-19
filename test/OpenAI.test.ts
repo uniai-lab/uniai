@@ -42,6 +42,27 @@ describe('OpenAI tests', () => {
         expect(provider.value).toEqual(ModelProvider.OpenAI)
     })
 
+    test('Test chat openai default, gpt-4.1', done => {
+        uni.chat(input2, { stream: false, provider: ChatModelProvider.OpenAI, model: OpenAIChatModel.GPT_4_1 })
+            .then(console.log)
+            .catch(console.error)
+            .finally(done)
+    }, 60000)
+
+    test('Test chat openai default, gpt-4.1-mini', done => {
+        uni.chat(input2, { stream: false, provider: ChatModelProvider.OpenAI, model: OpenAIChatModel.GPT_4_1_MINI })
+            .then(console.log)
+            .catch(console.error)
+            .finally(done)
+    }, 60000)
+
+    test('Test chat openai default, gpt-4.1-nano', done => {
+        uni.chat(input, { stream: false, provider: ChatModelProvider.OpenAI, model: OpenAIChatModel.GPT_4_1_NANO })
+            .then(console.log)
+            .catch(console.error)
+            .finally(done)
+    }, 60000)
+
     test('Test chat openai default, gpt-4o', done => {
         uni.chat(input2).then(console.log).catch(console.error).finally(done)
     }, 60000)
@@ -107,8 +128,8 @@ describe('OpenAI tests', () => {
         })
     }, 60000)
 
-    test('Test chat openai o1-preview', done => {
-        uni.chat(input3, { stream: true, provider: ChatModelProvider.OpenAI, model: OpenAIChatModel.O1_PRE }).then(
+    test('Test chat openai o1-pro', done => {
+        uni.chat(input3, { stream: true, provider: ChatModelProvider.OpenAI, model: OpenAIChatModel.O1_PRO }).then(
             res => {
                 expect(res).toBeInstanceOf(Readable)
                 const stream = res as Readable
