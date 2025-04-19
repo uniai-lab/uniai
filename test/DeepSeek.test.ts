@@ -33,7 +33,7 @@ describe('DeepSeek tests', () => {
             .then(console.log)
             .catch(console.error)
             .finally(done)
-    })
+    }, 60000)
 
     test('Test chat DeepSeek reasoning stream', done => {
         uni.chat(input2, {
@@ -49,5 +49,5 @@ describe('DeepSeek tests', () => {
             stream.on('error', e => console.error(e))
             stream.on('close', () => done())
         })
-    })
+    }, 60000)
 })

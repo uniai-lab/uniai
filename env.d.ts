@@ -24,11 +24,11 @@ declare global {
             DS_KEY: string
             X_AI_API: string
             X_AI_KEY: string
+            OTHER_API: string
             STABLE_DIFFUSION_API: string
             MID_JOURNEY_API: string
             MID_JOURNEY_TOKEN: string
             MID_JOURNEY_IMG_PROXY: string
-            GLM_API: string
             STABILITY_API: string
             STABILITY_KEY: string
         }
