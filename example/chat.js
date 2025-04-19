@@ -44,7 +44,7 @@ async function main() {
             img: 'https://api.uniai.cas-ll.cn/wechat/file?path=minio/6c9b6317-97a8-43ec-b949-cf3f861f8575.png&name=IMG_20190208_132658%20(2).png'
         }
     ]
-    await stream(input, { provider: ChatModelProvider.OpenAI, model: ChatModel.GPT_4O_MINI })
+    await stream(input, { provider: ChatModelProvider.OpenAI, model: ChatModel.GPT_4_1_NANO })
     await stream(input, { provider: ChatModelProvider.Google, model: ChatModel.GEM_FLASH_2_LITE })
 
     await stream('你个垃圾', { provider: ChatModelProvider.Baidu, model: ChatModel.ERNIE_LITE_8K, temperature: 0 })
