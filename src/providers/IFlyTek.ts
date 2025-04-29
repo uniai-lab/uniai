@@ -105,16 +105,22 @@ export default class IFlyTek {
 
             parser.on('data', (e: MessageEvent) => {
                 const obj = $.json<SparkChatResponse>(e.data)
-                if (obj) {
-                    data.content = obj.choices[0]?.delta?.content || ''
-                    if (obj.choices[0]?.delta?.tool_calls) data.tools = obj.choices[0]?.delta?.tool_calls
-                    data.model = model
-                    data.object = 'chat.completion.chunk'
-                    data.promptTokens = obj.usage?.prompt_tokens || 0
-                    data.completionTokens = obj.usage?.completion_tokens || 0
-                    data.totalTokens = obj.usage?.total_tokens || 0
-                    output.write(JSON.stringify(data))
+                if (!obj) {
+                    output.destroy(new Error('Invalid response: null'))
+                    return
                 }
+                if (obj.code) {
+                    output.destroy(new Error(obj.message))
+                    return
+                }
+                data.content = obj.choices[0]?.delta?.content || ''
+                if (obj.choices[0]?.delta?.tool_calls) data.tools = obj.choices[0]?.delta?.tool_calls
+                data.model = model
+                data.object = 'chat.completion.chunk'
+                data.promptTokens = obj.usage?.prompt_tokens || 0
+                data.completionTokens = obj.usage?.completion_tokens || 0
+                data.totalTokens = obj.usage?.total_tokens || 0
+                output.write(JSON.stringify(data))
             })
 
             parser.on('error', e => output.destroy(e))
