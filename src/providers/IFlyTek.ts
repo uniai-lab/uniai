@@ -105,10 +105,7 @@ export default class IFlyTek {
 
             parser.on('data', (e: MessageEvent) => {
                 const obj = $.json<SparkChatResponse>(e.data)
-                if (!obj) {
-                    output.destroy(new Error('Invalid response: null'))
-                    return
-                }
+                if (!obj) return
                 if (obj.code) {
                     output.destroy(new Error(obj.message))
                     return
