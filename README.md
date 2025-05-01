@@ -117,6 +117,39 @@ You can also read on to learn how to use **UniAI** based on this documentation.
 
 You can set up environment variables by referring to the [dotenv example](./.env.example)
 
+### Prompt Tree and Markdown [NEW]
+
+You can use the `Prompt` class to build a hierarchical prompt tree and automatically generate Markdown from it. This is useful for organizing structured prompts or documentation.
+
+**Example:**
+
+```typescript
+import { Prompt } from 'uniai'
+
+const prompt = new Prompt('Bot Info', 'This is a simple bot.')
+prompt.add(new Prompt('Skills', 'English, Chinese'))
+prompt.add(new Prompt('Profile', 'Age: 18\nGender: Male'))
+
+console.log(prompt.toString())
+```
+
+**Output Markdown:**
+
+```
+# Bot Info
+
+This is a simple bot.
+
+## Skills
+
+English, Chinese
+
+## Profile
+
+Age: 18
+Gender: Male
+```
+
 ### List Models
 
 You can use `.models` to list all the available models in UniAI.
@@ -251,7 +284,7 @@ yarn test OpenAI
 
 ## Contributors
 
-[Youwei Huang](https://github.com/devilyouwei)
+[Youwei Huang](https://www.devil.ren)
 
 [Weilong Yu](https://github.com/mrkk1)
 

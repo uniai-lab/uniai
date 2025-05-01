@@ -1,7 +1,7 @@
 /** @format */
 import 'dotenv/config'
 import '../env.d.ts'
-import UniAI, { ChatMessage, ChatResponse } from '../src'
+import UniAI, { ChatMessage, ChatResponse, Prompt } from '../src'
 import {
     ChatModelProvider,
     ChatRoleEnum,
@@ -14,7 +14,7 @@ import { Readable } from 'stream'
 
 const { OPENAI_KEY, OPENAI_API } = process.env
 
-const input: string = 'Hi, who are you? Answer in 10 words!'
+const input: string = 'Introduce yourself briefly'
 const input2: ChatMessage[] = [
     {
         role: ChatRoleEnum.USER,
@@ -27,6 +27,19 @@ const input3: ChatMessage[] = [
     { role: ChatRoleEnum.USER, content: '你好，你是谁？' },
     { role: ChatRoleEnum.ASSISTANT, content: 'Hello, who are you?' },
     { role: ChatRoleEnum.USER, content: '你是一个聪明的模型' }
+]
+
+const prompt: Prompt = new Prompt('机器人', '你是一个机器人，以下是关于你的基本信息', [
+    new Prompt('基本信息', '- 姓名：小智\n- 年龄：18\n- 性别：男'),
+    new Prompt('技能', '- 语言：中文、英文\n- 职业：程序员\n- 爱好：打游戏、看电影'),
+    new Prompt('外观', '对你的外观进行描述', [
+        new Prompt('外观描述', '- 身高：180cm\n- 体重：70kg\n- 头发颜色：黑色\n- 眼睛颜色：棕色'),
+        new Prompt('服装', '- 上衣：黑色T恤\n- 裤子：蓝色牛仔裤\n- 鞋子：白色运动鞋')
+    ])
+])
+const input4: ChatMessage[] = [
+    { role: ChatRoleEnum.SYSTEM, content: prompt.toString() },
+    { role: ChatRoleEnum.USER, content: '你是谁？简短介绍下你自己得特点' }
 ]
 
 let uni: UniAI
@@ -57,7 +70,7 @@ describe('OpenAI tests', () => {
     }, 60000)
 
     test('Test chat openai default, gpt-4.1-nano', done => {
-        uni.chat(input, { stream: false, provider: ChatModelProvider.OpenAI, model: OpenAIChatModel.GPT_4_1_NANO })
+        uni.chat(input4, { stream: false, provider: ChatModelProvider.OpenAI, model: OpenAIChatModel.GPT_4_1_NANO })
             .then(console.log)
             .catch(console.error)
             .finally(done)

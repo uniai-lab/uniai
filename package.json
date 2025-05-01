@@ -1,6 +1,6 @@
 {
     "name": "uniai",
-    "version": "1.12.7",
+    "version": "1.13.0",
     "author": "devilyouwei",
     "description": "To unify AI models!",
     "repository": "https://github.com/uniai-lab/uniai",
@@ -23,6 +23,7 @@
     ],
     "scripts": {
         "build": "tsup",
+        "dev": "ts-node",
         "test": "jest"
     },
     "main": "./dist/index.js",
