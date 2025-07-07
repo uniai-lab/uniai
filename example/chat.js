@@ -1,8 +1,7 @@
 /** @format */
 
-const { ChatModel, ChatModelProvider } = require('../dist')
-
 require('dotenv').config()
+const { ChatModel, ChatModelProvider } = require('../dist')
 const UniAI = require('../').default
 
 const {
@@ -17,13 +16,15 @@ const {
     BAIDU_SECRET_KEY,
     ALI_KEY,
     DS_KEY,
-    X_AI_KEY
+    X_AI_KEY,
+    ANTHROPIC_KEY,
+    ANTHROPIC_API
 } = process.env
 
 const ai = new UniAI({
     OpenAI: { key: OPENAI_KEY, proxy: OPENAI_API },
     Google: { key: GOOGLE_AI_KEY, proxy: GOOGLE_AI_API },
-    MoonShot: { key: MOONSHOT_KEY },
+    Anthropic: { key: ANTHROPIC_KEY, proxy: ANTHROPIC_API },
     MoonShot: { key: MOONSHOT_KEY },
     Baidu: { apiKey: BAIDU_API_KEY, secretKey: BAIDU_SECRET_KEY },
     IFlyTek: { apiPassword: FLY_API_PASS },
@@ -45,7 +46,7 @@ async function main() {
         }
     ]
     await stream(input, { provider: ChatModelProvider.OpenAI, model: ChatModel.GPT_4_1_NANO })
-    await stream(input, { provider: ChatModelProvider.Google, model: ChatModel.GEM_FLASH_2_LITE })
+    await stream(input, { provider: ChatModelProvider.Google, model: ChatModel.GEM_FLASH_2 })
 
     await stream('你个垃圾', { provider: ChatModelProvider.Baidu, model: ChatModel.ERNIE_LITE_8K, temperature: 0 })
     await stream('你是谁？帮我写一首100字的唐诗', { provider: ChatModelProvider.IFlyTek, model: ChatModel.SPARK_LITE })
@@ -54,6 +55,7 @@ async function main() {
     await stream('浓是上海人伐?', { provider: ChatModelProvider.AliYun, model: ChatModel.QWEN_TURBO })
     await stream('Bonjour', { provider: ChatModelProvider.DeepSeek, model: ChatModel.DEEPSEEK_V3 })
     await stream('浓是上海人伐?', { provider: ChatModelProvider.XAI, model: ChatModel.GROK2 })
+    await stream('你是什么模型?', { provider: ChatModelProvider.Anthropic, model: ChatModel.CLAUDE_4_SONNET })
 }
 
 async function stream(query, option) {

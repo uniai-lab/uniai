@@ -1,5 +1,3 @@
-<!-- @format -->
-
 <p align="center"><img src="./icon/logo.png" width="66px"></p>
 <h1 align="center">UniAI</h1>
 <h3 align="center">To Unify AI Models!</h3>
@@ -57,7 +55,9 @@ English · [🇨🇳 中文说明](./README_CN.md)
 
 <p>
 <img src="./icon/openai.png" width="45px">
+<img src="./icon/anthropic.webp" width="45px">
 <img src="./icon/google.png" width="45px">
+<img src="./icon/deepseek.png" width="45px">
 <img src="./icon/xai.png" width="45px">
 <img src="./icon/zhipu.png" width="45px">
 <img src="./icon/glm.png" width="45px">
@@ -67,10 +67,11 @@ English · [🇨🇳 中文说明](./README_CN.md)
 <img src="./icon/baidu.png" width="45px">
 </p>
 
-Latest update: we have supported **OpenAI's O1** and **DeepSeek** models!
+Latest update: we have supported **Claude** latest models!
 
-- [DeepSeek](https://api-docs.deepseek.com/)
 - [OpenAI/GPT](https://platform.openai.com)
+- [Anthropic/Claude](https://console.anthropic.com)
+- [DeepSeek](https://api-docs.deepseek.com/)
 - [Google/Gemini](https://makersuite.google.com/app/)
 - [IFLYTEK/Spark](https://xinghuo.xfyun.cn)
 - [THUDM/ChatGLM](https://github.com/THUDM/ChatGLM4)
@@ -117,7 +118,7 @@ You can also read on to learn how to use **UniAI** based on this documentation.
 
 You can set up environment variables by referring to the [dotenv example](./.env.example)
 
-### Prompt Tree and Markdown [NEW]
+### Prompt Tree and Markdown
 
 You can use the `Prompt` class to build a hierarchical prompt tree and automatically generate Markdown from it. This is useful for organizing structured prompts or documentation.
 
@@ -135,7 +136,7 @@ console.log(prompt.toString())
 
 **Output Markdown:**
 
-```
+```markdown
 # Bot Info
 
 This is a simple bot.
@@ -220,10 +221,26 @@ const input = [
         role: 'user',
         content: 'Describe the image',
         img: 'https://img2.baidu.com/it/u=2595743336,2138195985&fm=253&fmt=auto?w=801&h=800'
+        // or base64
     }
 ]
 // Warn: If you choose a non-image model, img attributes will be dropped!
 const res = await ai.chat(input, { model: 'gpt-4o' })
+console.log(res)
+```
+
+**Chat with audio**
+
+```js
+const input: ChatMessage[] = [
+    {
+        role: ChatRoleEnum.USER,
+        content: '',
+        audio: readFileSync(path.join(__dirname, 'test.wav')).toString('base64')
+    }
+]
+// Warn: currently only support gpt-4o-audio-preview
+const res = await ai.chat(input, { model: 'gpt-4o-audio-preview' })
 console.log(res)
 ```
 

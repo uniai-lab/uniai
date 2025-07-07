@@ -2,6 +2,7 @@
 import {
     AliChatModel,
     AliEmbedModel,
+    AnthropicChatModel,
     BaiduChatModel,
     ChatModel,
     ChatModelProvider,
@@ -31,6 +32,7 @@ import {
 import { UniAIConfig } from '../interface/IConfig'
 import { ChatMessage, ChatOption, EmbedOption, ImagineOption, ModelList, Provider } from '../interface/IModel'
 import OpenAI from './providers/OpenAI'
+import Anthropic from './providers/Anthropic'
 import GLM from './providers/GLM'
 import Other from './providers/Other'
 import Google from './providers/Google'
@@ -57,6 +59,7 @@ export default class UniAI {
     public imgModels: ModelList
 
     private openai: OpenAI
+    private anthropic: Anthropic
     private deepseek: DeepSeek
     private google: Google
     private glm: GLM
@@ -73,6 +76,8 @@ export default class UniAI {
         this.config = config
         // OpenAI key, your OpenAI proxy API (optional)
         this.openai = new OpenAI(config.OpenAI?.key, config.OpenAI?.proxy)
+        // Anthropic Claude key
+        this.anthropic = new Anthropic(config.Anthropic?.key, config.Anthropic?.proxy)
         // DeepSeek Key
         this.deepseek = new DeepSeek(config.DeepSeek?.key, config.DeepSeek?.proxy)
         // ZhiPu AI with ChatGLM6B(local)
@@ -109,6 +114,7 @@ export default class UniAI {
             models: Object.values<ChatModel>(
                 {
                     [ChatModelProvider.OpenAI]: OpenAIChatModel,
+                    [ChatModelProvider.Anthropic]: AnthropicChatModel,
                     [ChatModelProvider.DeepSeek]: DeepSeekChatModel,
                     [ChatModelProvider.Baidu]: BaiduChatModel,
                     [ChatModelProvider.IFlyTek]: IFlyTekChatModel,
@@ -164,6 +170,17 @@ export default class UniAI {
                 return await this.openai.chat(
                     messages,
                     model as OpenAIChatModel,
+                    stream,
+                    top,
+                    temperature,
+                    maxLength,
+                    tools as ChatCompletionTool[],
+                    toolChoice as ChatCompletionToolChoiceOption
+                )
+            case ChatModelProvider.Anthropic:
+                return await this.anthropic.chat(
+                    messages,
+                    model as AnthropicChatModel,
                     stream,
                     top,
                     temperature,
