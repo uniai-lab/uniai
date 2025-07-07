@@ -3,6 +3,7 @@ import 'dotenv/config'
 import '../env.d.ts'
 import UniAI, { ChatMessage, ChatResponse, Prompt } from '../src'
 import {
+    ChatModel,
     ChatModelProvider,
     ChatRoleEnum,
     EmbedModelProvider,
@@ -11,6 +12,8 @@ import {
     OpenAIEmbedModel
 } from '../interface/Enum'
 import { Readable } from 'stream'
+import { readFileSync } from 'fs'
+import path from 'path'
 
 const { OPENAI_KEY, OPENAI_API } = process.env
 
@@ -22,6 +25,7 @@ const input2: ChatMessage[] = [
         img: 'https://img2.baidu.com/it/u=2595743336,2138195985&fm=253&fmt=auto?w=801&h=800'
     }
 ]
+
 const input3: ChatMessage[] = [
     { role: ChatRoleEnum.SYSTEM, content: '你是一个翻译官！翻译中文为英文！' },
     { role: ChatRoleEnum.USER, content: '你好，你是谁？' },
@@ -40,6 +44,15 @@ const prompt: Prompt = new Prompt('机器人', '你是一个机器人，以下�
 const input4: ChatMessage[] = [
     { role: ChatRoleEnum.SYSTEM, content: prompt.toString() },
     { role: ChatRoleEnum.USER, content: '你是谁？简短介绍下你自己得特点' }
+]
+
+// for audio base64 input test
+const input5: ChatMessage[] = [
+    {
+        role: ChatRoleEnum.USER,
+        content: '',
+        audio: readFileSync(path.join(__dirname, 'test.wav')).toString('base64')
+    }
 ]
 
 let uni: UniAI
@@ -78,6 +91,13 @@ describe('OpenAI tests', () => {
 
     test('Test chat openai default, gpt-4o', done => {
         uni.chat(input2).then(console.log).catch(console.error).finally(done)
+    }, 60000)
+
+    test.only('Test chat openai default, gpt-4o-audio-preview', done => {
+        uni.chat(input5, { stream: false, provider: ChatModelProvider.OpenAI, model: ChatModel.GPT_4O_AUDIO })
+            .then(console.log)
+            .catch(console.error)
+            .finally(done)
     }, 60000)
 
     test('Test chat openai gpt-3.5-turbo', done => {

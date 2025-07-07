@@ -26,7 +26,7 @@ import { ChatRoleEnum, DETaskType, OpenAIChatModel, OpenAIEmbedModel, OpenAIImag
 import { ChatResponse, ChatMessage, TaskResponse, ImagineResponse } from '../../interface/IModel'
 import { EmbeddingResponse } from '../../interface/IModel'
 import $ from '../util'
-import { ChatCompletionTool, ChatCompletionToolChoiceOption } from 'openai/resources'
+import { ChatCompletionContentPart, ChatCompletionTool, ChatCompletionToolChoiceOption } from 'openai/resources'
 
 const STORAGE_KEY = 'task_open_ai'
 const API = 'https://api.openai.com'
@@ -89,7 +89,7 @@ export default class OpenAI {
      */
     async chat(
         messages: ChatMessage[],
-        model: OpenAIChatModel = OpenAIChatModel.GPT_4O,
+        model: OpenAIChatModel = OpenAIChatModel.GPT_4_1,
         stream: boolean = false,
         top?: number,
         temperature?: number,
@@ -97,27 +97,8 @@ export default class OpenAI {
         tools?: ChatCompletionTool[],
         toolChoice?: ChatCompletionToolChoiceOption
     ) {
-        // if (!Object.values(OpenAIChatModel).includes(model)) throw new Error('OpenAI chat model not found')
-
         const key = Array.isArray(this.key) ? $.getRandomKey(this.key) : this.key
         if (!key) throw new Error('OpenAI API key is not set in config')
-
-        // remove imgs for not vision model
-        if (
-            ![
-                OpenAIChatModel.GPT4_TURBO,
-                OpenAIChatModel.GPT_4O,
-                OpenAIChatModel.GPT_4O_MINI,
-                OpenAIChatModel.CHAT_GPT_4O,
-                OpenAIChatModel.O1,
-                OpenAIChatModel.O1_MINI,
-                OpenAIChatModel.O1_PRO,
-                OpenAIChatModel.GPT_4_1,
-                OpenAIChatModel.GPT_4_1_NANO,
-                OpenAIChatModel.GPT_4_1_MINI
-            ].includes(model)
-        )
-            messages = messages.map(({ role, content }) => ({ role, content }))
 
         // temperature is float in [0,1]
         if (typeof temperature === 'number') {
@@ -258,19 +239,17 @@ export default class OpenAI {
     private formatMessage(messages: ChatMessage[]) {
         const prompt: GPTChatMessage[] = []
 
-        for (const { role, content, img, tool } of messages) {
+        for (const { role, content, img, tool, audio } of messages) {
             // with image
             switch (role) {
                 case ChatRoleEnum.USER:
-                    if (img)
-                        prompt.push({
-                            role,
-                            content: [
-                                { type: 'text', text: content },
-                                { type: 'image_url', image_url: { url: img } }
-                            ]
-                        })
-                    else prompt.push({ role, content })
+                    if (img || audio) {
+                        const contentArr: ChatCompletionContentPart[] = []
+                        if (content.trim()) contentArr.push({ type: 'text', text: content })
+                        if (img) contentArr.push({ type: 'image_url', image_url: { url: img } })
+                        if (audio) contentArr.push({ type: 'input_audio', input_audio: { data: audio, format: 'wav' } })
+                        prompt.push({ role, content: contentArr })
+                    } else prompt.push({ role, content })
                     break
                 case ChatRoleEnum.TOOL:
                     prompt.push({ role, content, tool_call_id: tool! })

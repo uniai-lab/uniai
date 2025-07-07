@@ -17,6 +17,7 @@ export interface ChatMessage {
     role: ChatRoleEnum
     content: string
     img?: string // url or base64
+    audio?: string // base64
     tool?: string // tool_call_id
 }
 

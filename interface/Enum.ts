@@ -91,6 +91,7 @@ export enum OpenAIChatModel {
     GPT_4_1 = 'gpt-4.1',
     CHAT_GPT_4O = 'chatgpt-4o-latest',
     GPT_4O = 'gpt-4o',
+    GPT_4O_AUDIO = 'gpt-4o-audio-preview',
     // Reasoning models
     O1 = 'o1',
     O1_MINI = 'o1-mini',
