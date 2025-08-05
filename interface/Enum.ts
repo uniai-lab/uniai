@@ -4,6 +4,7 @@
 
 export enum ChatModelProvider {
     OpenAI = 'openai',
+    Anthropic = 'anthropic',
     DeepSeek = 'deepseek',
     IFlyTek = 'iflytek',
     Baidu = 'baidu',
@@ -91,11 +92,23 @@ export enum OpenAIChatModel {
     GPT_4_1 = 'gpt-4.1',
     CHAT_GPT_4O = 'chatgpt-4o-latest',
     GPT_4O = 'gpt-4o',
+    GPT_4O_AUDIO = 'gpt-4o-audio-preview',
     // Reasoning models
     O1 = 'o1',
     O1_MINI = 'o1-mini',
     O1_PRO = 'o1-pro',
     O3_MINI = 'o3-mini'
+}
+
+export enum AnthropicChatModel {
+    CLAUDE_4_SONNET = 'claude-sonnet-4-20250514',
+    CLAUDE_4_OPUS = 'claude-opus-4-20250514',
+    CLAUDE_3_7_SONNET = 'claude-3-7-sonnet-20250219',
+    CLAUDE_3_5_SONNET = 'claude-3-5-sonnet-20241022',
+    CLAUDE_3_5_HAIKU = 'claude-3-5-haiku-20241022',
+    CLAUDE_3_OPUS = 'claude-3-opus-20240229',
+    CLAUDE_3_SONNET = 'claude-3-sonnet-20240229',
+    CLAUDE_3_HAIKU = 'claude-3-haiku-20240307'
 }
 
 export enum DeepSeekChatModel {
@@ -191,6 +204,7 @@ export enum XAIChatModel {
 // All chat models
 export type ChatModel =
     | OpenAIChatModel
+    | AnthropicChatModel
     | DeepSeekChatModel
     | BaiduChatModel
     | GLMChatModel
@@ -203,6 +217,7 @@ export type ChatModel =
 
 export const ChatModel = {
     ...OpenAIChatModel,
+    ...AnthropicChatModel,
     ...DeepSeekChatModel,
     ...BaiduChatModel,
     ...GLMChatModel,
@@ -283,6 +298,12 @@ export enum GPTChatRoleEnum {
     ASSISTANT = 'assistant',
     DEV = 'developer',
     TOOL = 'tool'
+}
+
+// Anthropic Claude model roles
+export enum AnthropicChatRoleEnum {
+    USER = 'user',
+    ASSISTANT = 'assistant'
 }
 
 // DeepSeek model roles

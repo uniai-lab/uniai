@@ -5,6 +5,8 @@ declare global {
         interface ProcessEnv {
             OPENAI_API: string
             OPENAI_KEY: string
+            ANTHROPIC_API: string
+            ANTHROPIC_KEY: string
             GOOGLE_AI_API: string
             GOOGLE_AI_KEY: string
             ZHIPU_AI_API: string

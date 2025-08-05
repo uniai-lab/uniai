@@ -7,6 +7,12 @@ export interface UniAIConfig {
         proxy?: string
     }
 
+    // Anthropic configs
+    Anthropic?: {
+        key: string | string[]
+        proxy?: string
+    }
+
     // DeepSeek configs
     DeepSeek?: {
         key: string | string[]

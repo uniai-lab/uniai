@@ -2,6 +2,7 @@
 import {
     AliChatModel,
     AliEmbedModel,
+    AnthropicChatModel,
     BaiduChatModel,
     ChatModel,
     ChatModelProvider,
@@ -31,6 +32,7 @@ import {
 import { UniAIConfig } from '../interface/IConfig'
 import { ChatMessage, ChatOption, EmbedOption, ImagineOption, ModelList, Provider } from '../interface/IModel'
 import OpenAI from './providers/OpenAI'
+import Anthropic from './providers/Anthropic'
 import GLM from './providers/GLM'
 import Other from './providers/Other'
 import Google from './providers/Google'
@@ -57,6 +59,7 @@ export default class UniAI {
     public imgModels: ModelList
 
     private openai: OpenAI
+    private anthropic: Anthropic
     private deepseek: DeepSeek
     private google: Google
     private glm: GLM
@@ -73,6 +76,8 @@ export default class UniAI {
         this.config = config
         // OpenAI key, your OpenAI proxy API (optional)
         this.openai = new OpenAI(config.OpenAI?.key, config.OpenAI?.proxy)
+        // Anthropic Claude key
+        this.anthropic = new Anthropic(config.Anthropic?.key, config.Anthropic?.proxy)
         // DeepSeek Key
         this.deepseek = new DeepSeek(config.DeepSeek?.key, config.DeepSeek?.proxy)
         // ZhiPu AI with ChatGLM6B(local)
@@ -109,6 +114,7 @@ export default class UniAI {
             models: Object.values<ChatModel>(
                 {
                     [ChatModelProvider.OpenAI]: OpenAIChatModel,
+                    [ChatModelProvider.Anthropic]: AnthropicChatModel,
                     [ChatModelProvider.DeepSeek]: DeepSeekChatModel,
                     [ChatModelProvider.Baidu]: BaiduChatModel,
                     [ChatModelProvider.IFlyTek]: IFlyTekChatModel,
@@ -156,75 +162,96 @@ export default class UniAI {
 
     async chat(messages: ChatMessage[] | string = DEFAULT_MESSAGE, option: ChatOption = {}) {
         if (typeof messages === 'string') messages = [{ role: ChatRoleEnum.USER, content: messages }]
-        const provider = option.provider || ChatModelProvider.OpenAI // default is OpenAI gpt-3.5-turbo
+        const provider = option.provider || ChatModelProvider.OpenAI
         const { model, stream, top, temperature, maxLength, tools, toolChoice } = option
 
-        if (provider === ChatModelProvider.OpenAI)
-            return await this.openai.chat(
-                messages,
-                model as OpenAIChatModel,
-                stream,
-                top,
-                temperature,
-                maxLength,
-                tools as ChatCompletionTool[],
-                toolChoice as ChatCompletionToolChoiceOption
-            )
-        else if (provider === ChatModelProvider.DeepSeek)
-            return await this.deepseek.chat(messages, model as DeepSeekChatModel, stream, top, temperature, maxLength)
-        else if (provider === ChatModelProvider.Google)
-            return await this.google.chat(messages, model as GoogleChatModel, stream, top, temperature, maxLength)
-        else if (provider === ChatModelProvider.GLM)
-            return await this.glm.chat(
-                messages,
-                model as GLMChatModel,
-                stream,
-                top,
-                temperature,
-                maxLength,
-                tools as GLMTool[],
-                toolChoice as GLMToolChoice
-            )
-        else if (provider === ChatModelProvider.IFlyTek)
-            return await this.fly.chat(
-                messages,
-                model as IFlyTekChatModel,
-                stream,
-                top,
-                temperature,
-                maxLength,
-                tools as SPKTool[],
-                toolChoice as SPKToolChoice
-            )
-        else if (provider === ChatModelProvider.Baidu)
-            return await this.baidu.chat(messages, model as BaiduChatModel, stream, top, temperature, maxLength)
-        else if (provider === ChatModelProvider.MoonShot)
-            return await this.moon.chat(messages, model as MoonShotChatModel, stream, top, temperature, maxLength)
-        else if (provider === ChatModelProvider.AliYun)
-            return await this.ali.chat(messages, model as AliChatModel, stream, top, temperature, maxLength)
-        else if (provider === ChatModelProvider.XAI)
-            return await this.xai.chat(
-                messages,
-                model as XAIChatModel,
-                stream,
-                top,
-                temperature,
-                maxLength,
-                tools as GrokTool[],
-                toolChoice as GrokToolChoice
-            )
-        else if (provider === ChatModelProvider.Other)
-            return await this.other.chat(
-                messages,
-                model as ChatModel,
-                stream,
-                top,
-                temperature,
-                maxLength,
-                tools as ChatCompletionTool[],
-                toolChoice as ChatCompletionToolChoiceOption
-            )
-        else throw new Error('Chat model Provider not found')
+        switch (provider) {
+            case ChatModelProvider.OpenAI:
+                return await this.openai.chat(
+                    messages,
+                    model as OpenAIChatModel,
+                    stream,
+                    top,
+                    temperature,
+                    maxLength,
+                    tools as ChatCompletionTool[],
+                    toolChoice as ChatCompletionToolChoiceOption
+                )
+            case ChatModelProvider.Anthropic:
+                return await this.anthropic.chat(
+                    messages,
+                    model as AnthropicChatModel,
+                    stream,
+                    top,
+                    temperature,
+                    maxLength,
+                    tools as ChatCompletionTool[],
+                    toolChoice as ChatCompletionToolChoiceOption
+                )
+            case ChatModelProvider.DeepSeek:
+                return await this.deepseek.chat(
+                    messages,
+                    model as DeepSeekChatModel,
+                    stream,
+                    top,
+                    temperature,
+                    maxLength
+                )
+            case ChatModelProvider.Google:
+                return await this.google.chat(messages, model as GoogleChatModel, stream, top, temperature, maxLength)
+            case ChatModelProvider.GLM:
+                return await this.glm.chat(
+                    messages,
+                    model as GLMChatModel,
+                    stream,
+                    top,
+                    temperature,
+                    maxLength,
+                    tools as GLMTool[],
+                    toolChoice as GLMToolChoice
+                )
+            case ChatModelProvider.IFlyTek:
+                return await this.fly.chat(
+                    messages,
+                    model as IFlyTekChatModel,
+                    stream,
+                    top,
+                    temperature,
+                    maxLength,
+                    tools as SPKTool[],
+                    toolChoice as SPKToolChoice
+                )
+            case ChatModelProvider.Baidu:
+                return await this.baidu.chat(messages, model as BaiduChatModel, stream, top, temperature, maxLength)
+            case ChatModelProvider.MoonShot:
+                return await this.moon.chat(messages, model as MoonShotChatModel, stream, top, temperature, maxLength)
+            case ChatModelProvider.AliYun:
+                return await this.ali.chat(messages, model as AliChatModel, stream, top, temperature, maxLength)
+            case ChatModelProvider.XAI:
+                return await this.xai.chat(
+                    messages,
+                    model as XAIChatModel,
+                    stream,
+                    top,
+                    temperature,
+                    maxLength,
+                    tools as GrokTool[],
+                    toolChoice as GrokToolChoice
+                )
+            case ChatModelProvider.Other:
+                return await this.other.chat(
+                    messages,
+                    model as ChatModel,
+                    stream,
+                    top,
+                    temperature,
+                    maxLength,
+                    tools as ChatCompletionTool[],
+                    toolChoice as ChatCompletionToolChoiceOption
+                )
+            default:
+                throw new Error('Chat model Provider not found')
+        }
     }
 
     async embedding(content: string | string[], option: EmbedOption = {}) {
@@ -232,17 +259,20 @@ export default class UniAI {
         const { model } = option
         if (typeof content === 'string') content = [content]
 
-        if (provider === EmbedModelProvider.OpenAI)
-            return await this.openai.embedding(content, model as OpenAIEmbedModel)
-        else if (provider === EmbedModelProvider.GLM)
-            return await this.glm.embedding(content, model as GLMEmbedModel, option.dimensions)
-        else if (provider === EmbedModelProvider.Google)
-            return await this.google.embedding(content, model as GoogleEmbedModel)
-        else if (provider === EmbedModelProvider.AliYun)
-            return await this.ali.embedding(content, model as AliEmbedModel, option.dimensions)
-        else if (provider === EmbedModelProvider.Other)
-            return await this.other.embedding(content, model as OtherEmbedModel)
-        else throw new Error('Embedding model provider not found')
+        switch (provider) {
+            case EmbedModelProvider.OpenAI:
+                return await this.openai.embedding(content, model as OpenAIEmbedModel)
+            case EmbedModelProvider.GLM:
+                return await this.glm.embedding(content, model as GLMEmbedModel, option.dimensions)
+            case EmbedModelProvider.Google:
+                return await this.google.embedding(content, model as GoogleEmbedModel)
+            case EmbedModelProvider.AliYun:
+                return await this.ali.embedding(content, model as AliEmbedModel, option.dimensions)
+            case EmbedModelProvider.Other:
+                return await this.other.embedding(content, model as OtherEmbedModel)
+            default:
+                throw new Error('Embedding model provider not found')
+        }
     }
 
     async imagine(prompt: string, option: ImagineOption = {}) {
