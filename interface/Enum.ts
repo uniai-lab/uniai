@@ -105,13 +105,16 @@ export enum DeepSeekChatModel {
 
 // google chat models
 export enum GoogleChatModel {
+    // deprecated
     GEM_PRO_1_5 = 'gemini-1.5-pro',
     GEM_FLASH_1_5 = 'gemini-1.5-flash',
     GEM_FLASH_1_5_8B = 'gemini-1.5-flash-8b',
+    // current models
     GEM_FLASH_2 = 'gemini-2.0-flash',
     GEM_FLASH_2_LITE = 'gemini-2.0-flash-lite',
-    // experimental
-    GEM_PRO_2 = 'gemini-2.5-pro-exp-03-25'
+    GEM_PRO_2_5 = 'gemini-2.5-pro',
+    GEM_FLASH_2_5 = 'gemini-2.5-flash',
+    GEM_FLASH_2_5_LITE = 'gemini-2.5-flash-lite',
 }
 
 // glm chat models

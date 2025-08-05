@@ -174,7 +174,7 @@ export default class Google {
         let base64: { mime: string; data: string } | null = null
 
         for (const { role, content, img } of messages) {
-            if (!content) continue
+            if (!content && !img) continue
             if (role === ChatRoleEnum.SYSTEM) continue
             if (img) base64 = await this.toBase64(img)
 
@@ -193,7 +193,6 @@ export default class Google {
         }
         input = input.trim()
 
-        if (!input) throw new Error('User input nothing')
         prompt.push({
             role: GEMChatRoleEnum.USER,
             parts: base64

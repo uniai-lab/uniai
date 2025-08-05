@@ -29,7 +29,7 @@ const input2: ChatMessage[] = [
     { role: ChatRoleEnum.USER, content: 'FileName: a.png, FileSize: 10000 bytes', img },
     { role: ChatRoleEnum.USER, content: '用一首诗描述下图片' },
     { role: ChatRoleEnum.ASSISTANT, content: '这是一只可爱的小蜜蜂' },
-    { role: ChatRoleEnum.USER, content: '重新用一首诗描述下图片', img }
+    { role: ChatRoleEnum.USER, content: '重新用一首诗描述下图片，必须包含图中内容', img }
 ]
 
 let uni: UniAI
@@ -107,8 +107,22 @@ describe('Google Tests', () => {
             .finally(done)
     })
 
-    test.only('Test chat Google Gemini Pro 2.5', done => {
-        uni.chat(input2, { provider: ChatModelProvider.Google, model: GoogleChatModel.GEM_PRO_2 })
+    test('Test chat Google Gemini Pro 2.5', done => {
+        uni.chat(input2, { provider: ChatModelProvider.Google, model: GoogleChatModel.GEM_PRO_2_5 })
+            .then(console.log)
+            .catch(console.error)
+            .finally(done)
+    }, 60000)
+
+    test('Test chat Google Gemini Flash 2.5', done => {
+        uni.chat(input2, { provider: ChatModelProvider.Google, model: GoogleChatModel.GEM_FLASH_2_5 })
+            .then(console.log)
+            .catch(console.error)
+            .finally(done)
+    }, 60000)
+
+    test.only('Test chat Google Gemini Flash Lite 2.5', done => {
+        uni.chat(input2, { provider: ChatModelProvider.Google, model: GoogleChatModel.GEM_FLASH_2_5_LITE })
             .then(console.log)
             .catch(console.error)
             .finally(done)
