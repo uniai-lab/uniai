@@ -1,6 +1,6 @@
 {
     "name": "uniai",
-    "version": "1.14.1",
+    "version": "1.15.0",
     "author": "devilyouwei",
     "description": "To unify AI models!",
     "repository": "https://github.com/uniai-lab/uniai",
@@ -51,17 +51,16 @@
         "ts-jest": "^29.3.2",
         "ts-node": "^10.9.2",
         "tslog": "^4.9.3",
-        "tsup": "^8.4.0",
+        "tsup": "^8.5.0",
         "tsup-fix-cjs-exports": "^1.0.3",
-        "typescript": "^5.8.3"
+        "typescript": "^5.9.2"
     },
     "dependencies": {
         "@server-sent-stream/node": "^1.0.5",
         "@streamparser/json-node": "^0.0.22",
-        "axios": "^1.8.4",
-        "iconv-lite": "^0.6.3",
+        "axios": "^1.11.0",
         "is-base64": "^1.1.0",
         "node-localstorage": "^3.0.5",
-        "openai": "^4.94.0"
+        "openai": "^5.16.0"
     }
 }

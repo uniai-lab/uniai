@@ -6,7 +6,6 @@
  */
 import { PassThrough, Readable } from 'stream'
 import EventSourceStream from '@server-sent-stream/node'
-import { decodeStream } from 'iconv-lite'
 
 import {
     GPTChatRequest,
@@ -155,7 +154,13 @@ export default class OpenAI {
             parser.on('error', e => output.destroy(e))
             parser.on('end', () => output.end())
 
-            res.pipe(decodeStream('utf-8')).pipe(parser)
+            res.pipe(parser)
+
+            // output closed, close parser & LLM response
+            output.on('close', () => {
+                if (!res.destroyed) res.destroy(new Error('Downstream closed, aborting upstream SSE'))
+                if (!parser.destroyed) parser.destroy()
+            })
             return output as Readable
         } else {
             data.content = res.choices[0]?.message?.content || ''

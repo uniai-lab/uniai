@@ -6,7 +6,6 @@
  */
 import { PassThrough, Readable } from 'stream'
 import EventSourceStream from '@server-sent-stream/node'
-import { decodeStream } from 'iconv-lite'
 
 import {
     AnthropicChatRequest,
@@ -155,7 +154,13 @@ export default class Anthropic {
             parser.on('error', e => output.destroy(e))
             parser.on('end', () => output.end())
 
-            res.pipe(decodeStream('utf-8')).pipe(parser)
+            res.pipe(parser)
+
+            // output closed, close parser & LLM response
+            output.on('close', () => {
+                if (!res.destroyed) res.destroy(new Error('Downstream closed, aborting upstream SSE'))
+                if (!parser.destroyed) parser.destroy()
+            })
             return output as Readable
         } else {
             // Handle non-stream response
@@ -294,31 +299,33 @@ export default class Anthropic {
             } else if (img.startsWith('http')) {
                 // Handle remote URLs - download and convert to base64
                 const res: Buffer = await $.get(img, {}, { responseType: 'arraybuffer' })
-                
+
                 // Determine MIME type based on URL extension or default to supported formats
                 const supportedTypes = ['jpeg', 'jpg', 'png', 'gif', 'webp']
-                const detectedType = supportedTypes.find(type => 
-                    img.toLowerCase().includes(`.${type}`) || img.toLowerCase().includes(`/${type}`)
+                const detectedType = supportedTypes.find(
+                    type => img.toLowerCase().includes(`.${type}`) || img.toLowerCase().includes(`/${type}`)
                 )
-                
+
                 if (detectedType) {
                     mediaType = `image/${detectedType === 'jpg' ? 'jpeg' : detectedType}`
                 } else {
                     // Default to jpeg if type cannot be determined
                     mediaType = 'image/jpeg'
                 }
-                
+
                 base64Data = res.toString('base64')
             } else {
                 // Handle local file paths
                 const fileExtension = extname(img).replace('.', '').toLowerCase()
                 const supportedExtensions = ['jpeg', 'jpg', 'png', 'gif', 'webp']
-                
+
                 if (supportedExtensions.includes(fileExtension)) {
                     mediaType = `image/${fileExtension === 'jpg' ? 'jpeg' : fileExtension}`
                     base64Data = readFileSync(img).toString('base64')
                 } else {
-                    throw new Error(`Unsupported image format: ${fileExtension}. Anthropic supports: jpeg, png, gif, webp`)
+                    throw new Error(
+                        `Unsupported image format: ${fileExtension}. Anthropic supports: jpeg, png, gif, webp`
+                    )
                 }
             }
 

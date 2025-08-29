@@ -2,7 +2,6 @@
 
 import { PassThrough, Readable } from 'stream'
 import { JSONParser } from '@streamparser/json-node'
-import { decodeStream } from 'iconv-lite'
 import {
     GEMChatRequest,
     GEMChatResponse,
@@ -148,7 +147,13 @@ export default class Google {
             parser.on('error', e => output.destroy(e))
             parser.on('end', () => output.end())
 
-            res.pipe(decodeStream('utf-8')).pipe(parser)
+            res.pipe(parser)
+
+            // output closed, close parser & LLM response
+            output.on('close', () => {
+                if (!res.destroyed) res.destroy(new Error('Downstream closed, aborting upstream SSE'))
+                if (!parser.destroyed) parser.destroy()
+            })
             return output as Readable
         } else {
             const block = res.promptFeedback?.blockReason

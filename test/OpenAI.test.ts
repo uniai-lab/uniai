@@ -93,7 +93,7 @@ describe('OpenAI tests', () => {
         uni.chat(input2).then(console.log).catch(console.error).finally(done)
     }, 60000)
 
-    test.only('Test chat openai default, gpt-4o-audio-preview', done => {
+    test('Test chat openai default, gpt-4o-audio-preview', done => {
         uni.chat(input5, { stream: false, provider: ChatModelProvider.OpenAI, model: ChatModel.GPT_4O_AUDIO })
             .then(console.log)
             .catch(console.error)
@@ -221,6 +221,22 @@ describe('OpenAI tests', () => {
             .catch(console.error)
             .finally(done)
     }, 60000)
+
+    test.only('Test chat openai gpt-5-nano stream', done => {
+        uni.chat('给我做几个emoji表情，表现出你的愤怒', {
+            stream: true,
+            provider: ChatModelProvider.OpenAI,
+            model: OpenAIChatModel.GPT_5_NANO
+        }).then(res => {
+            expect(res).toBeInstanceOf(Readable)
+            const stream = res as Readable
+            let data = ''
+            stream.on('data', chunk => (data += JSON.parse(chunk.toString()).content))
+            stream.on('end', () => console.log(data))
+            stream.on('error', e => console.error(e))
+            stream.on('close', () => done())
+        })
+    })
 
     test('Test OpenAI/text-embedding-ada2 embedding', done => {
         uni.embedding(input, { provider: EmbedModelProvider.OpenAI, model: OpenAIEmbedModel.ADA })

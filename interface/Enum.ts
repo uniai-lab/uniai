@@ -90,6 +90,10 @@ export enum OpenAIChatModel {
     GPT_4_1_NANO = 'gpt-4.1-nano',
     // Flagship chat models
     GPT_4_1 = 'gpt-4.1',
+    GPT_5 = 'gpt-5',
+    GPT_5_MINI = 'gpt-5-mini',
+    GPT_5_NANO = 'gpt-5-nano',
+    // GPT-4o models
     CHAT_GPT_4O = 'chatgpt-4o-latest',
     GPT_4O = 'gpt-4o',
     GPT_4O_AUDIO = 'gpt-4o-audio-preview',
@@ -127,7 +131,7 @@ export enum GoogleChatModel {
     GEM_FLASH_2_LITE = 'gemini-2.0-flash-lite',
     GEM_PRO_2_5 = 'gemini-2.5-pro',
     GEM_FLASH_2_5 = 'gemini-2.5-flash',
-    GEM_FLASH_2_5_LITE = 'gemini-2.5-flash-lite',
+    GEM_FLASH_2_5_LITE = 'gemini-2.5-flash-lite'
 }
 
 // glm chat models
@@ -178,9 +182,16 @@ export enum IFlyTekChatModel {
 }
 
 export enum MoonShotChatModel {
+    KIMI_K2_0711_PREVIEW = 'kimi-k2-0711-preview',
     MOON_V1_8K = 'moonshot-v1-8k',
     MOON_V1_32K = 'moonshot-v1-32k',
-    MOON_V1_128K = 'moonshot-v1-128k'
+    MOON_V1_128K = 'moonshot-v1-128k',
+    MOON_V1_AUTO = 'moonshot-v1-auto',
+    KIMI_LATEST = 'kimi-latest',
+    MOON_V1_8K_VISION_PREVIEW = 'moonshot-v1-8k-vision-preview',
+    MOON_V1_32K_VISION_PREVIEW = 'moonshot-v1-32k-vision-preview',
+    MOON_V1_128K_VISION_PREVIEW = 'moonshot-v1-128k-vision-preview',
+    KIMI_THINKING_PREVIEW = 'kimi-thinking-preview'
 }
 
 export enum AliChatModel {
