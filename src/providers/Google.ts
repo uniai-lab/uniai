@@ -179,9 +179,11 @@ export default class Google {
         let base64: { mime: string; data: string } | null = null
 
         for (const { role, content, img } of messages) {
+            let text = ''
             if (!content && !img) continue
             if (role === ChatRoleEnum.SYSTEM) continue
-            if (img) base64 = await this.toBase64(img)
+            if (Array.isArray(content)) for (const c of content) text += c || ''
+            if (img) base64 = await this.toBase64(Array.isArray(img) ? img[0] : img)
 
             if (role !== ChatRoleEnum.ASSISTANT) input += `\n${content}`
             else {
@@ -192,7 +194,7 @@ export default class Google {
                         ? [{ text: input || ' ' }, { inline_data: { mime_type: base64.mime, data: base64.data } }]
                         : [{ text: input || ' ' }]
                 })
-                prompt.push({ role: GEMChatRoleEnum.MODEL, parts: [{ text: content }] })
+                prompt.push({ role: GEMChatRoleEnum.MODEL, parts: [{ text }] })
                 input = ''
             }
         }

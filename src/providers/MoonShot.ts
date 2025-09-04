@@ -2,15 +2,9 @@
 
 import { PassThrough, Readable } from 'stream'
 import EventSourceStream from '@server-sent-stream/node'
-import { ChatRoleEnum, MoonShotChatModel } from '../../interface/Enum'
+import { MoonShotChatModel } from '../../interface/Enum'
 import { ChatMessage, ChatResponse } from '../../interface/IModel'
-import {
-    GPTChatMessage,
-    GPTChatRequest,
-    GPTChatResponse,
-    GPTChatStreamRequest,
-    GPTChatStreamResponse
-} from '../../interface/IOpenAI'
+import { GPTChatRequest, GPTChatResponse, GPTChatStreamRequest, GPTChatStreamResponse } from '../../interface/IOpenAI'
 import $ from '../util'
 
 const API = 'https://api.moonshot.cn'
@@ -67,7 +61,7 @@ export default class MoonShot {
 
         const res = await $.post<GPTChatRequest | GPTChatStreamRequest, Readable | GPTChatResponse>(
             `${this.api}/${VER}/chat/completions`,
-            { model, messages: this.formatMessage(messages), stream, temperature, top_p: top, max_tokens: maxLength },
+            { model, messages: $.formatGPTMessage(messages), stream, temperature, top_p: top, max_tokens: maxLength },
             { headers: { Authorization: `Bearer ${key}` }, responseType: stream ? 'stream' : 'json' }
         )
         const data: ChatResponse = {
@@ -114,23 +108,5 @@ export default class MoonShot {
             data.totalTokens = res.usage?.total_tokens || 0
             return data
         }
-    }
-
-    /**
-     * Formats chat messages according to the GPT model's message format.
-     *
-     * @param messages - An array of chat messages.
-     * @returns Formatted messages compatible with the GPT model.
-     */
-    private formatMessage(messages: ChatMessage[]) {
-        const prompt: GPTChatMessage[] = []
-
-        for (const { role, content } of messages) {
-            if (role === ChatRoleEnum.TOOL || role === ChatRoleEnum.DEV) continue
-
-            prompt.push({ role, content })
-        }
-
-        return prompt
     }
 }

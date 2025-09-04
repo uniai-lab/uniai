@@ -15,9 +15,9 @@ import {
 
 export interface ChatMessage {
     role: ChatRoleEnum
-    content: string
-    img?: string // url or base64
-    audio?: string // base64
+    content: string | string[]
+    img?: string | string[] // url or base64
+    audio?: string | string[] // base64
     tool?: string // tool_call_id
 }
 

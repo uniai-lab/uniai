@@ -8,11 +8,10 @@
 
 import { PassThrough, Readable } from 'stream'
 import EventSourceStream from '@server-sent-stream/node'
-import { ChatModel, ChatRoleEnum, EmbedModel } from '../../interface/Enum'
+import { ChatModel, EmbedModel } from '../../interface/Enum'
 import { ChatMessage, ChatResponse, EmbeddingResponse } from '../../interface/IModel'
 import $ from '../util'
 import {
-    GPTChatMessage,
     GPTChatRequest,
     GPTChatResponse,
     GPTChatStreamRequest,
@@ -44,7 +43,7 @@ export default class Other {
      * @param model - The model to use for embeddings (default: text-embedding-ada-002).
      * @returns A promise resolving to the embedding response.
      */
-    async embedding(input: string[], model: EmbedModel = EmbedModel.BGE_M3) {
+    async embedding(input: string[], model: EmbedModel = '') {
         if (!this.api) throw new Error('Other embed model API is not set in config')
         const key = Array.isArray(this.key) ? $.getRandomKey(this.key) : this.key
 
@@ -77,7 +76,7 @@ export default class Other {
      */
     async chat(
         messages: ChatMessage[],
-        model: ChatModel = ChatModel.GPT3,
+        model: ChatModel = '',
         stream: boolean = false,
         top?: number,
         temperature?: number,
@@ -92,7 +91,7 @@ export default class Other {
             `${this.api}/v1/chat/completions`,
             {
                 model,
-                messages: this.formatMessage(messages),
+                messages: $.formatGPTMessage(messages),
                 stream,
                 temperature,
                 top_p: top,
@@ -150,44 +149,5 @@ export default class Other {
             data.totalTokens = res.usage?.total_tokens || 0
             return data
         }
-    }
-
-    /**
-     * Formats chat messages according to the GPT model's message format.
-     *
-     * @param messages - An array of chat messages.
-     * @returns Formatted messages compatible with the GPT model.
-     */
-    private formatMessage(messages: ChatMessage[]) {
-        const prompt: GPTChatMessage[] = []
-
-        for (const { role, content, img, tool } of messages) {
-            // with image
-            switch (role) {
-                case ChatRoleEnum.USER:
-                    if (img)
-                        prompt.push({
-                            role,
-                            content: [
-                                { type: 'text', text: content },
-                                { type: 'image_url', image_url: { url: img } }
-                            ]
-                        })
-                    else prompt.push({ role, content })
-                    break
-                case ChatRoleEnum.TOOL:
-                    prompt.push({
-                        role,
-                        content,
-                        tool_call_id: tool || ''
-                    })
-                    break
-                default:
-                    prompt.push({ role, content })
-                    break
-            }
-        }
-
-        return prompt
     }
 }

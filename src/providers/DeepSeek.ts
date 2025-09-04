@@ -136,9 +136,9 @@ export default class DeepSeek {
         for (const { role, content, tool } of messages) {
             // DeepSeek not support develop role
             if (role === ChatRoleEnum.DEV) continue
-            else if (role === ChatRoleEnum.TOOL) prompt.push({ role, content, tool_call_id: tool! })
+            else if (role === ChatRoleEnum.TOOL) prompt.push({ role, content: content as string, tool_call_id: tool! })
             // DeepSeek not support image, only text
-            else prompt.push({ role, content })
+            else prompt.push({ role, content: content as string })
         }
 
         return prompt

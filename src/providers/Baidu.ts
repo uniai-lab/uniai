@@ -57,12 +57,13 @@ export default class Baidu {
         }
 
         const token = await this.getAccessToken()
+        const { prompt, system } = this.formatMessage(messages)
 
         const res = await $.post<BaiduChatRequest, BaiduChatResponse | Readable>(
             `${this.api}/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/${model}?access_token=${token}`,
             {
-                messages: this.formatMessage(messages),
-                system: messages[0]?.role === ChatRoleEnum.SYSTEM ? messages[0].content : '',
+                messages: prompt,
+                system,
                 stream,
                 temperature,
                 top_p: top,
@@ -147,10 +148,17 @@ export default class Baidu {
     // format to baidu message
     private formatMessage(messages: ChatMessage[]) {
         const prompt: BaiduChatMessage[] = []
+        let system = ''
         let input = ''
         const { USER, ASSISTANT, SYSTEM } = ChatRoleEnum
         for (const { role, content } of messages) {
-            if (!content.trim() || role === SYSTEM) continue
+            // must be string
+            if (typeof content !== 'string') continue
+
+            if (!content.trim() || role === SYSTEM) {
+                system = content
+                continue
+            }
             if (role !== ASSISTANT) input += `\n${content}`
             else {
                 prompt.push({ role: USER, content: input.trim() || ' ' })
@@ -160,6 +168,6 @@ export default class Baidu {
         }
         if (!input.trim()) throw new Error('User input nothing')
         prompt.push({ role: USER, content: input.trim() })
-        return prompt
+        return { system, prompt }
     }
 }

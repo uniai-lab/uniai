@@ -21,8 +21,11 @@ const input: string = 'Introduce yourself briefly'
 const input2: ChatMessage[] = [
     {
         role: ChatRoleEnum.USER,
-        content: '描述下这张图片',
-        img: 'https://img2.baidu.com/it/u=2595743336,2138195985&fm=253&fmt=auto?w=801&h=800'
+        content: ['图片1描述了什么', '图片2描述了什么'],
+        img: [
+            'https://img2.baidu.com/it/u=2595743336,2138195985&fm=253&fmt=auto?w=801&h=800',
+            'https://img0.baidu.com/it/u=3185399917,3849606089&fm=253&fmt=auto&app=138&f=JPEG?w=809&h=800'
+        ]
     }
 ]
 
@@ -30,7 +33,7 @@ const input3: ChatMessage[] = [
     { role: ChatRoleEnum.SYSTEM, content: '你是一个翻译官！翻译中文为英文！' },
     { role: ChatRoleEnum.USER, content: '你好，你是谁？' },
     { role: ChatRoleEnum.ASSISTANT, content: 'Hello, who are you?' },
-    { role: ChatRoleEnum.USER, content: '你是一个聪明的模型' }
+    { role: ChatRoleEnum.USER, content: ['你是一个聪明的模型', '其实你不是聪明的模型', '这两句话矛盾吗？'] }
 ]
 
 const prompt: Prompt = new Prompt('机器人', '你是一个机器人，以下是关于你的基本信息', [
@@ -46,12 +49,13 @@ const input4: ChatMessage[] = [
     { role: ChatRoleEnum.USER, content: '你是谁？简短介绍下你自己得特点' }
 ]
 
+const audio = readFileSync(path.join(__dirname, 'test.wav')).toString('base64')
 // for audio base64 input test
 const input5: ChatMessage[] = [
     {
         role: ChatRoleEnum.USER,
-        content: '',
-        audio: readFileSync(path.join(__dirname, 'test.wav')).toString('base64')
+        content: ['我一共给你发了几段语音？', '分别说了什么？', '有区别吗？'],
+        audio: [audio, audio]
     }
 ]
 
@@ -93,7 +97,7 @@ describe('OpenAI tests', () => {
         uni.chat(input2).then(console.log).catch(console.error).finally(done)
     }, 60000)
 
-    test('Test chat openai default, gpt-4o-audio-preview', done => {
+    test.only('Test chat openai default, gpt-4o-audio-preview', done => {
         uni.chat(input5, { stream: false, provider: ChatModelProvider.OpenAI, model: ChatModel.GPT_4O_AUDIO })
             .then(console.log)
             .catch(console.error)
@@ -222,7 +226,7 @@ describe('OpenAI tests', () => {
             .finally(done)
     }, 60000)
 
-    test.only('Test chat openai gpt-5-nano stream', done => {
+    test('Test chat openai gpt-5-nano stream', done => {
         uni.chat('给我做几个emoji表情，表现出你的愤怒', {
             stream: true,
             provider: ChatModelProvider.OpenAI,

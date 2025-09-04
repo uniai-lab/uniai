@@ -69,7 +69,7 @@ export enum AliEmbedModel {
     ALI_ASYNC_V1 = 'text-embedding-async-v1'
 }
 
-export type EmbedModel = OpenAIEmbedModel | OtherEmbedModel | GLMEmbedModel | GoogleEmbedModel | AliEmbedModel
+export type EmbedModel = OpenAIEmbedModel | OtherEmbedModel | GLMEmbedModel | GoogleEmbedModel | AliEmbedModel | string
 export const EmbedModel = {
     ...OpenAIEmbedModel,
     ...OtherEmbedModel,
@@ -105,13 +105,11 @@ export enum OpenAIChatModel {
 }
 
 export enum AnthropicChatModel {
-    CLAUDE_4_SONNET = 'claude-sonnet-4-20250514',
-    CLAUDE_4_OPUS = 'claude-opus-4-20250514',
-    CLAUDE_3_7_SONNET = 'claude-3-7-sonnet-20250219',
-    CLAUDE_3_5_SONNET = 'claude-3-5-sonnet-20241022',
-    CLAUDE_3_5_HAIKU = 'claude-3-5-haiku-20241022',
-    CLAUDE_3_OPUS = 'claude-3-opus-20240229',
-    CLAUDE_3_SONNET = 'claude-3-sonnet-20240229',
+    CLAUDE_4_1_OPUS = 'claude-opus-4-1',
+    CLAUDE_4_OPUS = 'claude-opus-4-0',
+    CLAUDE_4_SONNET = 'claude-sonnet-4-0',
+    CLAUDE_3_7_SONNET = 'claude-3-7-sonnet-latest',
+    CLAUDE_3_5_HAIKU = 'claude-3-5-haiku-latest',
     CLAUDE_3_HAIKU = 'claude-3-haiku-20240307'
 }
 
@@ -197,9 +195,15 @@ export enum MoonShotChatModel {
 export enum AliChatModel {
     QWEN_MAX = 'qwen-max',
     QWEN_PLUS = 'qwen-plus',
+    QWEN_FLASH = 'qwen-flash',
     QWEN_TURBO = 'qwen-turbo',
+    QWQ_PLUS = 'qwq-plus',
+    QVQ_MAX = 'qvq-max',
+    QVQ_PLUS = 'qvq-plus',
     QWEN_LONG = 'qwen-long',
-    QWEN_CODE = 'qwen-coder-turbo',
+    QWEN_CODE_TURBO = 'qwen-coder-turbo',
+    QWEN_CODE_PLUS = 'qwen3-coder-plus',
+    QWEN_CODE_FLASH = 'qwen3-coder-flash',
     QWEN_MATH = 'qwen-math-plus',
     QWEN_VL_MAX = 'qwen-vl-max',
     QWEN_VL_PLUS = 'qwen-vl-plus'

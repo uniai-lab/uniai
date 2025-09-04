@@ -23,7 +23,7 @@ import { ChatResponse, ChatMessage } from '../../interface/IModel'
 import { extname } from 'path'
 import { readFileSync } from 'fs'
 import $ from '../util'
-import { ChatCompletionTool, ChatCompletionToolChoiceOption } from 'openai/resources'
+import { ChatCompletionFunctionTool, ChatCompletionTool, ChatCompletionToolChoiceOption } from 'openai/resources'
 
 const API = 'https://api.anthropic.com'
 const VER = 'v1'
@@ -58,7 +58,7 @@ export default class Anthropic {
      */
     async chat(
         messages: ChatMessage[],
-        model: AnthropicChatModel = AnthropicChatModel.CLAUDE_3_5_SONNET,
+        model: AnthropicChatModel = AnthropicChatModel.CLAUDE_4_SONNET,
         stream: boolean = false,
         top?: number,
         temperature?: number,
@@ -81,7 +81,7 @@ export default class Anthropic {
         }
 
         const { formattedMessages, systemMessage } = await this.formatMessage(messages)
-        const anthropicTools = tools ? this.formatTools(tools) : undefined
+        const anthropicTools = tools ? this.formatTools(tools as ChatCompletionFunctionTool[]) : undefined
         const anthropicToolChoice = toolChoice ? this.formatToolChoice(toolChoice) : undefined
 
         const requestBody: AnthropicChatRequest = {
@@ -166,9 +166,7 @@ export default class Anthropic {
             // Handle non-stream response
             if (res.content && res.content.length > 0) {
                 const textContent = res.content.find(c => c.type === 'text')
-                if (textContent) {
-                    data.content = textContent.text || ''
-                }
+                if (textContent) data.content = textContent.text || ''
 
                 // Handle tool calls
                 const toolUseContent = res.content.filter(c => c.type === 'tool_use')
@@ -206,7 +204,11 @@ export default class Anthropic {
         for (const { role, content, img, audio } of messages) {
             // Extract system messages
             if (role === ChatRoleEnum.SYSTEM) {
-                systemMessage += content + '\n'
+                if (typeof content === 'string') systemMessage += content + '\n'
+                else if (Array.isArray(content)) {
+                    const contentArr = content.map(c => (typeof c === 'string' ? c : '')).filter(c => c)
+                    systemMessage += contentArr.join('\n') + '\n'
+                }
                 continue
             }
 
@@ -215,7 +217,7 @@ export default class Anthropic {
                 // Claude doesn't have a separate tool role, so we add it as user message
                 formattedMessages.push({
                     role: AnthropicChatRoleEnum.USER,
-                    content: `Tool result: ${content}`
+                    content: `Tool result: ${content.toString()}`
                 })
                 continue
             }
@@ -235,132 +237,110 @@ export default class Anthropic {
             }
 
             // Handle messages with images
-            if (img || audio) {
+            if (img || audio || Array.isArray(content)) {
                 const contentArray: AnthropicContent[] = []
 
-                if (content.trim()) {
-                    contentArray.push({ type: 'text', text: content })
-                }
+                for (const text of Array.isArray(content) ? content : [content])
+                    if (typeof text === 'string' && text.trim()) contentArray.push({ type: 'text', text })
 
                 if (img) {
                     const imageContent = await this.formatImage(img)
-                    if (imageContent) {
-                        contentArray.push(imageContent)
-                    }
+                    if (imageContent) contentArray.push(...imageContent)
                 }
 
                 // Note: Claude doesn't support audio input directly like GPT-4o
-                if (audio) {
-                    contentArray.push({
-                        type: 'text',
-                        text: '[Audio input provided but not supported by Claude API]'
-                    })
-                }
+                if (audio)
+                    contentArray.push({ type: 'text', text: '[Audio input provided but not supported by Claude API]' })
 
-                formattedMessages.push({
-                    role: claudeRole,
-                    content: contentArray
-                })
-            } else {
-                formattedMessages.push({
-                    role: claudeRole,
-                    content: content
-                })
-            }
+                formattedMessages.push({ role: claudeRole, content: contentArray })
+            } else formattedMessages.push({ role: claudeRole, content })
         }
 
-        return {
-            formattedMessages,
-            systemMessage: systemMessage.trim() || undefined
-        }
+        return { formattedMessages, systemMessage: systemMessage.trim() || undefined }
     }
 
     /**
      * Format image for Claude API
      * Supports: image/jpeg, image/png, image/gif, and image/webp
      */
-    private async formatImage(img: string): Promise<AnthropicContent | null> {
+    private async formatImage(imgs: string | string[]): Promise<AnthropicContent[]> {
         try {
-            let mediaType: string = 'image/png'
-            let base64Data: string = ''
+            const contents: AnthropicContent[] = []
 
-            if ($.isBase64(img)) {
-                // Handle pure base64 data
-                if ($.isBase64(img, false)) {
-                    base64Data = img
-                    mediaType = 'image/png' // Default to PNG for pure base64
+            for (const img of Array.isArray(imgs) ? imgs : [imgs]) {
+                let mediaType: string = 'image/png'
+                let base64Data: string = ''
+
+                if ($.isBase64(img)) {
+                    // Handle pure base64 data
+                    if ($.isBase64(img, false)) {
+                        base64Data = img
+                        mediaType = 'image/png' // Default to PNG for pure base64
+                    } else {
+                        const match = img.match(/^data:image\/([a-zA-Z]*);base64,([^\"']*)$/)
+                        if (match) {
+                            mediaType = `image/${match[1]}`
+                            base64Data = match[2]
+                        }
+                    }
+                } else if (img.startsWith('http')) {
+                    // Handle remote URLs - download and convert to base64
+                    const res: Buffer = await $.get(img, {}, { responseType: 'arraybuffer' })
+
+                    // Determine MIME type based on URL extension or default to supported formats
+                    const supportedTypes = ['jpeg', 'jpg', 'png', 'gif', 'webp']
+                    const detectedType = supportedTypes.find(
+                        type => img.toLowerCase().includes(`.${type}`) || img.toLowerCase().includes(`/${type}`)
+                    )
+
+                    if (detectedType) mediaType = `image/${detectedType === 'jpg' ? 'jpeg' : detectedType}`
+                    // Default to jpeg if type cannot be determined
+                    else mediaType = 'image/jpeg'
+
+                    base64Data = res.toString('base64')
                 } else {
-                    const match = img.match(/^data:image\/([a-zA-Z]*);base64,([^\"']*)$/)
-                    if (match) {
-                        mediaType = `image/${match[1]}`
-                        base64Data = match[2]
+                    // Handle local file paths
+                    const fileExtension = extname(img).replace('.', '').toLowerCase()
+                    const supportedExtensions = ['jpeg', 'jpg', 'png', 'gif', 'webp']
+
+                    if (supportedExtensions.includes(fileExtension)) {
+                        mediaType = `image/${fileExtension === 'jpg' ? 'jpeg' : fileExtension}`
+                        base64Data = readFileSync(img).toString('base64')
+                    } else {
+                        throw new Error(
+                            `Unsupported image format: ${fileExtension}. Anthropic supports: jpeg, png, gif, webp`
+                        )
                     }
                 }
-            } else if (img.startsWith('http')) {
-                // Handle remote URLs - download and convert to base64
-                const res: Buffer = await $.get(img, {}, { responseType: 'arraybuffer' })
 
-                // Determine MIME type based on URL extension or default to supported formats
-                const supportedTypes = ['jpeg', 'jpg', 'png', 'gif', 'webp']
-                const detectedType = supportedTypes.find(
-                    type => img.toLowerCase().includes(`.${type}`) || img.toLowerCase().includes(`/${type}`)
-                )
+                // Validate that we have base64 data
+                if (!base64Data) throw new Error('Failed to convert image to base64')
 
-                if (detectedType) {
-                    mediaType = `image/${detectedType === 'jpg' ? 'jpeg' : detectedType}`
-                } else {
-                    // Default to jpeg if type cannot be determined
-                    mediaType = 'image/jpeg'
+                // Validate media type is supported by Anthropic
+                const supportedMediaTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp']
+                if (!supportedMediaTypes.includes(mediaType)) {
+                    console.warn(`Unsupported media type: ${mediaType}, defaulting to image/png`)
+                    mediaType = 'image/png'
                 }
 
-                base64Data = res.toString('base64')
-            } else {
-                // Handle local file paths
-                const fileExtension = extname(img).replace('.', '').toLowerCase()
-                const supportedExtensions = ['jpeg', 'jpg', 'png', 'gif', 'webp']
-
-                if (supportedExtensions.includes(fileExtension)) {
-                    mediaType = `image/${fileExtension === 'jpg' ? 'jpeg' : fileExtension}`
-                    base64Data = readFileSync(img).toString('base64')
-                } else {
-                    throw new Error(
-                        `Unsupported image format: ${fileExtension}. Anthropic supports: jpeg, png, gif, webp`
-                    )
-                }
+                contents.push({
+                    type: 'image',
+                    source: { type: 'base64', media_type: mediaType, data: base64Data }
+                })
             }
-
-            // Validate that we have base64 data
-            if (!base64Data) {
-                throw new Error('Failed to convert image to base64')
-            }
-
-            // Validate media type is supported by Anthropic
-            const supportedMediaTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp']
-            if (!supportedMediaTypes.includes(mediaType)) {
-                console.warn(`Unsupported media type: ${mediaType}, defaulting to image/png`)
-                mediaType = 'image/png'
-            }
-
-            return {
-                type: 'image',
-                source: {
-                    type: 'base64',
-                    media_type: mediaType,
-                    data: base64Data
-                }
-            }
+            return contents
         } catch (error) {
             console.warn('Failed to format image for Claude:', error)
-            return null
+            return []
         }
     }
 
     /**
      * Convert OpenAI tools format to Anthropic tools format
      */
-    private formatTools(tools: ChatCompletionTool[]): AnthropicTool[] {
+    private formatTools(tools: ChatCompletionFunctionTool[]): AnthropicTool[] {
         return tools.map(tool => ({
-            name: tool.function.name,
+            name: tool.type,
             description: tool.function.description || '',
             input_schema: {
                 type: 'object',

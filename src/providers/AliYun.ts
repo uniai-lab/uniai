@@ -2,10 +2,9 @@
 
 import { PassThrough, Readable } from 'stream'
 import EventSourceStream from '@server-sent-stream/node'
-import { ChatRoleEnum, AliChatModel, AliEmbedModel } from '../../interface/Enum'
+import { AliChatModel, AliEmbedModel } from '../../interface/Enum'
 import { ChatMessage, ChatResponse, EmbeddingResponse } from '../../interface/IModel'
 import {
-    GPTChatMessage,
     GPTChatRequest,
     GPTChatResponse,
     GPTChatStreamRequest,
@@ -79,8 +78,6 @@ export default class AliYun {
         temperature?: number,
         maxLength?: number
     ) {
-        // if (!Object.values(AliChatModel).includes(model)) throw new Error('Qian Wen chat model not found')
-
         const key = Array.isArray(this.key) ? $.getRandomKey(this.key) : this.key
         if (!key) throw new Error('Qian Wen API key is not set in config')
 
@@ -95,15 +92,11 @@ export default class AliYun {
             if (top > 1) top = 1.0
         }
 
-        // remove imgs for not vision model
-        if (![AliChatModel.QWEN_VL_MAX, AliChatModel.QWEN_VL_PLUS].includes(model))
-            messages = messages.map(({ role, content }) => ({ role, content }))
-
         const res = await $.post<GPTChatRequest | GPTChatStreamRequest, Readable | GPTChatResponse>(
             `${this.api}/compatible-mode/${VER}/chat/completions`,
             {
                 model,
-                messages: this.formatMessage(messages),
+                messages: $.formatGPTMessage(messages),
                 stream,
                 temperature,
                 top_p: top,
@@ -156,36 +149,5 @@ export default class AliYun {
             data.totalTokens = res.usage?.total_tokens || 0
             return data
         }
-    }
-
-    /**
-     * Formats chat messages according to the GPT model's message format.
-     *
-     * @param messages - An array of chat messages.
-     * @returns Formatted messages compatible with the GPT model.
-     */
-    private formatMessage(messages: ChatMessage[]) {
-        const prompt: GPTChatMessage[] = []
-
-        for (const { role, content, img } of messages) {
-            // GPT not support function role
-            if (role === ChatRoleEnum.TOOL || role === ChatRoleEnum.DEV) continue
-
-            // with image
-            if (img) {
-                if (!img.startsWith('http')) throw new Error('Invalid img HTTP URL')
-                prompt.push({
-                    role: 'user',
-                    content: [
-                        { type: 'text', text: content },
-                        { type: 'image_url', image_url: { url: img } }
-                    ]
-                })
-            }
-            // only text
-            else prompt.push({ role, content })
-        }
-
-        return prompt
     }
 }

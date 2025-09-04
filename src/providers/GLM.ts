@@ -2,18 +2,12 @@
 
 import { PassThrough, Readable } from 'stream'
 import EventSourceStream from '@server-sent-stream/node'
-import {
-    GLMChatMessage,
-    GLMChatRequest,
-    GLMChatResponse,
-    GLMEmbedRequest,
-    GLMEmbedResponse,
-    GLMTool,
-    GLMToolChoice
-} from '../../interface/IGLM'
-import { ChatRoleEnum, GLMChatModel, GLMEmbedModel } from '../../interface/Enum'
+import { GLMEmbedRequest, GLMEmbedResponse } from '../../interface/IGLM'
+import { GLMChatModel, GLMEmbedModel } from '../../interface/Enum'
 import { ChatMessage, ChatResponse, EmbeddingResponse } from '../../interface/IModel'
 import $ from '../util'
+import { GPTChatRequest, GPTChatResponse, GPTChatStreamRequest, GPTChatStreamResponse } from '../../interface/IOpenAI'
+import { ChatCompletionTool, ChatCompletionToolChoiceOption } from 'openai/resources.js'
 
 const API = 'https://open.bigmodel.cn'
 
@@ -70,8 +64,8 @@ export default class GLM {
         top?: number,
         temperature?: number,
         maxLength?: number,
-        tools?: GLMTool[],
-        toolChoice?: GLMToolChoice
+        tools?: ChatCompletionTool[],
+        toolChoice?: ChatCompletionToolChoiceOption
     ) {
         // filter images
         if (![GLMChatModel.GLM_4V, GLMChatModel.GLM_4V_PLUS].includes(model))
@@ -101,11 +95,11 @@ export default class GLM {
         const key = Array.isArray(this.key) ? $.getRandomKey(this.key) : this.key
         if (!key) throw new Error('ZhiPu GLM API key is not set in config')
 
-        const res = await $.post<GLMChatRequest, Readable | GLMChatResponse>(
+        const res = await $.post<GPTChatRequest | GPTChatStreamRequest, Readable | GPTChatResponse>(
             `${this.proxyAPI}/api/paas/v4/chat/completions`,
             {
                 model,
-                messages: this.formatMessage(messages),
+                messages: $.formatGPTMessage(messages),
                 stream,
                 temperature,
                 top_p: top,
@@ -121,7 +115,7 @@ export default class GLM {
             const parser = new EventSourceStream()
 
             parser.on('data', (e: MessageEvent) => {
-                const obj = $.json<GLMChatResponse>(e.data)
+                const obj = $.json<GPTChatStreamResponse>(e.data)
                 if (obj) {
                     data.content = obj.choices[0]?.delta?.content || ''
                     if (obj.choices[0]?.delta?.tool_calls) data.tools = obj.choices[0]?.delta?.tool_calls
@@ -155,46 +149,5 @@ export default class GLM {
             data.totalTokens = res.usage?.total_tokens || 0
             return data
         }
-    }
-
-    /**
-     * Formats chat messages according to the GPT model's message format.
-     *
-     * @param messages - An array of chat messages.
-     * @returns Formatted messages compatible with the GPT model.
-     */
-    private formatMessage(messages: ChatMessage[]) {
-        const prompt: GLMChatMessage[] = []
-
-        for (const { role, content, img, tool } of messages) {
-            if (role === ChatRoleEnum.DEV) continue
-
-            // with image
-            switch (role) {
-                case ChatRoleEnum.USER:
-                    if (img)
-                        prompt.push({
-                            role,
-                            content: [
-                                { type: 'text', text: content },
-                                { type: 'image_url', image_url: { url: img } }
-                            ]
-                        })
-                    else prompt.push({ role, content })
-                    break
-                case ChatRoleEnum.TOOL:
-                    prompt.push({
-                        role,
-                        content,
-                        tool_call_id: tool || ''
-                    })
-                    break
-                default:
-                    prompt.push({ role, content })
-                    break
-            }
-        }
-
-        return prompt
     }
 }

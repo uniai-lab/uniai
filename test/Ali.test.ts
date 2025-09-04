@@ -58,7 +58,10 @@ describe('AliYun QWen Tests', () => {
     })
 
     test('Test chat AliYun QWen Code', done => {
-        uni.chat(`Use ruby to write hello world`, { provider: ChatModelProvider.AliYun, model: AliChatModel.QWEN_CODE })
+        uni.chat(`Use ruby to write hello world`, {
+            provider: ChatModelProvider.AliYun,
+            model: AliChatModel.QWEN_CODE_PLUS
+        })
             .then(console.log)
             .catch(console.error)
             .finally(done)
@@ -129,7 +132,7 @@ describe('AliYun QWen Tests', () => {
             .finally(done)
     })
 
-    test.only('Test Ali/text-embedding-v2 embedding', done => {
+    test('Test Ali/text-embedding-v2 embedding', done => {
         uni.embedding([input, input + 'sss'], {
             provider: EmbedModelProvider.AliYun,
             model: AliEmbedModel.ALI_V2,

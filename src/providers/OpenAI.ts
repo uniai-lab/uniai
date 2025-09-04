@@ -13,19 +13,17 @@ import {
     GPTChatStreamRequest,
     GPTImagineSize,
     GPTChatStreamResponse,
-    GPTChatMessage,
     OpenAIEmbedRequest,
     OpenAIEmbedResponse,
     OpenAIImagineRequest,
     OpenAIImagineResponse
 } from '../../interface/IOpenAI'
 
-import { ChatRoleEnum, DETaskType, OpenAIChatModel, OpenAIEmbedModel, OpenAIImagineModel } from '../../interface/Enum'
+import { DETaskType, OpenAIChatModel, OpenAIEmbedModel, OpenAIImagineModel } from '../../interface/Enum'
 
-import { ChatResponse, ChatMessage, TaskResponse, ImagineResponse } from '../../interface/IModel'
-import { EmbeddingResponse } from '../../interface/IModel'
+import { ChatResponse, ChatMessage, TaskResponse, ImagineResponse, EmbeddingResponse } from '../../interface/IModel'
 import $ from '../util'
-import { ChatCompletionContentPart, ChatCompletionTool, ChatCompletionToolChoiceOption } from 'openai/resources'
+import { ChatCompletionTool, ChatCompletionToolChoiceOption } from 'openai/resources'
 
 const STORAGE_KEY = 'task_open_ai'
 const API = 'https://api.openai.com'
@@ -114,7 +112,7 @@ export default class OpenAI {
             `${this.api}/${VER}/chat/completions`,
             {
                 model,
-                messages: this.formatMessage(messages),
+                messages: $.formatGPTMessage(messages),
                 stream,
                 temperature,
                 top_p: top,
@@ -202,7 +200,7 @@ export default class OpenAI {
 
         const id = $.getRandomId()
         const imgs: string[] = []
-        for (const i in res.data) imgs.push(await $.writeFile(res.data[i].b64_json!, `${id}-${i}.png`))
+        if (res.data) for (const i in res.data) imgs.push(await $.writeFile(res.data[i].b64_json!, `${id}-${i}.png`))
 
         const time = Date.now()
         const task: TaskResponse = {
@@ -233,38 +231,5 @@ export default class OpenAI {
 
         if (id) return tasks.filter(v => v.id === id)
         else return tasks
-    }
-
-    /**
-     * Formats chat messages according to the GPT model's message format.
-     *
-     * @param messages - An array of chat messages.
-     * @returns Formatted messages compatible with the GPT model.
-     */
-    private formatMessage(messages: ChatMessage[]) {
-        const prompt: GPTChatMessage[] = []
-
-        for (const { role, content, img, tool, audio } of messages) {
-            // with image
-            switch (role) {
-                case ChatRoleEnum.USER:
-                    if (img || audio) {
-                        const contentArr: ChatCompletionContentPart[] = []
-                        if (content.trim()) contentArr.push({ type: 'text', text: content })
-                        if (img) contentArr.push({ type: 'image_url', image_url: { url: img } })
-                        if (audio) contentArr.push({ type: 'input_audio', input_audio: { data: audio, format: 'wav' } })
-                        prompt.push({ role, content: contentArr })
-                    } else prompt.push({ role, content })
-                    break
-                case ChatRoleEnum.TOOL:
-                    prompt.push({ role, content, tool_call_id: tool! })
-                    break
-                default:
-                    prompt.push({ role, content })
-                    break
-            }
-        }
-
-        return prompt
     }
 }

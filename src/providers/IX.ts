@@ -7,7 +7,7 @@
 
 import { PassThrough, Readable } from 'stream'
 import EventSourceStream from '@server-sent-stream/node'
-import { ChatRoleEnum, XAIChatModel } from '../../interface/Enum'
+import { XAIChatModel } from '../../interface/Enum'
 import { ChatMessage, ChatResponse } from '../../interface/IModel'
 import {
     GrokChatMessage,
@@ -82,7 +82,7 @@ export default class XAI {
             `${this.api}/${VER}/chat/completions`,
             {
                 model,
-                messages: this.formatMessage(messages),
+                messages: $.formatGPTMessage(messages) as GrokChatMessage[],
                 stream,
                 temperature,
                 top_p: top,
@@ -139,39 +139,5 @@ export default class XAI {
             data.totalTokens = res.usage?.total_tokens || 0
             return data
         }
-    }
-
-    /**
-     * Formats chat messages according to the GPT model's message format.
-     *
-     * @param messages - An array of chat messages.
-     * @returns Formatted messages compatible with the GPT model.
-     */
-    private formatMessage(messages: ChatMessage[]) {
-        const prompt: GrokChatMessage[] = []
-
-        for (const { role, content, img } of messages) {
-            // with image
-            switch (role) {
-                case ChatRoleEnum.USER:
-                    if (img)
-                        prompt.push({
-                            role,
-                            content: [
-                                { type: 'text', text: content },
-                                { type: 'image_url', image_url: { url: img } }
-                            ]
-                        })
-                    else prompt.push({ role, content })
-                    break
-                case ChatRoleEnum.ASSISTANT || ChatRoleEnum.SYSTEM:
-                    prompt.push({ role, content })
-                    break
-                default:
-                    break
-            }
-        }
-
-        return prompt
     }
 }

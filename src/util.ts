@@ -9,6 +9,10 @@ import axios, { AxiosRequestConfig } from 'axios'
 import { LocalStorage } from 'node-localstorage'
 import path from 'path'
 import isBase64 from 'is-base64'
+import { ChatCompletionContentPart, ChatCompletionContentPartText } from 'openai/resources'
+import { ChatMessage } from '../interface/IModel'
+import { GPTChatMessage } from '../interface/IOpenAI'
+import { ChatRoleEnum } from '../interface/Enum'
 
 // Initialize local storage
 const localStorage = new LocalStorage('./cache', Infinity)
@@ -135,5 +139,61 @@ export default {
 
     isBase64(data: string, allowMime: boolean = true) {
         return isBase64(data, { allowMime })
+    },
+    /**
+     * Formats chat messages according to the GPT model's message format.
+     *
+     * @param messages - An array of chat messages.
+     * @returns Formatted messages compatible with the GPT model.
+     */
+    formatGPTMessage(messages: ChatMessage[]) {
+        const prompt: GPTChatMessage[] = []
+
+        for (const { role, content, img, tool, audio } of messages) {
+            // support string content and multi part content
+            let contentArr: string | ChatCompletionContentPart[] = []
+
+            // handle multi modal and user multi part content
+            if (img || audio || Array.isArray(content)) {
+                for (const text of Array.isArray(content) ? content : [content])
+                    if (text.trim()) contentArr.push({ type: 'text', text })
+
+                if (img)
+                    for (const url of Array.isArray(img) ? img : [img])
+                        contentArr.push({ type: 'image_url', image_url: { url } })
+
+                if (audio)
+                    for (const data of Array.isArray(audio) ? audio : [audio])
+                        contentArr.push({ type: 'input_audio', input_audio: { data, format: 'wav' } })
+            } else contentArr = content
+
+            // with image
+            switch (role) {
+                case ChatRoleEnum.USER:
+                    prompt.push({ role, content: contentArr })
+                    break
+                case ChatRoleEnum.TOOL:
+                    // remove non-text part for tool role
+                    let contentTool: string | Array<ChatCompletionContentPartText> = ''
+                    if (Array.isArray(contentArr))
+                        contentTool = contentArr.filter(v => v.type === 'text') as ChatCompletionContentPartText[]
+                    else contentTool = contentArr
+                    prompt.push({ role, content: contentTool, tool_call_id: tool || '' })
+                    break
+                case ChatRoleEnum.DEV:
+                    let contentDev: string | Array<ChatCompletionContentPartText> = ''
+                    if (Array.isArray(contentArr))
+                        contentDev = contentArr.filter(v => v.type === 'text') as ChatCompletionContentPartText[]
+                    else contentDev = contentArr
+                    prompt.push({ role, content: contentDev })
+                    break
+                default:
+                    // system and assistant role
+                    prompt.push({ role, content: content as string })
+                    break
+            }
+        }
+
+        return prompt
     }
 }

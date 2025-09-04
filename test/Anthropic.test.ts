@@ -1,14 +1,9 @@
 /** @format */
 import 'dotenv/config'
+import { Readable } from 'stream'
 import '../env.d.ts'
 import UniAI, { ChatMessage, ChatResponse } from '../src'
-import {
-    AnthropicChatModel,
-    ChatModelProvider,
-    ChatRoleEnum,
-    ModelProvider
-} from '../interface/Enum'
-import { Readable } from 'stream'
+import { AnthropicChatModel, ChatModelProvider, ChatRoleEnum, ModelProvider } from '../interface/Enum'
 
 const { ANTHROPIC_API, ANTHROPIC_KEY } = process.env
 
@@ -16,8 +11,11 @@ const input: string = 'Hi, who are you? Answer in 10 words!'
 const input2: ChatMessage[] = [
     {
         role: ChatRoleEnum.USER,
-        content: '描述下这张图片',
-        img: 'https://img2.baidu.com/it/u=2595743336,2138195985&fm=253&fmt=auto?w=801&h=800'
+        content: ['图片1描述了什么', '图片2描述了什么'],
+        img: [
+            'https://img2.baidu.com/it/u=2595743336,2138195985&fm=253&fmt=auto?w=801&h=800',
+            'https://img0.baidu.com/it/u=3185399917,3849606089&fm=253&fmt=auto&app=138&f=JPEG?w=809&h=800'
+        ]
     }
 ]
 
@@ -46,133 +44,132 @@ describe('Anthropic Chat Test', () => {
         expect(provider.value).toEqual(ModelProvider.Anthropic)
     })
 
-    test('Test chat Anthropic Claude 3.5 Sonnet', done => {
-        uni.chat(input, { stream: false, provider: ChatModelProvider.Anthropic, model: AnthropicChatModel.CLAUDE_3_5_SONNET })
-            .then(console.log)
-            .catch(console.error)
-            .finally(done)
-    }, 60000)
-
     test('Test chat Anthropic Claude 3.5 Haiku', done => {
-        uni.chat(input4, { stream: false, provider: ChatModelProvider.Anthropic, model: AnthropicChatModel.CLAUDE_3_5_HAIKU })
+        uni.chat(input4, {
+            stream: false,
+            provider: ChatModelProvider.Anthropic,
+            model: AnthropicChatModel.CLAUDE_3_5_HAIKU
+        })
             .then(console.log)
             .catch(console.error)
             .finally(done)
     }, 60000)
 
     test('Test chat Anthropic Claude 3.7 Sonnet', done => {
-        uni.chat(input3, { stream: false, provider: ChatModelProvider.Anthropic, model: AnthropicChatModel.CLAUDE_3_7_SONNET })
+        uni.chat(input3, {
+            stream: false,
+            provider: ChatModelProvider.Anthropic,
+            model: AnthropicChatModel.CLAUDE_3_7_SONNET
+        })
             .then(console.log)
             .catch(console.error)
             .finally(done)
     }, 60000)
 
     test('Test chat Anthropic Claude 4 Opus', done => {
-        uni.chat(input, { stream: false, provider: ChatModelProvider.Anthropic, model: AnthropicChatModel.CLAUDE_4_OPUS })
+        uni.chat(input, {
+            stream: false,
+            provider: ChatModelProvider.Anthropic,
+            model: AnthropicChatModel.CLAUDE_4_OPUS
+        })
             .then(console.log)
             .catch(console.error)
             .finally(done)
     }, 60000)
 
     test('Test chat Anthropic Claude 4 Sonnet', done => {
-        uni.chat(input4, { stream: false, provider: ChatModelProvider.Anthropic, model: AnthropicChatModel.CLAUDE_4_SONNET })
+        uni.chat(input4, {
+            stream: false,
+            provider: ChatModelProvider.Anthropic,
+            model: AnthropicChatModel.CLAUDE_4_SONNET
+        })
             .then(console.log)
             .catch(console.error)
             .finally(done)
     }, 60000)
 
-    test('Test chat Anthropic Claude 3 Opus', done => {
-        uni.chat(input, { stream: false, provider: ChatModelProvider.Anthropic, model: AnthropicChatModel.CLAUDE_3_OPUS })
-            .then(console.log)
-            .catch(console.error)
-            .finally(done)
-    }, 60000)
-
-    test('Test chat Anthropic Claude 3 Sonnet', done => {
-        uni.chat(input3, { stream: false, provider: ChatModelProvider.Anthropic, model: AnthropicChatModel.CLAUDE_3_SONNET })
+    test('Test chat Anthropic Claude 4.1 Opus', done => {
+        uni.chat(input, {
+            stream: false,
+            provider: ChatModelProvider.Anthropic,
+            model: AnthropicChatModel.CLAUDE_4_1_OPUS
+        })
             .then(console.log)
             .catch(console.error)
             .finally(done)
     }, 60000)
 
     test('Test chat Anthropic Claude 3 Haiku', done => {
-        uni.chat(input4, { stream: false, provider: ChatModelProvider.Anthropic, model: AnthropicChatModel.CLAUDE_3_HAIKU })
+        uni.chat(input4, {
+            stream: false,
+            provider: ChatModelProvider.Anthropic,
+            model: AnthropicChatModel.CLAUDE_3_HAIKU
+        })
             .then(console.log)
             .catch(console.error)
             .finally(done)
-    }, 60000)
-
-    test('Test chat Anthropic Claude 3.5 Sonnet stream', done => {
-        uni.chat(input3, { stream: true, provider: ChatModelProvider.Anthropic, model: AnthropicChatModel.CLAUDE_3_5_SONNET }).then(
-            res => {
-                expect(res).toBeInstanceOf(Readable)
-                const stream = res as Readable
-                let data = ''
-                stream.on('data', chunk => (data += JSON.parse(chunk.toString()).content))
-                stream.on('end', () => console.log(data))
-                stream.on('error', e => console.error(e))
-                stream.on('close', () => done())
-            }
-        )
     }, 60000)
 
     test('Test chat Anthropic Claude 3.7 Sonnet stream', done => {
-        uni.chat(input, { stream: true, provider: ChatModelProvider.Anthropic, model: AnthropicChatModel.CLAUDE_3_7_SONNET }).then(
-            res => {
-                expect(res).toBeInstanceOf(Readable)
-                const stream = res as Readable
-                let data = ''
-                stream.on('data', chunk => (data += JSON.parse(chunk.toString()).content))
-                stream.on('end', () => console.log(data))
-                stream.on('error', e => console.error(e))
-                stream.on('close', () => done())
-            }
-        )
+        uni.chat(input, {
+            stream: true,
+            provider: ChatModelProvider.Anthropic,
+            model: AnthropicChatModel.CLAUDE_3_7_SONNET
+        }).then(res => {
+            expect(res).toBeInstanceOf(Readable)
+            const stream = res as Readable
+            let data = ''
+            stream.on('data', chunk => (data += JSON.parse(chunk.toString()).content))
+            stream.on('end', () => console.log(data))
+            stream.on('error', e => console.error(e))
+            stream.on('close', () => done())
+        })
     }, 60000)
 
     test('Test chat Anthropic Claude 4 Sonnet stream', done => {
-        uni.chat(input4, { stream: true, provider: ChatModelProvider.Anthropic, model: AnthropicChatModel.CLAUDE_4_SONNET }).then(
-            res => {
-                expect(res).toBeInstanceOf(Readable)
-                const stream = res as Readable
-                let data = ''
-                stream.on('data', chunk => (data += JSON.parse(chunk.toString()).content))
-                stream.on('end', () => console.log(data))
-                stream.on('error', e => console.error(e))
-                stream.on('close', () => done())
-            }
-        )
-    }, 60000)
-
-    test('Test chat Anthropic Claude 3.5 Sonnet with vision', done => {
-        uni.chat(input2, { stream: false, provider: ChatModelProvider.Anthropic, model: AnthropicChatModel.CLAUDE_3_5_SONNET })
-            .then(console.log)
-            .catch(console.error)
-            .finally(done)
+        uni.chat(input4, {
+            stream: true,
+            provider: ChatModelProvider.Anthropic,
+            model: AnthropicChatModel.CLAUDE_4_SONNET
+        }).then(res => {
+            expect(res).toBeInstanceOf(Readable)
+            const stream = res as Readable
+            let data = ''
+            stream.on('data', chunk => (data += JSON.parse(chunk.toString()).content))
+            stream.on('end', () => console.log(data))
+            stream.on('error', e => console.error(e))
+            stream.on('close', () => done())
+        })
     }, 60000)
 
     test('Test chat Anthropic Claude 3.7 Sonnet with vision stream', done => {
-        uni.chat(input2, { stream: true, provider: ChatModelProvider.Anthropic, model: AnthropicChatModel.CLAUDE_3_7_SONNET }).then(
-            res => {
-                expect(res).toBeInstanceOf(Readable)
-                const stream = res as Readable
-                let data = ''
-                stream.on('data', chunk => (data += JSON.parse(chunk.toString()).content))
-                stream.on('end', () => console.log(data))
-                stream.on('error', e => console.error(e))
-                stream.on('close', () => done())
-            }
-        )
+        uni.chat(input2, {
+            stream: true,
+            provider: ChatModelProvider.Anthropic,
+            model: AnthropicChatModel.CLAUDE_3_7_SONNET
+        }).then(res => {
+            expect(res).toBeInstanceOf(Readable)
+            const stream = res as Readable
+            let data = ''
+            stream.on('data', chunk => (data += JSON.parse(chunk.toString()).content))
+            stream.on('end', () => console.log(data))
+            stream.on('error', e => console.error(e))
+            stream.on('close', () => done())
+        })
     }, 60000)
 
     test('Test chat Anthropic Claude 4 Opus with vision', done => {
-        uni.chat(input2, { stream: false, provider: ChatModelProvider.Anthropic, model: AnthropicChatModel.CLAUDE_4_OPUS })
+        uni.chat(input2, {
+            stream: false,
+            provider: ChatModelProvider.Anthropic,
+            model: AnthropicChatModel.CLAUDE_4_OPUS
+        })
             .then(console.log)
             .catch(console.error)
             .finally(done)
     }, 60000)
 
-    test('Test chat Anthropic Claude 3.5 Sonnet with tools', done => {
+    test('Test chat Anthropic Claude opus 4.1 Sonnet with tools', done => {
         const tools = [
             {
                 type: 'function',
@@ -196,7 +193,7 @@ describe('Anthropic Chat Test', () => {
         uni.chat('今天北京天气如何？', {
             stream: false,
             provider: ChatModelProvider.Anthropic,
-            model: AnthropicChatModel.CLAUDE_3_5_SONNET,
+            model: AnthropicChatModel.CLAUDE_4_1_OPUS,
             tools
         })
             .then(r => {

@@ -5,7 +5,6 @@ import {
     ChatCompletionChunk,
     EmbeddingCreateParams,
     CreateEmbeddingResponse,
-    ImageGenerateParams,
     ImagesResponse,
     ChatCompletionCreateParamsNonStreaming,
     ChatCompletionCreateParamsStreaming,
@@ -15,6 +14,7 @@ import {
     ChatCompletionToolMessageParam,
     ChatCompletionDeveloperMessageParam
 } from 'openai/resources'
+import { ImageGenerateParamsBase } from 'openai/resources/images.js'
 
 export interface GPTChatResponse extends ChatCompletion {}
 export interface GPTChatStreamResponse extends ChatCompletionChunk {}
@@ -25,7 +25,7 @@ export interface OpenAIEmbedResponse extends CreateEmbeddingResponse {}
 export interface GPTChatRequest extends ChatCompletionCreateParamsNonStreaming {}
 export interface GPTChatStreamRequest extends ChatCompletionCreateParamsStreaming {}
 
-export interface OpenAIImagineRequest extends ImageGenerateParams {}
+export interface OpenAIImagineRequest extends ImageGenerateParamsBase {}
 export interface OpenAIImagineResponse extends ImagesResponse {}
 
 // equal to original ChatCompletionMessage

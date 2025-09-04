@@ -43,7 +43,6 @@ import MidJourney from './providers/MidJourney'
 import Stability from './providers/Stability'
 import AliYun from './providers/AliYun'
 import { ChatCompletionTool, ChatCompletionToolChoiceOption } from 'openai/resources'
-import { GLMTool, GLMToolChoice } from '../interface/IGLM'
 import { SPKTool, SPKToolChoice } from '../interface/IFlyTek'
 import DeepSeek from './providers/DeepSeek'
 import XAI from './providers/IX'
@@ -207,8 +206,8 @@ export default class UniAI {
                     top,
                     temperature,
                     maxLength,
-                    tools as GLMTool[],
-                    toolChoice as GLMToolChoice
+                    tools as ChatCompletionTool[],
+                    toolChoice as ChatCompletionToolChoiceOption
                 )
             case ChatModelProvider.IFlyTek:
                 return await this.fly.chat(
