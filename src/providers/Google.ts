@@ -11,8 +11,6 @@ import {
 } from '../../interface/IGoogle'
 import { ChatRoleEnum, GEMChatRoleEnum, GoogleChatModel, GoogleEmbedModel } from '../../interface/Enum'
 import { ChatMessage, ChatResponse, EmbeddingResponse } from '../../interface/IModel'
-import { extname } from 'path'
-import { readFileSync } from 'fs'
 import $ from '../util'
 
 const API = 'https://generativelanguage.googleapis.com'
@@ -44,7 +42,7 @@ export default class Google {
      * @param model - The model to use for embeddings (default: text-embedding-ada-002).
      * @returns A promise resolving to the embedding response.
      */
-    async embedding(input: string[], model: GoogleEmbedModel = GoogleEmbedModel.GEM_EMBED) {
+    async embedding(input: string[], model: GoogleEmbedModel = GoogleEmbedModel.GEM_EMBED, dimensions = 768) {
         const key = Array.isArray(this.key) ? $.getRandomKey(this.key) : this.key
         if (!key) throw new Error('Google API key is not set in config')
 
@@ -53,7 +51,7 @@ export default class Google {
             request.push(
                 $.post<GoogleEmbedRequest, GoogleEmbedResponse>(
                     `${this.api}/v1beta/models/${model}:embedContent?key=${key}`,
-                    { model: `models/${model}`, content: { parts: [{ text }] } }
+                    { model: `models/${model}`, content: { parts: [{ text }] }, output_dimensionality: dimensions }
                 )
             )
         }
@@ -81,7 +79,7 @@ export default class Google {
      */
     async chat(
         messages: ChatMessage[],
-        model: GoogleChatModel = GoogleChatModel.GEM_PRO_1_5,
+        model: GoogleChatModel = GoogleChatModel.GEM_PRO_2_5,
         stream: boolean = false,
         top?: number,
         temperature?: number,
@@ -176,38 +174,38 @@ export default class Google {
     private async formatMessage(messages: ChatMessage[]) {
         const prompt: GEMChatMessage[] = []
         let input = ''
-        let base64: { mime: string; data: string } | null = null
+        let base64: { mime: string; data: string }[] | null = null
 
         for (const { role, content, img } of messages) {
             let text = ''
             if (!content && !img) continue
             if (role === ChatRoleEnum.SYSTEM) continue
-            if (Array.isArray(content)) for (const c of content) text += c || ''
-            if (img) base64 = await this.toBase64(Array.isArray(img) ? img[0] : img)
+            if (Array.isArray(content)) for (const c of content) text += c + '\n'
+            if (img) base64 = (Array.isArray(img) ? img : [img]).map(v => this.toBase64(v))
 
             if (role !== ChatRoleEnum.ASSISTANT) input += `\n${content}`
             else {
+                const message: GEMChatMessage = { role: GEMChatRoleEnum.USER, parts: [] }
+                // input text
                 input = input.trim()
-                prompt.push({
-                    role: GEMChatRoleEnum.USER,
-                    parts: base64
-                        ? [{ text: input || ' ' }, { inline_data: { mime_type: base64.mime, data: base64.data } }]
-                        : [{ text: input || ' ' }]
-                })
+                message.parts.push({ text: input || ' ' })
+                // input images (base64)
+                if (base64 && base64.length)
+                    for (const { mime, data } of base64) message.parts.push({ inline_data: { mime_type: mime, data } })
+                prompt.push(message)
                 prompt.push({ role: GEMChatRoleEnum.MODEL, parts: [{ text }] })
                 input = ''
             }
         }
-        input = input.trim()
 
-        prompt.push({
-            role: GEMChatRoleEnum.USER,
-            parts: base64
-                ? [{ text: input || ' ' }, { inline_data: { mime_type: base64.mime, data: base64.data } }]
-                : [{ text: input || ' ' }]
-        })
-        // Gemini Vision currently only support 1 prompt
-        return base64 ? [prompt[prompt.length - 1]] : prompt
+        const message: GEMChatMessage = { role: GEMChatRoleEnum.USER, parts: [] }
+        input = input.trim()
+        message.parts.push({ text: input || ' ' })
+        if (base64 && base64.length)
+            for (const { mime, data } of base64) message.parts.push({ inline_data: { mime_type: mime, data } })
+        prompt.push(message)
+
+        return prompt
     }
 
     /**
@@ -215,32 +213,26 @@ export default class Google {
      * @param img The image string to convert.
      * @returns An object containing the MIME type and base64 data.
      */
-    private async toBase64(img: string): Promise<{ mime: string; data: string }> {
+    private toBase64(img: string): { mime: string; data: string } {
         let mime: string = ''
         let data: string = ''
 
         if ($.isBase64(img)) {
-            // Handle pure base64 data
             if ($.isBase64(img, false)) {
+                // Handle pure base64 data
                 data = img
-                mime = 'image/png'
+                mime = 'image/png' // default to png
             } else {
+                // Handle base64 data with mime info
                 const match = img.match(/^data:image\/([a-zA-Z]*);base64,([^\"']*)$/)
                 if (match) {
                     mime = `image/${match[1]}`
                     data = match[2]
                 }
             }
-        } else if (img.startsWith('http')) {
-            const res: Buffer = await $.get(img, {}, { responseType: 'arraybuffer' })
-            mime = `image/${['png', 'jpg', 'jpeg', 'webp', 'heic', 'heif'].find(f => img.toLowerCase().includes(f))?.replace('jpg', 'jpeg') || 'png'}`
-            data = res.toString('base64')
-        } else {
-            mime = `image/${extname(img).replace('.', '').toLowerCase()}`
-            data = readFileSync(img).toString('base64')
-        }
+        } else throw new Error('Only base64 image is supported for Google Gemini Vision')
 
-        if (!mime || !data) throw new Error('Can not transfer base64')
+        if (!mime || !data) throw new Error('Can not transfer to base64')
 
         return { mime, data }
     }

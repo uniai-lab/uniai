@@ -52,7 +52,7 @@ export default class XAI {
      */
     async chat(
         messages: ChatMessage[],
-        model: XAIChatModel = XAIChatModel.GROK2,
+        model: XAIChatModel = XAIChatModel.GROK4_FAST_NON_REASONING,
         stream: boolean = false,
         top?: number,
         temperature?: number,
@@ -62,10 +62,6 @@ export default class XAI {
     ) {
         const key = Array.isArray(this.key) ? $.getRandomKey(this.key) : this.key
         if (!key) throw new Error('X AI API key is not set in config')
-
-        // remove imgs for not vision model
-        if (![XAIChatModel.GROK2_VISION].includes(model))
-            messages = messages.map(({ role, content }) => ({ role, content }))
 
         // temperature is float in [0,1]
         if (typeof temperature === 'number') {

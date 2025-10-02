@@ -58,7 +58,7 @@ export enum GLMEmbedModel {
 }
 
 export enum GoogleEmbedModel {
-    GEM_EMBED = 'gemini-embedding-exp'
+    GEM_EMBED = 'gemini-embedding-001'
 }
 
 export enum AliEmbedModel {
@@ -105,6 +105,7 @@ export enum OpenAIChatModel {
 }
 
 export enum AnthropicChatModel {
+    CLAUDE_4_5_SONNET = 'claude-sonnet-4-5-20250929',
     CLAUDE_4_1_OPUS = 'claude-opus-4-1',
     CLAUDE_4_OPUS = 'claude-opus-4-0',
     CLAUDE_4_SONNET = 'claude-sonnet-4-0',
@@ -120,10 +121,6 @@ export enum DeepSeekChatModel {
 
 // google chat models
 export enum GoogleChatModel {
-    // deprecated
-    GEM_PRO_1_5 = 'gemini-1.5-pro',
-    GEM_FLASH_1_5 = 'gemini-1.5-flash',
-    GEM_FLASH_1_5_8B = 'gemini-1.5-flash-8b',
     // current models
     GEM_FLASH_2 = 'gemini-2.0-flash',
     GEM_FLASH_2_LITE = 'gemini-2.0-flash-lite',
@@ -210,10 +207,14 @@ export enum AliChatModel {
 }
 
 export enum XAIChatModel {
-    GROK2 = 'grok-2',
-    GROK2_VISION = 'grok-2-vision',
+    GROK_CODE_FAST_1 = 'grok-code-fast-1',
+    GROK4_FAST_REASONING = 'grok-4-fast-reasoning',
+    GROK4_FAST_NON_REASONING = 'grok-4-fast-non-reasoning',
+    GROK4_0709 = 'grok-4-0709',
+    GROK3_MINI = 'grok-3-mini',
     GROK3 = 'grok-3',
-    GROK3_VISION = 'grok-3-vision'
+    GROK2_VISION_1212_US_EAST_1 = 'grok-2-vision-1212us-east-1',
+    GROK2_VISION_1212_EU_WEST_1 = 'grok-2-vision-1212eu-west-1'
 }
 
 // All chat models

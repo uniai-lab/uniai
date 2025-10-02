@@ -23,6 +23,7 @@ export interface GoogleEmbedRequest {
     content: {
         parts: { text: string }[]
     }
+    output_dimensionality: number
 }
 
 export interface GoogleEmbedResponse {

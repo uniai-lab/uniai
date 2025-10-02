@@ -16,8 +16,10 @@ import {
 export interface ChatMessage {
     role: ChatRoleEnum
     content: string | string[]
-    img?: string | string[] // url or base64
-    audio?: string | string[] // base64
+    name?: string
+    img?: string | string[] // base64 only
+    audio?: string | string[] // base64 only
+    audioFormat?: string // mp3/wav/m4a
     tool?: string // tool_call_id
 }
 

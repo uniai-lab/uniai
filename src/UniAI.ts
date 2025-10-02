@@ -45,7 +45,7 @@ import AliYun from './providers/AliYun'
 import { ChatCompletionTool, ChatCompletionToolChoiceOption } from 'openai/resources'
 import { SPKTool, SPKToolChoice } from '../interface/IFlyTek'
 import DeepSeek from './providers/DeepSeek'
-import XAI from './providers/IX'
+import XAI from './providers/XAI'
 import { GrokTool, GrokToolChoice } from '../interface/IX'
 
 const DEFAULT_MESSAGE = 'Hi, who are you? Answer in 10 words!'
@@ -255,20 +255,20 @@ export default class UniAI {
 
     async embedding(content: string | string[], option: EmbedOption = {}) {
         const provider = option.provider || ModelProvider.OpenAI
-        const { model } = option
+        const { model, dimensions } = option
         if (typeof content === 'string') content = [content]
 
         switch (provider) {
             case EmbedModelProvider.OpenAI:
-                return await this.openai.embedding(content, model as OpenAIEmbedModel)
+                return await this.openai.embedding(content, model as OpenAIEmbedModel, dimensions)
             case EmbedModelProvider.GLM:
-                return await this.glm.embedding(content, model as GLMEmbedModel, option.dimensions)
+                return await this.glm.embedding(content, model as GLMEmbedModel, dimensions)
             case EmbedModelProvider.Google:
-                return await this.google.embedding(content, model as GoogleEmbedModel)
+                return await this.google.embedding(content, model as GoogleEmbedModel, dimensions)
             case EmbedModelProvider.AliYun:
-                return await this.ali.embedding(content, model as AliEmbedModel, option.dimensions)
+                return await this.ali.embedding(content, model as AliEmbedModel, dimensions)
             case EmbedModelProvider.Other:
-                return await this.other.embedding(content, model as OtherEmbedModel)
+                return await this.other.embedding(content, model as OtherEmbedModel, dimensions)
             default:
                 throw new Error('Embedding model provider not found')
         }

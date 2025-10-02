@@ -51,13 +51,13 @@ export default class OpenAI {
      * @param model - The model to use for embeddings (default: text-embedding-ada-002).
      * @returns A promise resolving to the embedding response.
      */
-    async embedding(input: string[], model: OpenAIEmbedModel = OpenAIEmbedModel.ADA) {
+    async embedding(input: string[], model: OpenAIEmbedModel = OpenAIEmbedModel.ADA, dimensions = 1536) {
         const key = Array.isArray(this.key) ? $.getRandomKey(this.key) : this.key
         if (!key) throw new Error('OpenAI API key is not set in config')
 
         const res = await $.post<OpenAIEmbedRequest, OpenAIEmbedResponse>(
             `${this.api}/${VER}/embeddings`,
-            { model, input },
+            { model, input, dimensions },
             { headers: { Authorization: `Bearer ${key}` }, responseType: 'json' }
         )
 
