@@ -13,6 +13,7 @@ export enum ChatModelProvider {
     MoonShot = 'moonshot',
     AliYun = 'aliyun',
     XAI = 'xai',
+    ARK = 'ark', // 火山
     Other = 'other'
 }
 
@@ -217,6 +218,14 @@ export enum XAIChatModel {
     GROK2_VISION_1212_EU_WEST_1 = 'grok-2-vision-1212eu-west-1'
 }
 
+export enum ArkChatModel {
+    DOUDAO_SEED_1_6 = 'doubao-seed-1-6-250615',
+    DOUDAO_SEED_1_6_VISION = 'doubao-seed-1-6-vision-250815',
+    DOUDAO_SEED_1_6_FLASH = 'doubao-seed-1-6-flash-250828',
+    DOUDAO_SEED_1_6_THINKING = 'doubao-seed-1-6-thinking-250715',
+    DEEPSEEK_V3_1 = 'deepseek-v3-1-250821'
+}
+
 // All chat models
 export type ChatModel =
     | OpenAIChatModel
@@ -229,6 +238,7 @@ export type ChatModel =
     | MoonShotChatModel
     | AliChatModel
     | XAIChatModel
+    | ArkChatModel
     | string
 
 export const ChatModel = {
@@ -242,7 +252,8 @@ export const ChatModel = {
     ...OpenAIChatModel,
     ...MoonShotChatModel,
     ...AliChatModel,
-    ...XAIChatModel
+    ...XAIChatModel,
+    ...ArkChatModel
 }
 
 // image models

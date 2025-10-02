@@ -74,6 +74,11 @@ export interface UniAIConfig {
         proxy?: string
     }
 
+    Ark?: {
+        key: string | string[]
+        proxy?: string
+    }
+
     // other models
     Other?: {
         api?: string

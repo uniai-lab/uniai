@@ -3,6 +3,7 @@ import {
     AliChatModel,
     AliEmbedModel,
     AnthropicChatModel,
+    ArkChatModel,
     BaiduChatModel,
     ChatModel,
     ChatModelProvider,
@@ -47,6 +48,7 @@ import { SPKTool, SPKToolChoice } from '../interface/IFlyTek'
 import DeepSeek from './providers/DeepSeek'
 import XAI from './providers/XAI'
 import { GrokTool, GrokToolChoice } from '../interface/IX'
+import Ark from './providers/Ark'
 
 const DEFAULT_MESSAGE = 'Hi, who are you? Answer in 10 words!'
 
@@ -69,6 +71,7 @@ export default class UniAI {
     private ali: AliYun
     private mj: MidJourney
     private xai: XAI
+    private ark: Ark
     private stability: Stability
 
     constructor(config: UniAIConfig = {}) {
@@ -97,6 +100,8 @@ export default class UniAI {
         this.moon = new MoonShot(config.MoonShot?.key, config.MoonShot?.proxy)
         // AliYun, QWen API key
         this.ali = new AliYun(config.AliYun?.key, config.AliYun?.proxy)
+        // Ark, Doubao API key
+        this.ark = new Ark(config.Ark?.key, config.Ark?.proxy)
         // XAI Grok, XAI API key
         this.xai = new XAI(config.XAI?.key, config.XAI?.proxy)
         // Other model text2vec
@@ -122,6 +127,7 @@ export default class UniAI {
                     [ChatModelProvider.MoonShot]: MoonShotChatModel,
                     [ChatModelProvider.AliYun]: AliChatModel,
                     [ChatModelProvider.XAI]: XAIChatModel,
+                    [ChatModelProvider.ARK]: ArkChatModel,
                     [ChatModelProvider.Other]: []
                 }[v]
             )
@@ -226,6 +232,8 @@ export default class UniAI {
                 return await this.moon.chat(messages, model as MoonShotChatModel, stream, top, temperature, maxLength)
             case ChatModelProvider.AliYun:
                 return await this.ali.chat(messages, model as AliChatModel, stream, top, temperature, maxLength)
+            case ChatModelProvider.ARK:
+                return await this.ark.chat(messages, model as ArkChatModel, stream, top, temperature, maxLength)
             case ChatModelProvider.XAI:
                 return await this.xai.chat(
                     messages,

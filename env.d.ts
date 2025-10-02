@@ -26,6 +26,8 @@ declare global {
             DS_KEY: string
             X_AI_API: string
             X_AI_KEY: string
+            ARK_KEY: string
+            ARK_API: string
             OTHER_API: string
             STABLE_DIFFUSION_API: string
             MID_JOURNEY_API: string
