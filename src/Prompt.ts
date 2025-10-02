@@ -140,7 +140,8 @@ export default class Prompt {
      * @returns The root Prompt node parsed from the document.
      */
     static fromMarkdown(markdown: string): Prompt {
-        const lines = markdown.split('\n')
+        // Split lines in a cross-platform way (supports both LF and CRLF)
+        const lines = markdown.split(/\r?\n/)
         const root = new Prompt('', '', [])
         const stack: { prompt: Prompt; level: number }[] = [{ prompt: root, level: 0 }]
 
