@@ -1,3 +1,5 @@
+<!-- @format -->
+
 <p align="center"><img src="./icon/logo.png" width="66px"></p>
 <h1 align="center">UniAI</h1>
 <h3 align="center">To Unify AI Models!</h3>
@@ -278,6 +280,20 @@ stream.on('end', () => console.log(data))
 
 ```
 Language model trained by Google, at your service.
+```
+
+### OpenAI-Compatible API and Ollama-Deployed Models
+
+If you are connecting to an OpenAI-compatible API, or using **Ollama** to deploy models locally, you can use the `Other` provider.
+
+For example, suppose you have deployed a model named `qwen3:0.6b`:
+
+```ts
+const OTHER_API = 'Your Ollama-deployed model endpoint, or other OpenAI-compatible APIs.'
+const uni = new UniAI({ Other: { api: OTHER_API } })
+uni.chat(input, { stream: false, provider: ChatModelProvider.Other, model: 'qwen3:0.6b' })
+    .then(console.log)
+    .catch(console.error)
 ```
 
 ## Running Tests
