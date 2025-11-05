@@ -81,7 +81,8 @@ export default class Prompt {
         if (this.title) md += `${'#'.repeat(level)} ${this.title}\n\n`
         if (this.content) md += this.content.trim() + '\n\n'
 
-        for (const child of this.children) md += child.toMarkdown(level + 1)
+        const nextLevel = this.title ? level + 1 : level
+        for (const child of this.children) md += child.toMarkdown(nextLevel)
         return md
     }
 
@@ -158,12 +159,12 @@ export default class Prompt {
                 if (stack.length > 0) {
                     const current = stack[stack.length - 1].prompt
                     if (current.content) current.content += '\n'
-                    current.content += line.trim()
+                    current.content += line
                 }
             }
         }
-        if (root.children.length === 1) return root.children[0]
-        return new Prompt('Document', '', root.children)
+        if (root.children.length === 1 && !root.content) return root.children[0]
+        return root
     }
 
     /**
