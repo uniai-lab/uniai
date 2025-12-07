@@ -5,8 +5,8 @@
  */
 import type { GPTChatResponse, GPTChatStreamResponse } from '../../interface/IOpenAI'
 import type { ARKChatRequest, ARKChatRequestStream, ARKReasoningEffort } from '../../interface/IArk'
-import type { ChatResponse, ChatMessage } from '../../interface/IModel'
-import type { ChatCompletionTool, ChatCompletionToolChoiceOption, ReasoningEffort } from 'openai/resources'
+import type { ChatResponse, ChatMessage, ReasoningLevel } from '../../interface/IModel'
+import type { ChatCompletionTool, ChatCompletionToolChoiceOption } from 'openai/resources'
 import { PassThrough, Readable } from 'stream'
 import EventSourceStream from '@server-sent-stream/node'
 import { ArkChatModel } from '../../interface/Enum'
@@ -48,7 +48,7 @@ export default class Ark {
         messages: ChatMessage[],
         model: ArkChatModel = ArkChatModel.DOUBAO_SEED_1_6,
         stream: boolean = false,
-        reasoning: ReasoningEffort = 'none',
+        reasoning?: ReasoningLevel,
         top?: number,
         temperature?: number,
         maxLength?: number,

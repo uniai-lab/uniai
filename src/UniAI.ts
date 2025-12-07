@@ -30,8 +30,11 @@ import {
     StabilityAIImagineModel,
     XAIChatModel
 } from '../interface/Enum'
-import { UniAIConfig } from '../interface/IConfig'
-import { ChatMessage, ChatOption, EmbedOption, ImagineOption, ModelList, Provider } from '../interface/IModel'
+import type { UniAIConfig } from '../interface/IConfig'
+import type { ChatMessage, ChatOption, EmbedOption, ImagineOption, ModelList, Provider } from '../interface/IModel'
+import type { ChatCompletionTool, ChatCompletionToolChoiceOption } from 'openai/resources'
+import type { SPKTool, SPKToolChoice } from '../interface/IFlyTek'
+import type { GrokTool, GrokToolChoice } from '../interface/IX'
 import OpenAI from './providers/OpenAI'
 import Anthropic from './providers/Anthropic'
 import GLM from './providers/GLM'
@@ -43,14 +46,11 @@ import MoonShot from './providers/MoonShot'
 import MidJourney from './providers/MidJourney'
 import Stability from './providers/Stability'
 import AliYun from './providers/AliYun'
-import { ChatCompletionTool, ChatCompletionToolChoiceOption } from 'openai/resources'
-import { SPKTool, SPKToolChoice } from '../interface/IFlyTek'
 import DeepSeek from './providers/DeepSeek'
 import XAI from './providers/XAI'
-import { GrokTool, GrokToolChoice } from '../interface/IX'
 import Ark from './providers/Ark'
 
-const DEFAULT_MESSAGE = 'Hi, who are you? Answer in 10 words!'
+const DEFAULT_MESSAGE = 'Hi, who are you? Answer in short!'
 
 export default class UniAI {
     public config: UniAIConfig | null = null
@@ -168,7 +168,7 @@ export default class UniAI {
     async chat(messages: ChatMessage[] | string = DEFAULT_MESSAGE, option: ChatOption = {}) {
         if (typeof messages === 'string') messages = [{ role: ChatRoleEnum.USER, content: messages }]
         const provider = option.provider || ChatModelProvider.OpenAI
-        const { model, stream, top, temperature, maxLength, tools, toolChoice } = option
+        const { model, stream, top, temperature, maxLength, tools, toolChoice, reasoning } = option
 
         switch (provider) {
             case ChatModelProvider.OpenAI:
@@ -176,6 +176,7 @@ export default class UniAI {
                     messages,
                     model as OpenAIChatModel,
                     stream,
+                    reasoning,
                     top,
                     temperature,
                     maxLength,
@@ -233,7 +234,15 @@ export default class UniAI {
             case ChatModelProvider.AliYun:
                 return await this.ali.chat(messages, model as AliChatModel, stream, top, temperature, maxLength)
             case ChatModelProvider.ARK:
-                return await this.ark.chat(messages, model as ArkChatModel, stream, top, temperature, maxLength)
+                return await this.ark.chat(
+                    messages,
+                    model as ArkChatModel,
+                    stream,
+                    reasoning,
+                    top,
+                    temperature,
+                    maxLength
+                )
             case ChatModelProvider.XAI:
                 return await this.xai.chat(
                     messages,

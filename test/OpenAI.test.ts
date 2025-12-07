@@ -1,9 +1,8 @@
 /** @format */
 import 'dotenv/config'
 import '../env.d.ts'
-import UniAI, { ChatMessage, ChatResponse, Prompt } from '../src'
+import UniAI, { type ChatMessage, Prompt, type ReasoningLevel } from '../src'
 import {
-    ChatModel,
     ChatModelProvider,
     ChatRoleEnum,
     EmbedModelProvider,
@@ -14,6 +13,7 @@ import {
 import { Readable } from 'stream'
 import { readFileSync } from 'fs'
 import path from 'path'
+import type { ChatCompletionTool } from 'openai/resources'
 
 const { OPENAI_KEY, OPENAI_API } = process.env
 
@@ -59,220 +59,199 @@ const input5: ChatMessage[] = [
     }
 ]
 
+interface OpenAIChatTestCase {
+    title: string
+    model: OpenAIChatModel
+    prompt: string | ChatMessage[]
+    stream?: boolean
+    reasoning?: ReasoningLevel
+    tools?: ChatCompletionTool[]
+}
+
+const weatherTool: ChatCompletionTool = {
+    type: 'function',
+    function: {
+        name: 'get_weather',
+        description: 'Get current temperature for a given location in English.',
+        parameters: {
+            type: 'object',
+            properties: {
+                location: {
+                    type: 'string',
+                    description: 'City and country, e.g. Macau, China'
+                }
+            },
+            required: ['location'],
+            additionalProperties: false
+        },
+        strict: true
+    }
+}
+
+const openAIChatCases: OpenAIChatTestCase[] = [
+    { title: 'gpt-3.5 single turn text', model: OpenAIChatModel.GPT3, prompt: input },
+    { title: 'gpt-4 multi-turn stream', model: OpenAIChatModel.GPT4, prompt: input3, stream: true },
+    { title: 'gpt-4 turbo vision stream', model: OpenAIChatModel.GPT4_TURBO, prompt: input2, stream: true },
+    {
+        title: 'gpt-4o-mini with tools',
+        model: OpenAIChatModel.GPT_4O_MINI,
+        prompt: '今天澳门天气如何？请用一句话回答',
+        tools: [weatherTool]
+    },
+    {
+        title: 'chatgpt-4o multimodal',
+        model: OpenAIChatModel.CHAT_GPT_4O,
+        prompt: input2
+    },
+    { title: 'gpt-4o default vision', model: OpenAIChatModel.GPT_4O, prompt: input2 },
+    {
+        title: 'gpt-4o audio preview',
+        model: OpenAIChatModel.GPT_4O_AUDIO,
+        prompt: input5
+    },
+    { title: 'gpt-4.1 persona recall', model: OpenAIChatModel.GPT_4_1, prompt: input4 },
+    { title: 'gpt-4.1-mini quick summary', model: OpenAIChatModel.GPT_4_1_MINI, prompt: '用一句话介绍北京。' },
+    { title: 'gpt-4.1-nano study tips', model: OpenAIChatModel.GPT_4_1_NANO, prompt: '列出两个提高专注力的小技巧。' },
+    { title: 'gpt-5 flagship trends', model: OpenAIChatModel.GPT_5, prompt: '概述一下人工智能未来的三个趋势。' },
+    {
+        title: 'gpt-5 chat multi-turn',
+        model: OpenAIChatModel.GPT_5_CHAT,
+        prompt: input3
+    },
+    { title: 'gpt-5 mini productivity', model: OpenAIChatModel.GPT_5_MINI, prompt: '提供三个番茄钟使用技巧。' },
+    {
+        title: 'gpt-5 nano emoji stream',
+        model: OpenAIChatModel.GPT_5_NANO,
+        prompt: '给我做几个emoji表情，表现出你的愤怒。',
+        stream: true
+    },
+    {
+        title: 'gpt-5.1 thoughtful stream',
+        model: OpenAIChatModel.GPT_5_1,
+        prompt: '为什么天空是蓝色的？请一步步解释。',
+        reasoning: 'none',
+        stream: true
+    },
+    {
+        title: 'gpt-5.1 chat latest multi-turn',
+        model: OpenAIChatModel.GPT_5_1_CHAT,
+        prompt: input3
+    },
+    {
+        title: 'o1 math reasoning stream',
+        model: OpenAIChatModel.O1,
+        prompt: '请详细推理：若2x+3=11，x等于多少？',
+        stream: true
+    },
+    {
+        title: 'o3 itinerary reasoning stream',
+        model: OpenAIChatModel.O3,
+        prompt: '为上海周末亲子旅行制定行程，并解释选择。',
+        stream: true
+    },
+    {
+        title: 'o3-mini quick science note',
+        model: OpenAIChatModel.O3_MINI,
+        prompt: '用50个字解释云计算如何工作。'
+    },
+    {
+        title: 'o4-mini study plan',
+        model: OpenAIChatModel.O4_MINI,
+        prompt: '设计一个为期五天的前端框架学习计划。'
+    }
+]
+
 let uni: UniAI
 
 beforeAll(() => (uni = new UniAI({ OpenAI: { key: OPENAI_KEY.split(','), proxy: OPENAI_API } })))
 
 describe('OpenAI tests', () => {
-    test('Test list OpenAI models', () => {
+    test('lists OpenAI models', () => {
         const provider = uni.models.filter(v => v.value === ModelProvider.OpenAI)[0]
         console.log(provider)
         expect(provider.models.length).toEqual(Object.values(OpenAIChatModel).length)
         expect(provider.provider).toEqual('OpenAI')
         expect(provider.value).toEqual(ModelProvider.OpenAI)
     })
-
-    test('Test chat openai default, gpt-4.1', done => {
-        uni.chat(input2, { stream: false, provider: ChatModelProvider.OpenAI, model: OpenAIChatModel.GPT_4_1 })
-            .then(console.log)
-            .catch(console.error)
-            .finally(done)
-    }, 60000)
-
-    test('Test chat openai default, gpt-4.1-mini', done => {
-        uni.chat(input2, { stream: false, provider: ChatModelProvider.OpenAI, model: OpenAIChatModel.GPT_4_1_MINI })
-            .then(console.log)
-            .catch(console.error)
-            .finally(done)
-    }, 60000)
-
-    test('Test chat openai default, gpt-4.1-nano', done => {
-        uni.chat(input4, { stream: false, provider: ChatModelProvider.OpenAI, model: OpenAIChatModel.GPT_4_1_NANO })
-            .then(console.log)
-            .catch(console.error)
-            .finally(done)
-    }, 60000)
-
-    test('Test chat openai default, gpt-4o', done => {
-        uni.chat(input2).then(console.log).catch(console.error).finally(done)
-    }, 60000)
-
-    test('Test chat openai default, gpt-4o-audio-preview', done => {
-        uni.chat(input5, { stream: false, provider: ChatModelProvider.OpenAI, model: ChatModel.GPT_4O_AUDIO })
-            .then(console.log)
-            .catch(console.error)
-            .finally(done)
-    }, 60000)
-
-    test('Test chat openai gpt-3.5-turbo', done => {
-        uni.chat(input, { stream: false, provider: ChatModelProvider.OpenAI, model: OpenAIChatModel.GPT3 })
-            .then(console.log)
-            .catch(console.error)
-            .finally(done)
-    })
-
-    test('Test chat openai gpt-4o-mini', done => {
-        uni.chat(input2, { stream: false, provider: ChatModelProvider.OpenAI, model: OpenAIChatModel.GPT_4O_MINI })
-            .then(console.log)
-            .catch(console.error)
-            .finally(done)
-    }, 60000)
-
-    test('Test chat openai chatgpt-4o-latest', done => {
-        uni.chat(input2, { stream: false, provider: ChatModelProvider.OpenAI, model: OpenAIChatModel.CHAT_GPT_4O })
-            .then(console.log)
-            .catch(console.error)
-            .finally(done)
-    }, 60000)
-
-    test('Test chat openai gpt-4 stream', done => {
-        uni.chat(input3, { stream: true, provider: ChatModelProvider.OpenAI, model: OpenAIChatModel.GPT4 }).then(
-            res => {
-                expect(res).toBeInstanceOf(Readable)
-                const stream = res as Readable
-                let data = ''
-                stream.on('data', chunk => (data += JSON.parse(chunk.toString()).content))
-                stream.on('end', () => console.log(data))
-                stream.on('error', e => console.error(e))
-                stream.on('close', () => done())
-            }
-        )
-    })
-
-    test('Test chat openai gpt-4 turbo with vision', done => {
-        uni.chat(input2, { stream: true, provider: ChatModelProvider.OpenAI, model: OpenAIChatModel.GPT4_TURBO }).then(
-            res => {
-                expect(res).toBeInstanceOf(Readable)
-                const stream = res as Readable
-                let data = ''
-                stream.on('data', chunk => (data += JSON.parse(chunk.toString()).content))
-                stream.on('end', () => console.log(data))
-                stream.on('error', e => console.error(e))
-                stream.on('close', () => done())
-            }
-        )
-    }, 60000)
-
-    test('Test chat openai o1', done => {
-        uni.chat(input, { stream: true, provider: ChatModelProvider.OpenAI, model: OpenAIChatModel.O1 }).then(res => {
-            expect(res).toBeInstanceOf(Readable)
-            const stream = res as Readable
-            let data = ''
-            stream.on('data', chunk => (data += JSON.parse(chunk.toString()).content))
-            stream.on('end', () => console.log(data))
-            stream.on('error', e => console.error(e))
-            stream.on('close', () => done())
-        })
-    }, 60000)
-
-    test('Test chat openai o1-pro', done => {
-        uni.chat(input3, { stream: true, provider: ChatModelProvider.OpenAI, model: OpenAIChatModel.O1_PRO }).then(
-            res => {
-                expect(res).toBeInstanceOf(Readable)
-                const stream = res as Readable
-                let data = ''
-                stream.on('data', chunk => (data += JSON.parse(chunk.toString()).content))
-                stream.on('end', () => console.log(data))
-                stream.on('error', e => console.error(e))
-                stream.on('close', () => done())
-            }
-        )
-    }, 60000)
-
-    test('Test chat openai o1-mini', done => {
-        uni.chat(input, { stream: false, provider: ChatModelProvider.OpenAI, model: OpenAIChatModel.O1_MINI })
-            .then(console.log)
-            .catch(console.error)
-            .finally(done)
-    }, 60000)
-
-    test('Test chat openai o3-mini', done => {
-        uni.chat(input2, { stream: false, provider: ChatModelProvider.OpenAI, model: OpenAIChatModel.O3_MINI })
-            .then(console.log)
-            .catch(console.error)
-            .finally(done)
-    }, 60000)
-
-    test('Test chat openai gpt-4o-mini with tools', done => {
-        const tools = [
-            {
-                type: 'function',
-                function: {
-                    name: 'get_weather',
-                    description: 'Get current temperature for a given location.',
-                    parameters: {
-                        type: 'object',
-                        properties: {
-                            location: {
-                                type: 'string',
-                                description: 'City and country e.g. Bogotá, Colombia, should in English'
-                            }
-                        },
-                        required: ['location'],
-                        additionalProperties: false
-                    },
-                    strict: true
+    const createOpenAITest = ({ title, model, prompt, stream, reasoning, tools }: OpenAIChatTestCase) => {
+        test(
+            title,
+            done => {
+                const options: Record<string, unknown> = {
+                    provider: ChatModelProvider.OpenAI,
+                    model
                 }
-            }
-        ]
-        uni.chat('今天澳门天气如何？', {
-            stream: false,
-            provider: ChatModelProvider.OpenAI,
-            model: OpenAIChatModel.GPT_4O_MINI,
-            tools
-        })
-            .then(r => console.log((r as ChatResponse).tools))
-            .catch(console.error)
-            .finally(done)
-    }, 60000)
 
-    test('Test chat openai gpt-5-nano stream', done => {
-        uni.chat('给我做几个emoji表情，表现出你的愤怒', {
-            stream: true,
-            provider: ChatModelProvider.OpenAI,
-            model: OpenAIChatModel.GPT_5_NANO
-        }).then(res => {
-            expect(res).toBeInstanceOf(Readable)
-            const stream = res as Readable
-            let data = ''
-            stream.on('data', chunk => (data += JSON.parse(chunk.toString()).content))
-            stream.on('end', () => console.log(data))
-            stream.on('error', e => console.error(e))
-            stream.on('close', () => done())
-        })
-    })
+                if (reasoning) options.reasoning = reasoning
+                if (stream) options.stream = true
+                if (tools?.length) options.tools = tools
 
-    test.only('Test chat openai gpt-5 stream', done => {
-        uni.chat('给我做几个emoji表情，表现出你的愤怒', {
-            stream: true,
-            provider: ChatModelProvider.OpenAI,
-            model: OpenAIChatModel.GPT_5
-        }).then(res => {
-            expect(res).toBeInstanceOf(Readable)
-            const stream = res as Readable
-            let data = ''
-            stream.on('data', chunk => (data += JSON.parse(chunk.toString()).content))
-            stream.on('end', () => console.log(data))
-            stream.on('error', e => console.error(e))
-            stream.on('close', () => done())
-        })
-    })
+                if (stream) {
+                    uni.chat(prompt, options)
+                        .then(res => {
+                            expect(res).toBeInstanceOf(Readable)
+                            const readable = res as Readable
+                            let data = ''
+                            let finished = false
+                            const finish = (err?: Error) => {
+                                if (finished) return
+                                finished = true
+                                if (err) done(err)
+                                else done()
+                            }
+                            readable.on('data', chunk => {
+                                try {
+                                    const parsed = JSON.parse(chunk.toString())
+                                    data += parsed.content ?? ''
+                                } catch (error) {
+                                    console.error('Failed to parse chunk', error)
+                                }
+                            })
+                            readable.on('end', () => console.log(model, data))
+                            readable.on('error', e => {
+                                console.error(e)
+                                finish(e as Error)
+                            })
+                            readable.on('close', () => finish())
+                        })
+                        .catch(err => {
+                            console.error(err)
+                            done(err)
+                        })
+                    return
+                }
 
-    test('Test OpenAI/text-embedding-ada2 embedding', done => {
+                uni.chat(prompt, options)
+                    .then(res => {
+                        console.log(model, res)
+                        done()
+                    })
+                    .catch(err => {
+                        console.error(err)
+                        done(err)
+                    })
+            },
+            60000
+        )
+    }
+
+    openAIChatCases.forEach(createOpenAITest)
+
+    test('OpenAI/text-embedding-ada2 embedding', done => {
         uni.embedding(input, { provider: EmbedModelProvider.OpenAI, model: OpenAIEmbedModel.ADA })
             .then(res => expect(res.embedding.length).toBe(1))
             .catch(console.error)
             .finally(done)
     })
 
-    test('Test OpenAI/text-embedding-3-large embedding', done => {
+    test('OpenAI/text-embedding-3-large embedding', done => {
         uni.embedding(input, { provider: EmbedModelProvider.OpenAI, model: OpenAIEmbedModel.LARGE })
             .then(res => expect(res.embedding.length).toBe(1))
             .catch(console.error)
             .finally(done)
     })
 
-    test('Test OpenAI/text-embedding-3-small embedding', done => {
+    test('OpenAI/text-embedding-3-small embedding', done => {
         uni.embedding(input, { provider: EmbedModelProvider.OpenAI, model: OpenAIEmbedModel.SMALL })
             .then(res => expect(res.embedding.length).toBe(1))
             .catch(console.error)

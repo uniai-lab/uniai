@@ -1,5 +1,6 @@
 /** @format */
 
+import type { ReasoningEffort } from 'openai/resources'
 import {
     EmbedModel,
     ChatModel,
@@ -41,6 +42,7 @@ export interface ChatResponse {
     object: string
 }
 
+export type ReasoningLevel = ReasoningEffort
 export interface ChatOption {
     stream?: boolean
     provider?: ChatModelProvider
@@ -53,6 +55,7 @@ export interface ChatOption {
         [key: string]: any
     }[]
     toolChoice?: string
+    reasoning?: ReasoningLevel
 }
 
 export interface EmbedOption {

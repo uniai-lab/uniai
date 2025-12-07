@@ -7,7 +7,7 @@
 import { PassThrough, Readable } from 'stream'
 import EventSourceStream from '@server-sent-stream/node'
 
-import {
+import type {
     GPTChatRequest,
     GPTChatResponse,
     GPTChatStreamRequest,
@@ -18,12 +18,18 @@ import {
     OpenAIImagineRequest,
     OpenAIImagineResponse
 } from '../../interface/IOpenAI'
+import type {
+    ChatResponse,
+    ChatMessage,
+    TaskResponse,
+    ImagineResponse,
+    EmbeddingResponse,
+    ReasoningLevel
+} from '../../interface/IModel'
+import type { ChatCompletionTool, ChatCompletionToolChoiceOption } from 'openai/resources'
 
 import { DETaskType, OpenAIChatModel, OpenAIEmbedModel, OpenAIImagineModel } from '../../interface/Enum'
-
-import { ChatResponse, ChatMessage, TaskResponse, ImagineResponse, EmbeddingResponse } from '../../interface/IModel'
 import $ from '../util'
-import { ChatCompletionTool, ChatCompletionToolChoiceOption } from 'openai/resources'
 
 const STORAGE_KEY = 'task_open_ai'
 const API = 'https://api.openai.com'
@@ -88,6 +94,7 @@ export default class OpenAI {
         messages: ChatMessage[],
         model: OpenAIChatModel = OpenAIChatModel.GPT_4_1,
         stream: boolean = false,
+        reasoning?: ReasoningLevel,
         top?: number,
         temperature?: number,
         maxLength?: number,
@@ -118,7 +125,8 @@ export default class OpenAI {
                 top_p: top,
                 max_completion_tokens: maxLength,
                 tools,
-                tool_choice: toolChoice
+                tool_choice: toolChoice,
+                reasoning_effort: reasoning
             },
             { headers: { Authorization: `Bearer ${key}` }, responseType: stream ? 'stream' : 'json' }
         )
