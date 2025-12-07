@@ -99,6 +99,28 @@ describe('Anthropic Chat Test', () => {
             .finally(done)
     }, 60000)
 
+    test('Test chat Anthropic Claude 4.5 Opus', done => {
+        uni.chat(input, {
+            stream: false,
+            provider: ChatModelProvider.Anthropic,
+            model: AnthropicChatModel.CLAUDE_4_5_OPUS
+        })
+            .then(console.log)
+            .catch(console.error)
+            .finally(done)
+    }, 60000)
+
+    test('Test chat Anthropic Claude 4.5 Haiku', done => {
+        uni.chat(input4, {
+            stream: false,
+            provider: ChatModelProvider.Anthropic,
+            model: AnthropicChatModel.CLAUDE_4_5_HAIKU
+        })
+            .then(console.log)
+            .catch(console.error)
+            .finally(done)
+    }, 60000)
+
     test('Test chat Anthropic Claude 3 Haiku', done => {
         uni.chat(input4, {
             stream: false,
@@ -252,7 +274,7 @@ describe('Anthropic Chat Test', () => {
             .finally(done)
     }, 60000)
 
-    test.only('Test chat Anthropic Claude 4.5 Sonnet with vision', done => {
+    test('Test chat Anthropic Claude 4.5 Sonnet with vision', done => {
         uni.chat(input2, {
             stream: false,
             provider: ChatModelProvider.Anthropic,

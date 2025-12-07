@@ -15,6 +15,7 @@ import { Readable } from 'stream'
 const { ALI_KEY, ALI_API } = process.env
 
 const input = 'Hi, who are you? Answer in 10 words!'
+const codeInput = 'Use ruby to write hello world'
 const input2: ChatMessage[] = [
     {
         role: ChatRoleEnum.USER,
@@ -25,6 +26,17 @@ const input2: ChatMessage[] = [
         ]
     }
 ]
+
+const additionalAliTextModels: AliChatModel[] = [
+    AliChatModel.QWEN3_MAX,
+    AliChatModel.QWEN_FLASH,
+    AliChatModel.QWEN_LONG,
+    AliChatModel.QWQ_PLUS,
+    AliChatModel.QVQ_MAX,
+    AliChatModel.QVQ_PLUS
+]
+
+const aliCodeModels: AliChatModel[] = [AliChatModel.QWEN_CODE_TURBO, AliChatModel.QWEN_CODE_FLASH]
 
 let uni: UniAI
 
@@ -44,7 +56,7 @@ describe('AliYun QWen Tests', () => {
             .then(console.log)
             .catch(console.error)
             .finally(done)
-    })
+    }, 60000)
 
     test('Test chat AliYun QWen Plus stream', done => {
         uni.chat(input, { stream: true, provider: ChatModelProvider.AliYun, model: AliChatModel.QWEN_PLUS }).then(
@@ -65,17 +77,17 @@ describe('AliYun QWen Tests', () => {
             .then(console.log)
             .catch(console.error)
             .finally(done)
-    })
+    }, 60000)
 
     test('Test chat AliYun QWen Code', done => {
-        uni.chat(`Use ruby to write hello world`, {
+        uni.chat(codeInput, {
             provider: ChatModelProvider.AliYun,
             model: AliChatModel.QWEN_CODE_PLUS
         })
             .then(console.log)
             .catch(console.error)
             .finally(done)
-    })
+    }, 60000)
 
     test('Test chat AliYun QWen Math stream', done => {
         uni.chat(`Latex给出爱因斯坦的质能方程式`, {
@@ -113,6 +125,22 @@ describe('AliYun QWen Tests', () => {
             .catch(console.error)
             .finally(done)
     }, 60000)
+
+    test.each(additionalAliTextModels)(
+        'Test chat AliYun %s',
+        async model => {
+            await uni.chat(input, { provider: ChatModelProvider.AliYun, model })
+        },
+        60000
+    )
+
+    test.each(aliCodeModels)(
+        'Test chat AliYun %s',
+        async model => {
+            await uni.chat(codeInput, { provider: ChatModelProvider.AliYun, model })
+        },
+        60000
+    )
 
     test('Test Ali/text-embedding-v3 embedding', done => {
         uni.embedding([input, input + 'sss'], {

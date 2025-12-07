@@ -123,7 +123,9 @@ export enum OpenAIChatModel {
 }
 
 export enum AnthropicChatModel {
-    CLAUDE_4_5_SONNET = 'claude-sonnet-4-5-20250929',
+    CLAUDE_4_5_SONNET = 'claude-sonnet-4-5',
+    CLAUDE_4_5_HAIKU = 'claude-haiku-4-5',
+    CLAUDE_4_5_OPUS = 'claude-opus-4-5',
     CLAUDE_4_1_OPUS = 'claude-opus-4-1',
     CLAUDE_4_OPUS = 'claude-opus-4-0',
     CLAUDE_4_SONNET = 'claude-sonnet-4-0',
@@ -208,6 +210,7 @@ export enum MoonShotChatModel {
 }
 
 export enum AliChatModel {
+    QWEN3_MAX = 'qwen3-max',
     QWEN_MAX = 'qwen-max',
     QWEN_PLUS = 'qwen-plus',
     QWEN_FLASH = 'qwen-flash',
