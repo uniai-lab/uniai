@@ -24,56 +24,157 @@ let uni: UniAI
 
 beforeAll(() => (uni = new UniAI({ Ark: { key: ARK_KEY.split(','), proxy: ARK_API } })))
 
+interface ArkTestCase {
+    title: string
+    model: ArkChatModel
+    prompt: string | ChatMessage[]
+    reasoning?: 'none' | 'low' | 'medium' | 'high'
+    stream?: boolean
+}
+
+// Keep in sync with Doubao models defined in ArkChatModel to avoid coverage drift.
+const doubaoCases: ArkTestCase[] = [
+    {
+        title: 'chat doubao-1.5-thinking-pro',
+        model: ArkChatModel.DOUBAO_1_5_THINKING_PRO,
+        prompt: input,
+        reasoning: 'medium'
+    },
+    {
+        title: 'chat doubao-1.5-thinking-vision-pro',
+        model: ArkChatModel.DOUBAO_1_5_THINKING_VISION_PRO,
+        prompt: input2,
+        reasoning: 'medium'
+    },
+    {
+        title: 'chat doubao-seed-1.6',
+        model: ArkChatModel.DOUBAO_SEED_1_6,
+        prompt: input
+    },
+    {
+        title: 'chat doubao-seed-1.6-vision',
+        model: ArkChatModel.DOUBAO_SEED_1_6_VISION,
+        prompt: input2
+    },
+    {
+        title: 'chat doubao-seed-1.6-flash',
+        model: ArkChatModel.DOUBAO_SEED_1_6_FLASH,
+        prompt: input
+    },
+    {
+        title: 'chat doubao-seed-1.6-lite',
+        model: ArkChatModel.DOUBAO_SEED_1_6_LITE,
+        prompt: input
+    },
+    {
+        title: 'chat doubao-seed-1.6-thinking stream',
+        model: ArkChatModel.DOUBAO_SEED_1_6_THINKING,
+        prompt: input,
+        reasoning: 'low',
+        stream: true
+    }
+]
+
+const otherArkCases: ArkTestCase[] = [
+    {
+        title: 'chat deepseek-v3',
+        model: ArkChatModel.DEEPSEEK_V3,
+        prompt: input
+    },
+    {
+        title: 'chat deepseek-v3.1',
+        model: ArkChatModel.DEEPSEEK_V3_1,
+        prompt: input
+    },
+    {
+        title: 'chat deepseek-v3.2',
+        model: ArkChatModel.DEEPSEEK_V3_2,
+        prompt: input
+    },
+    {
+        title: 'chat kimi-k2',
+        model: ArkChatModel.KIMI_K2,
+        prompt: input
+    },
+    {
+        title: 'chat kimi-k2-thinking',
+        model: ArkChatModel.KIMI_K2_THINK,
+        prompt: input,
+        reasoning: 'medium'
+    }
+]
+
 describe('Doubao (Ark) Tests', () => {
-    test('Test list Doubao models', () => {
+    test('lists Doubao models', () => {
         const provider = uni.models.filter(v => v.value === ModelProvider.ARK)[0]
         console.log(provider)
         expect(provider.provider).toEqual('ARK')
         expect(provider.models.length).toEqual(Object.values(ArkChatModel).length)
         expect(provider.value).toEqual(ModelProvider.ARK)
     })
+    const createArkTest = ({ title, model, prompt, reasoning = 'none', stream }: ArkTestCase) => {
+        test(
+            title,
+            done => {
+                const options: Record<string, unknown> = {
+                    provider: ModelProvider.ARK,
+                    model,
+                    reasoning
+                }
 
-    test('Test chat doubao-seed-1.6', done => {
-        uni.chat(input, { provider: ModelProvider.ARK, model: ArkChatModel.DOUDAO_SEED_1_6 })
-            .then(console.log)
-            .catch(console.error)
-            .finally(done)
-    }, 60000)
+                if (stream) {
+                    options.stream = true
+                    uni.chat(prompt, options)
+                        .then(res => {
+                            expect(res).toBeInstanceOf(Readable)
+                            const readable = res as Readable
+                            let data = ''
+                            let finished = false
+                            const finish = (err?: Error) => {
+                                if (finished) return
+                                finished = true
+                                if (err) {
+                                    done(err)
+                                } else {
+                                    done()
+                                }
+                            }
+                            readable.on('data', chunk => {
+                                try {
+                                    const parsed = JSON.parse(chunk.toString())
+                                    data += parsed.content ?? ''
+                                } catch (error) {
+                                    console.error('Failed to parse chunk', error)
+                                }
+                            })
+                            readable.on('end', () => console.log(model, data))
+                            readable.on('error', e => {
+                                console.error(e)
+                                finish(e as Error)
+                            })
+                            readable.on('close', () => finish())
+                        })
+                        .catch(err => {
+                            console.error(err)
+                            done(err)
+                        })
+                    return
+                }
 
-    test('Test chat doubao-seed-1.6 with vision', done => {
-        uni.chat(input2, { provider: ModelProvider.ARK, model: ArkChatModel.DOUDAO_SEED_1_6_VISION })
-            .then(console.log)
-            .catch(console.error)
-            .finally(done)
-    }, 60000)
+                uni.chat(prompt, options)
+                    .then(res => {
+                        console.log(model, res)
+                        done()
+                    })
+                    .catch(err => {
+                        console.error(err)
+                        done(err)
+                    })
+            },
+            60000
+        )
+    }
 
-    test('Test chat doubao-seed-1.6-flash', done => {
-        uni.chat(input, { provider: ModelProvider.ARK, model: ArkChatModel.DOUDAO_SEED_1_6_FLASH })
-            .then(console.log)
-            .catch(console.error)
-            .finally(done)
-    }, 60000)
-
-    test('Test chat doubao-seed-1.6-thinking stream', done => {
-        uni.chat(input, {
-            stream: true,
-            provider: ModelProvider.ARK,
-            model: ArkChatModel.DOUDAO_SEED_1_6_THINKING
-        }).then(res => {
-            expect(res).toBeInstanceOf(Readable)
-            const stream = res as Readable
-            let data = ''
-            stream.on('data', chunk => (data += JSON.parse(chunk.toString()).content))
-            stream.on('end', () => console.log(data))
-            stream.on('error', e => console.error(e))
-            stream.on('close', () => done())
-        })
-    }, 60000)
-
-    test('Test chat deepseek-v3.1', done => {
-        uni.chat(input, { provider: ModelProvider.ARK, model: ArkChatModel.DEEPSEEK_V3_1 })
-            .then(console.log)
-            .catch(console.error)
-            .finally(done)
-    }, 60000)
+    doubaoCases.forEach(createArkTest)
+    otherArkCases.forEach(createArkTest)
 })

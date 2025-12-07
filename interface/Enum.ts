@@ -219,11 +219,21 @@ export enum XAIChatModel {
 }
 
 export enum ArkChatModel {
-    DOUDAO_SEED_1_6 = 'doubao-seed-1-6-250615',
-    DOUDAO_SEED_1_6_VISION = 'doubao-seed-1-6-vision-250815',
-    DOUDAO_SEED_1_6_FLASH = 'doubao-seed-1-6-flash-250828',
-    DOUDAO_SEED_1_6_THINKING = 'doubao-seed-1-6-thinking-250715',
-    DEEPSEEK_V3_1 = 'deepseek-v3-1-250821'
+    DOUBAO_1_5_THINKING_PRO = 'doubao-1-5-thinking-pro-m-250428',
+    DOUBAO_1_5_THINKING_VISION_PRO = 'doubao-1-5-thinking-vision-pro-250428',
+    DOUBAO_SEED_1_6 = 'doubao-seed-1-6-251015',
+    DOUBAO_SEED_1_6_VISION = 'doubao-seed-1-6-vision-250815',
+    DOUBAO_SEED_1_6_FLASH = 'doubao-seed-1-6-flash-250828',
+    DOUBAO_SEED_1_6_LITE = 'doubao-seed-1-6-lite-251015',
+    DOUBAO_SEED_1_6_THINKING = 'doubao-seed-1-6-thinking-250715',
+    DOUBAO_SEED_CODE = 'doubao-seed-code-preview-251028',
+
+    // Other open source models in Ark platform
+    DEEPSEEK_V3 = 'deepseek-v3-250324',
+    DEEPSEEK_V3_1 = 'deepseek-v3-1-250821',
+    DEEPSEEK_V3_2 = 'deepseek-v3-2-251201',
+    KIMI_K2 = 'kimi-k2-250905',
+    KIMI_K2_THINK = 'kimi-k2-thinking-251104'
 }
 
 // All chat models

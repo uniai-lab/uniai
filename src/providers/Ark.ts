@@ -1,15 +1,15 @@
 /**
- * Utility for connecting to the OpenAI model API.
- *
  * @format prettier
+ * Utility for connecting to the Ark (火山豆包) model API.
  * @author devilyouwei
  */
+import type { GPTChatResponse, GPTChatStreamResponse } from '../../interface/IOpenAI'
+import type { ARKChatRequest, ARKChatRequestStream, ARKReasoningEffort } from '../../interface/IArk'
+import type { ChatResponse, ChatMessage } from '../../interface/IModel'
+import type { ChatCompletionTool, ChatCompletionToolChoiceOption, ReasoningEffort } from 'openai/resources'
 import { PassThrough, Readable } from 'stream'
 import EventSourceStream from '@server-sent-stream/node'
-import { GPTChatRequest, GPTChatResponse, GPTChatStreamRequest, GPTChatStreamResponse } from '../../interface/IOpenAI'
 import { ArkChatModel } from '../../interface/Enum'
-import { ChatResponse, ChatMessage } from '../../interface/IModel'
-import { ChatCompletionTool, ChatCompletionToolChoiceOption } from 'openai/resources'
 import $ from '../util'
 
 const API = 'https://ark.cn-beijing.volces.com/api'
@@ -36,6 +36,7 @@ export default class Ark {
      * @param messages - An array of chat messages.
      * @param model - The model to use for chat (default: gpt-3.5-turbo).
      * @param stream - Whether to use stream response (default: false).
+     * @param reasoning - Reasoning effort level (default: 'none').
      * @param top - Top probability to sample (optional).
      * @param temperature - Temperature for sampling (optional).
      * @param maxLength - Maximum token length for response (optional).
@@ -45,8 +46,9 @@ export default class Ark {
      */
     async chat(
         messages: ChatMessage[],
-        model: ArkChatModel = ArkChatModel.DOUDAO_SEED_1_6,
+        model: ArkChatModel = ArkChatModel.DOUBAO_SEED_1_6,
         stream: boolean = false,
+        reasoning: ReasoningEffort = 'none',
         top?: number,
         temperature?: number,
         maxLength?: number,
@@ -67,7 +69,12 @@ export default class Ark {
             if (top > 1) top = 1
         }
 
-        const res = await $.post<GPTChatRequest | GPTChatStreamRequest, Readable | GPTChatResponse>(
+        let reasoningEffort: ARKReasoningEffort
+        if (!reasoning || reasoning === 'none') reasoningEffort = 'minimal'
+        else if (reasoning === 'xhigh') reasoningEffort = 'high'
+        else reasoningEffort = reasoning as 'low' | 'medium' | 'high'
+
+        const res = await $.post<ARKChatRequest | ARKChatRequestStream, Readable | GPTChatResponse>(
             `${this.api}/${VER}/chat/completions`,
             {
                 model,
@@ -77,7 +84,9 @@ export default class Ark {
                 top_p: top,
                 max_completion_tokens: maxLength,
                 tools,
-                tool_choice: toolChoice
+                tool_choice: toolChoice,
+                thinking: { type: reasoningEffort === 'minimal' ? 'disabled' : 'enabled' },
+                reasoning: { effort: reasoningEffort }
             },
             { headers: { Authorization: `Bearer ${key}` }, responseType: stream ? 'stream' : 'json' }
         )
