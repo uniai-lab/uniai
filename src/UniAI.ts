@@ -257,8 +257,9 @@ export default class UniAI {
             case ChatModelProvider.Other:
                 return await this.other.chat(
                     messages,
-                    model as ChatModel,
+                    model,
                     stream,
+                    reasoning,
                     top,
                     temperature,
                     maxLength,

@@ -91,6 +91,7 @@ export default class IFlyTek {
             { headers: { Authorization: `Bearer ${key}` }, responseType: stream ? 'stream' : 'json' }
         )
         const data: ChatResponse = {
+            id: '',
             content: '',
             model,
             object: '',
@@ -109,6 +110,7 @@ export default class IFlyTek {
                     output.destroy(new Error(obj.message))
                     return
                 }
+                data.id = obj.sid
                 data.content = obj.choices[0]?.delta?.content || ''
                 if (obj.choices[0]?.delta?.tool_calls) data.tools = obj.choices[0]?.delta?.tool_calls
                 data.model = model
@@ -131,6 +133,7 @@ export default class IFlyTek {
             })
             return output as Readable
         } else {
+            data.id = res.sid
             data.content = res.choices[0]?.message?.content || ''
             if (res.choices[0]?.message?.tool_calls) data.tools = res.choices[0]?.message?.tool_calls
             data.model = model

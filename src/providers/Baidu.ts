@@ -73,6 +73,7 @@ export default class Baidu {
         )
 
         const data: ChatResponse = {
+            id: '',
             content: '',
             model,
             object: '',
@@ -86,6 +87,7 @@ export default class Baidu {
             parser.on('data', (e: MessageEvent<string>) => {
                 const obj = $.json<BaiduChatResponse>(e.data)
                 if (obj) {
+                    data.id = obj.id
                     data.content = obj.result || ''
                     data.model = model
                     data.object = obj.object
@@ -109,6 +111,7 @@ export default class Baidu {
             return output as Readable
         } else {
             if (res.error_code) throw new Error(res.error_msg)
+            data.id = res.id
             data.content = res.result || ''
             data.model = model
             data.object = res.object

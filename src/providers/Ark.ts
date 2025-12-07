@@ -92,6 +92,7 @@ export default class Ark {
         )
 
         const data: ChatResponse = {
+            id: '',
             content: '',
             model,
             object: '',
@@ -107,6 +108,7 @@ export default class Ark {
             parser.on('data', (e: MessageEvent) => {
                 const obj = $.json<GPTChatStreamResponse>(e.data)
                 if (obj) {
+                    data.id = obj.id
                     data.content = obj.choices[0]?.delta?.content || ''
                     if (obj.choices[0]?.delta?.tool_calls) data.tools = obj.choices[0]?.delta?.tool_calls
                     data.model = obj.model
@@ -129,6 +131,7 @@ export default class Ark {
             })
             return output as Readable
         } else {
+            data.id = res.id
             data.content = res.choices[0]?.message?.content || ''
             if (res.choices[0]?.message?.tool_calls) data.tools = res.choices[0]?.message?.tool_calls
             data.model = res.model

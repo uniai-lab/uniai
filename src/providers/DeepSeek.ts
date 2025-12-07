@@ -77,6 +77,7 @@ export default class DeepSeek {
         )
 
         const data: ChatResponse = {
+            id: '',
             content: '',
             model,
             object: '',
@@ -92,6 +93,7 @@ export default class DeepSeek {
             parser.on('data', (e: MessageEvent) => {
                 const obj = $.json<DSChatResponse>(e.data)
                 if (obj) {
+                    data.id = obj.id
                     data.content = obj.choices[0]?.delta?.content || ''
                     data.model = obj.model
                     data.object = obj.object
@@ -113,6 +115,7 @@ export default class DeepSeek {
             })
             return output as Readable
         } else {
+            data.id = res.id
             data.content = res.choices[0]?.message?.content || ''
             if (res.choices[0]?.message?.tool_calls) data.tools = res.choices[0]?.message?.tool_calls
             data.model = res.model

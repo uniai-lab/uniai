@@ -33,6 +33,7 @@ export interface EmbeddingResponse {
 }
 
 export interface ChatResponse {
+    id: string
     content: string
     tools?: object[]
     promptTokens: number
@@ -44,6 +45,7 @@ export interface ChatResponse {
 
 export type ReasoningLevel = ReasoningEffort
 export interface ChatOption {
+    id?: string
     stream?: boolean
     provider?: ChatModelProvider
     model?: ChatModel

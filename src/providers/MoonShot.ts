@@ -65,6 +65,7 @@ export default class MoonShot {
             { headers: { Authorization: `Bearer ${key}` }, responseType: stream ? 'stream' : 'json' }
         )
         const data: ChatResponse = {
+            id: '',
             content: '',
             model,
             object: '',
@@ -78,6 +79,7 @@ export default class MoonShot {
             parser.on('data', (e: MessageEvent) => {
                 const obj = $.json<GPTChatStreamResponse>(e.data)
                 if (obj) {
+                    data.id = obj.id
                     data.content = obj.choices[0]?.delta?.content || ''
                     data.model = obj.model
                     data.object = obj.object
@@ -100,6 +102,7 @@ export default class MoonShot {
             })
             return output as Readable
         } else {
+            data.id = res.id
             data.content = res.choices[0]?.message?.content || ''
             data.model = res.model
             data.object = res.object

@@ -105,6 +105,7 @@ export default class AliYun {
             { headers: { Authorization: `Bearer ${key}` }, responseType: stream ? 'stream' : 'json' }
         )
         const data: ChatResponse = {
+            id: '',
             content: '',
             model,
             object: '',
@@ -118,7 +119,8 @@ export default class AliYun {
             parser.on('data', (e: MessageEvent) => {
                 const obj = $.json<GPTChatStreamResponse>(e.data)
                 if (obj) {
-                    data.content = obj?.choices[0]?.delta?.content || ''
+                    data.id = obj.id
+                    data.content = obj.choices[0]?.delta?.content || ''
                     data.model = obj.model
                     data.object = obj.object
                     data.promptTokens = obj.usage?.prompt_tokens || 0
@@ -140,6 +142,7 @@ export default class AliYun {
             })
             return output as Readable
         } else {
+            data.id = res.id
             data.content = res.choices[0]?.message?.content || ''
             if (res.choices[0]?.message?.tool_calls) data.tools = res.choices[0]?.message?.tool_calls
             data.model = res.model

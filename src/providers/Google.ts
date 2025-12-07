@@ -117,6 +117,7 @@ export default class Google {
             { responseType: stream ? 'stream' : 'json' }
         )
         const data: ChatResponse = {
+            id: '',
             content: '',
             model,
             object: '',

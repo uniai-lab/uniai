@@ -19,7 +19,7 @@ import {
     OpenAIEmbedRequest,
     OpenAIEmbedResponse
 } from '../../interface/IOpenAI'
-import { ChatCompletionTool, ChatCompletionToolChoiceOption } from 'openai/resources'
+import { ChatCompletionTool, ChatCompletionToolChoiceOption, ReasoningEffort } from 'openai/resources'
 
 export default class Other {
     private api?: string
@@ -76,8 +76,9 @@ export default class Other {
      */
     async chat(
         messages: ChatMessage[],
-        model: ChatModel = '',
+        model: ChatModel | string = '',
         stream: boolean = false,
+        reasoning?: ReasoningEffort,
         top?: number,
         temperature?: number,
         maxLength?: number,
@@ -97,12 +98,14 @@ export default class Other {
                 top_p: top,
                 max_tokens: maxLength,
                 tools,
-                tool_choice: toolChoice
+                tool_choice: toolChoice,
+                reasoning_effort: reasoning
             },
             { headers: { Authorization: `Bearer ${key}` }, responseType: stream ? 'stream' : 'json' }
         )
 
         const data: ChatResponse = {
+            id: '',
             content: '',
             model,
             object: '',
@@ -118,6 +121,7 @@ export default class Other {
             parser.on('data', (e: MessageEvent) => {
                 const obj = $.json<GPTChatStreamResponse>(e.data)
                 if (obj) {
+                    data.id = obj.id
                     data.content = obj.choices[0]?.delta?.content || ''
                     if (obj.choices[0]?.delta?.tool_calls) data.tools = obj.choices[0]?.delta?.tool_calls
                     data.model = obj.model || model
@@ -140,6 +144,7 @@ export default class Other {
             })
             return output as Readable
         } else {
+            data.id = res.id
             data.content = res.choices[0]?.message?.content || ''
             if (res.choices[0]?.message?.tool_calls) data.tools = res.choices[0]?.message?.tool_calls
             data.model = res.model || model

@@ -110,6 +110,7 @@ export default class Anthropic {
         )
 
         const data: ChatResponse = {
+            id: '',
             content: '',
             model,
             object: '',
@@ -124,6 +125,7 @@ export default class Anthropic {
 
             parser.on('data', (e: MessageEvent) => {
                 const obj = $.json<AnthropicChatStreamResponse>(e.data)
+                if (obj?.message?.id) data.id = obj.message.id
                 if (obj) {
                     // Handle different stream event types
                     switch (obj.type) {
@@ -182,6 +184,7 @@ export default class Anthropic {
                 }
             }
 
+            data.id = res.id
             data.model = res.model
             data.object = 'chat.completion'
             data.promptTokens = res.usage?.input_tokens || 0
