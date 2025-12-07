@@ -126,11 +126,15 @@ describe('Prompt', () => {
         expect(p.toString()).toBe(p.toMarkdown())
     })
 
-    it('fromMarkdown parses Markdown into tree', () => {
+    it.only('fromMarkdown parses Markdown into tree', () => {
         const md = `
 # Root
 
 Root content
+        - aaa
+        - bbb
+            - ccc
+            - ccc
 
 ## Child 1
 
@@ -149,6 +153,7 @@ Grandchild content
         expect(tree.children[0].title).toBe('Child 1')
         expect(tree.children[0].children[0].title).toBe('Grandchild')
         expect(tree.children[1].title).toBe('Child 2')
+        console.log(tree.toMarkdown())
     })
 
     it('getAST returns correct AST structure', () => {
