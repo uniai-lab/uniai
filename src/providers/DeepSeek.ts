@@ -71,7 +71,8 @@ export default class DeepSeek {
                 stream,
                 temperature,
                 top_p: top,
-                max_tokens: maxLength
+                max_tokens: maxLength,
+                stream_options: { include_usage: true }
             },
             { headers: { Authorization: `Bearer ${key}` }, responseType: stream ? 'stream' : 'json' }
         )

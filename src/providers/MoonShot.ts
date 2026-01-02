@@ -61,7 +61,15 @@ export default class MoonShot {
 
         const res = await $.post<GPTChatRequest | GPTChatStreamRequest, Readable | GPTChatResponse>(
             `${this.api}/${VER}/chat/completions`,
-            { model, messages: $.formatGPTMessage(messages), stream, temperature, top_p: top, max_tokens: maxLength },
+            {
+                model,
+                messages: $.formatGPTMessage(messages),
+                stream,
+                temperature,
+                top_p: top,
+                max_tokens: maxLength,
+                stream_options: { include_usage: true }
+            },
             { headers: { Authorization: `Bearer ${key}` }, responseType: stream ? 'stream' : 'json' }
         )
         const data: ChatResponse = {

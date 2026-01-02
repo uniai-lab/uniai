@@ -126,7 +126,8 @@ export default class OpenAI {
                 max_completion_tokens: maxLength,
                 tools,
                 tool_choice: toolChoice,
-                reasoning_effort: reasoning
+                reasoning_effort: reasoning,
+                stream_options: { include_usage: true }
             },
             { headers: { Authorization: `Bearer ${key}` }, responseType: stream ? 'stream' : 'json' }
         )

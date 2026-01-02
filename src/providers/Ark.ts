@@ -86,7 +86,8 @@ export default class Ark {
                 tools,
                 tool_choice: toolChoice,
                 thinking: { type: reasoningEffort === 'minimal' ? 'disabled' : 'enabled' },
-                reasoning: { effort: reasoningEffort }
+                reasoning: { effort: reasoningEffort },
+                stream_options: { include_usage: true }
             },
             { headers: { Authorization: `Bearer ${key}` }, responseType: stream ? 'stream' : 'json' }
         )

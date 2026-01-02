@@ -106,7 +106,8 @@ export default class GLM {
                 top_p: top,
                 max_tokens: maxLength,
                 tools,
-                tool_choice: toolChoice
+                tool_choice: toolChoice,
+                stream_options: { include_usage: true }
             },
             { headers: { Authorization: `Bearer ${key}` }, responseType: stream ? 'stream' : 'json' }
         )

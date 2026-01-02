@@ -46,7 +46,7 @@ describe('Other Tests', () => {
         60000
     )
 
-    test('Test chat other model stream', done => {
+    test.only('Test chat other model stream', done => {
         const streamModel = otherChatModels[1]
         uni.chat(input, {
             stream: true,
@@ -81,7 +81,7 @@ describe('Other Tests', () => {
         })
     }, 60000)
 
-    test.only('Test chat vision model', done => {
+    test('Test chat vision model', done => {
         const uni = new UniAI({ Other: { api: OTHER_API } })
         uni.chat(input2, { stream: true, provider: ChatModelProvider.Other, model: 'qwen3-vl:2b' }).then(res => {
             expect(res).toBeInstanceOf(Readable)
