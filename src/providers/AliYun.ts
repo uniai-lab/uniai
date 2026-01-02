@@ -8,11 +8,11 @@ import {
     GPTChatRequest,
     GPTChatResponse,
     GPTChatStreamRequest,
-    GPTChatStreamResponse,
     OpenAIEmbedRequest,
     OpenAIEmbedResponse
 } from '../../interface/IOpenAI'
 import $ from '../util'
+import type { AliStreamResponse } from '../../interface/IAliyun'
 
 const API = 'https://dashscope.aliyuncs.com'
 const VER = 'v1'
@@ -117,7 +117,9 @@ export default class AliYun {
             const output = new PassThrough()
             const parser = new EventSourceStream()
             parser.on('data', (e: MessageEvent) => {
-                const obj = $.json<GPTChatStreamResponse>(e.data)
+                const obj = $.json<AliStreamResponse>(e.data)
+                if (obj && obj.error) throw new Error(obj.error.message)
+
                 if (obj) {
                     data.id = obj.id
                     data.content = obj.choices[0]?.delta?.content || ''

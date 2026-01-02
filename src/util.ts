@@ -137,8 +137,26 @@ export default {
         return filepath
     },
 
+    /**
+     * Checks if a given string is a valid base64 encoded string.
+     *
+     * @param data - The string to check.
+     * @param allowMime - Whether to allow MIME type prefixes (default: true).
+     * @returns True if the string is a valid base64 encoded string, false otherwise.
+     */
     isBase64(data: string, allowMime: boolean = true) {
         return isBase64(data, { allowMime })
+    },
+    /**
+     * Normalizes an image URL by ensuring it has the correct base64 MIME prefix.
+     *
+     * @param imgUrl - The image URL to normalize.
+     * @returns The normalized image URL with the appropriate MIME prefix.
+     */
+    normalizeImg(imgUrl: string) {
+        const hasMimePrefix = /^data:.*;base64,/.test(imgUrl)
+        if (!hasMimePrefix && isBase64(imgUrl, { allowMime: false })) return `data:image/png;base64,${imgUrl}`
+        return imgUrl
     },
     /**
      * Formats chat messages according to the GPT model's message format.
@@ -159,8 +177,10 @@ export default {
                     if (text.trim()) contentArr.push({ type: 'text', text })
 
                 if (img)
-                    for (const url of Array.isArray(img) ? img : [img])
-                        contentArr.push({ type: 'image_url', image_url: { url } })
+                    for (const url of Array.isArray(img) ? img : [img]) {
+                        const normalizedUrl = this.normalizeImg(url)
+                        contentArr.push({ type: 'image_url', image_url: { url: normalizedUrl } })
+                    }
 
                 if (audio)
                     for (const data of Array.isArray(audio) ? audio : [audio])
