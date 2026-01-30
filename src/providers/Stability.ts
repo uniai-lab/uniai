@@ -24,6 +24,11 @@ export default class Stability {
         this.api = api
     }
 
+    public config(key?: string | string[], api: string = API) {
+        this.key = key
+        this.api = api
+    }
+
     /**
      * Generate images using Stability AI.
      *

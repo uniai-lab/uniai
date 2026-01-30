@@ -165,6 +165,31 @@ export default class UniAI {
         this.models = [...this.chatModels, ...this.embedModels, ...this.imgModels]
     }
 
+    public setConfig(config: UniAIConfig) {
+        this.config = { ...this.config, ...config }
+        this.openai.config(this.config.OpenAI?.key, this.config.OpenAI?.proxy)
+        this.anthropic.config(this.config.Anthropic?.key, this.config.Anthropic?.proxy)
+        this.deepseek.config(this.config.DeepSeek?.key, this.config.DeepSeek?.proxy)
+        this.glm.config(this.config.GLM?.key, this.config.GLM?.proxy)
+        this.google.config(this.config.Google?.key, this.config.Google?.proxy)
+        this.fly.config(
+            this.config.IFlyTek?.apiPassword,
+            this.config.IFlyTek?.appId,
+            this.config.IFlyTek?.apiKey,
+            this.config.IFlyTek?.apiSecret,
+            this.config.IFlyTek?.proxy
+        )
+        this.baidu.config(this.config.Baidu?.apiKey, this.config.Baidu?.secretKey, this.config.Baidu?.proxy)
+        this.moon.config(this.config.MoonShot?.key, this.config.MoonShot?.proxy)
+        this.ali.config(this.config.AliYun?.key, this.config.AliYun?.proxy)
+        this.ark.config(this.config.Ark?.key, this.config.Ark?.proxy)
+        this.xai.config(this.config.XAI?.key, this.config.XAI?.proxy)
+        this.other.config(this.config.Other?.api, this.config.Other?.key)
+        this.mj.config(this.config.MidJourney?.proxy, this.config.MidJourney?.token, this.config.MidJourney?.imgProxy)
+        this.stability.config(this.config.StabilityAI?.key, this.config.StabilityAI?.proxy)
+        return this
+    }
+
     async chat(messages: ChatMessage[] | string = DEFAULT_MESSAGE, option: ChatOption = {}) {
         if (typeof messages === 'string') messages = [{ role: ChatRoleEnum.USER, content: messages }]
         const provider = option.provider || ChatModelProvider.OpenAI

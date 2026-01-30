@@ -41,6 +41,14 @@ export default class IFlyTek {
         this.api = api
     }
 
+    public config(pass?: string | string[], key?: string, secret?: string, appid?: string, api: string = CHAT_API) {
+        this.pass = pass
+        this.key = key
+        this.secret = secret
+        this.appid = appid
+        this.api = api
+    }
+
     /**
      * Initiates a chat conversation with IFLYTEK Spark API.
      *

@@ -26,6 +26,12 @@ export default class MidJourney {
         this.imgProxy = imgProxy
     }
 
+    public config(proxy?: string, token?: string, imgProxy?: string) {
+        this.proxy = proxy
+        this.token = token
+        this.imgProxy = imgProxy
+    }
+
     /**
      * Call the imagine API of MidJourney to generate text.
      * @param prompt - The input prompt text.

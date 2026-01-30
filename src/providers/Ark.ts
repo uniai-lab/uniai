@@ -30,6 +30,11 @@ export default class Ark {
         this.api = api
     }
 
+    public config(key?: string | string[], api: string = API) {
+        this.key = key
+        this.api = api
+    }
+
     /**
      * Sends messages to the GPT chat model.
      *

@@ -43,6 +43,11 @@ export default class Anthropic {
         this.api = api
     }
 
+    public config(key?: string | string[], api: string = API) {
+        this.key = key
+        this.api = api
+    }
+
     /**
      * Sends messages to the Claude chat model.
      *

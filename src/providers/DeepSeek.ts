@@ -23,6 +23,11 @@ export default class DeepSeek {
         this.api = api
     }
 
+    public config(key?: string | string[], api: string = API) {
+        this.key = key
+        this.api = api
+    }
+
     /**
      * Sends messages to the Ali QianWen chat model.
      *

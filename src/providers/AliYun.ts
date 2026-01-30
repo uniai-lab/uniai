@@ -31,6 +31,11 @@ export default class AliYun {
         this.api = api
     }
 
+    public config(key?: string | string[], api: string = API) {
+        this.key = key
+        this.api = api
+    }
+
     /**
      * Fetches embeddings for input text.
      *

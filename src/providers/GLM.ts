@@ -20,6 +20,11 @@ export default class GLM {
         this.proxyAPI = proxyAPI
     }
 
+    public config(key?: string | string[], proxyAPI: string = API) {
+        this.key = key
+        this.proxyAPI = proxyAPI
+    }
+
     /**
      * Fetches embeddings for input text.
      *

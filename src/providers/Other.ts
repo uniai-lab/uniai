@@ -36,6 +36,11 @@ export default class Other {
         this.key = key
     }
 
+    public config(api?: string, key?: string | string[]) {
+        this.api = api
+        this.key = key
+    }
+
     /**
      * Fetches embeddings for input text.
      *

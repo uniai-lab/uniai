@@ -26,6 +26,12 @@ export default class Baidu {
         this.secret = secret
         this.api = api
     }
+
+    public config(key?: string, secret?: string, api: string = API) {
+        this.key = key
+        this.secret = secret
+        this.api = api
+    }
     /**
      * Sends messages to the GLM chat model.
      *

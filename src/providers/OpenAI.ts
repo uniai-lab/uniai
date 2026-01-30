@@ -50,6 +50,11 @@ export default class OpenAI {
         this.api = api
     }
 
+    public config(key?: string | string[], api: string = API) {
+        this.key = key
+        this.api = api
+    }
+
     /**
      * Fetches embeddings for input text.
      *
